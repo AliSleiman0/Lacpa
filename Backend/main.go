@@ -7,11 +7,12 @@ import (
 	"time"
 
 	"github.com/AliSleiman0/Lacpa/config"
-	"github.com/AliSleiman0/Lacpa/handler"
 	"github.com/AliSleiman0/Lacpa/repository"
+	"github.com/AliSleiman0/Lacpa/routes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
+	"github.com/gofiber/template/html/v2"
 	"github.com/joho/godotenv"
 )
 
@@ -39,12 +40,20 @@ func main() {
 	database := mongoClient.Database(getEnv("MONGO_DATABASE", "lacpa"))
 	repo := repository.NewMongoRepository(database)
 
-	// Initialize handler
-	h := handler.NewHandler(repo)
+	// Initialize HTML template engine
+	// Templates will be loaded from "./views" directory
+	engine := html.New("./views", ".html")
 
-	// Create Fiber app
+	// Enable development mode for template reloading (optional)
+	if getEnv("APP_ENV", "development") == "development" {
+		engine.Reload(true)
+		engine.Debug(true)
+	}
+
+	// Create Fiber app with template engine
 	app := fiber.New(fiber.Config{
 		AppName: "Lacpa API",
+		Views:   engine,
 	})
 
 	// Middleware
@@ -57,19 +66,8 @@ func main() {
 	// Serve static files from LACPA_Web
 	app.Static("/", "./LACPA_Web")
 
-	// API routes
-	api := app.Group("/api")
-
-	// Health check
-	api.Get("/health", func(c *fiber.Ctx) error {
-		return c.JSON(fiber.Map{
-			"status":  "ok",
-			"message": "Server is running",
-		})
-	})
-
-	// Setup API endpoints
-	h.SetupRoutes(api)
+	// Setup all API routes (includes health check and all endpoints)
+	routes.SetupRoutes(app, repo)
 
 	// Start server
 	port := getEnv("PORT", "3000")

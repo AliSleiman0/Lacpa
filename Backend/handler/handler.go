@@ -8,27 +8,31 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-// Handler handles HTTP requests
+// Handler handles HTTP requests for item operations
+//
+// ROLE: Item Business Logic Handler
+// - Contains all business logic for item operations (CRUD)
+// - Handles HTTP request/response processing for items
+// - Validates request data and formats responses
+// - Interfaces with the repository layer for data persistence
+// - Focuses purely on business logic, route configuration moved to routes package
 type Handler struct {
 	repo repository.Repository
 }
 
-// NewHandler creates a new handler
+// NewHandler creates a new item handler instance
+//
+// PARAMETERS:
+//
+//	repo: Unified repository interface providing access to all data operations
+//
+// RETURNS:
+//
+//	*Handler: Handler instance ready to process item-related HTTP requests
 func NewHandler(repo repository.Repository) *Handler {
 	return &Handler{
 		repo: repo,
 	}
-}
-
-// SetupRoutes configures all API routes
-func (h *Handler) SetupRoutes(router fiber.Router) {
-	// Item routes
-	items := router.Group("/items")
-	items.Post("/", h.CreateItem)
-	items.Get("/", h.GetAllItems)
-	items.Get("/:id", h.GetItem)
-	items.Put("/:id", h.UpdateItem)
-	items.Delete("/:id", h.DeleteItem)
 }
 
 // CreateItem handles POST /api/items

@@ -9,8 +9,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-// Repository defines the interface for database operations
-type Repository interface {
+// ItemRepository defines the interface for item database operations
+type ItemRepository interface {
 	CreateItem(ctx context.Context, item *models.Item) error
 	GetItem(ctx context.Context, id string) (*models.Item, error)
 	GetAllItems(ctx context.Context) ([]*models.Item, error)
@@ -18,22 +18,20 @@ type Repository interface {
 	DeleteItem(ctx context.Context, id string) error
 }
 
-// MongoRepository implements Repository interface for MongoDB
-type MongoRepository struct {
-	db         *mongo.Database
+// MongoItemRepository implements ItemRepository interface for MongoDB
+type MongoItemRepository struct {
 	collection *mongo.Collection
 }
 
-// NewMongoRepository creates a new MongoDB repository
-func NewMongoRepository(db *mongo.Database) *MongoRepository {
-	return &MongoRepository{
-		db:         db,
+// NewItemRepository creates a new MongoDB item repository
+func NewItemRepository(db *mongo.Database) ItemRepository {
+	return &MongoItemRepository{
 		collection: db.Collection("items"),
 	}
 }
 
 // CreateItem inserts a new item into the database
-func (r *MongoRepository) CreateItem(ctx context.Context, item *models.Item) error {
+func (r *MongoItemRepository) CreateItem(ctx context.Context, item *models.Item) error {
 	result, err := r.collection.InsertOne(ctx, item)
 	if err != nil {
 		return err
@@ -43,7 +41,7 @@ func (r *MongoRepository) CreateItem(ctx context.Context, item *models.Item) err
 }
 
 // GetItem retrieves a single item by ID
-func (r *MongoRepository) GetItem(ctx context.Context, id string) (*models.Item, error) {
+func (r *MongoItemRepository) GetItem(ctx context.Context, id string) (*models.Item, error) {
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return nil, err
@@ -58,7 +56,7 @@ func (r *MongoRepository) GetItem(ctx context.Context, id string) (*models.Item,
 }
 
 // GetAllItems retrieves all items from the database
-func (r *MongoRepository) GetAllItems(ctx context.Context) ([]*models.Item, error) {
+func (r *MongoItemRepository) GetAllItems(ctx context.Context) ([]*models.Item, error) {
 	cursor, err := r.collection.Find(ctx, bson.M{})
 	if err != nil {
 		return nil, err
@@ -73,7 +71,7 @@ func (r *MongoRepository) GetAllItems(ctx context.Context) ([]*models.Item, erro
 }
 
 // UpdateItem updates an existing item
-func (r *MongoRepository) UpdateItem(ctx context.Context, id string, item *models.Item) error {
+func (r *MongoItemRepository) UpdateItem(ctx context.Context, id string, item *models.Item) error {
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return err
@@ -92,7 +90,7 @@ func (r *MongoRepository) UpdateItem(ctx context.Context, id string, item *model
 }
 
 // DeleteItem removes an item from the database
-func (r *MongoRepository) DeleteItem(ctx context.Context, id string) error {
+func (r *MongoItemRepository) DeleteItem(ctx context.Context, id string) error {
 	objectID, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return err
