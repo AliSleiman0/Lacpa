@@ -59,11 +59,11 @@ func main() {
 
 	// API routes
 	api := app.Group("/api")
-	
+
 	// Health check
 	api.Get("/health", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{
-			"status": "ok",
+			"status":  "ok",
 			"message": "Server is running",
 		})
 	})

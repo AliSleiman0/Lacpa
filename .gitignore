@@ -33,3 +33,7 @@ go.work.sum
 
 # Binary
 lacpa
+
+# Air hot reload
+tmp/
+build-errors.log

@@ -80,7 +80,7 @@ func (h *Handler) GetAllItems(c *fiber.Ctx) error {
 // UpdateItem handles PUT /api/items/:id
 func (h *Handler) UpdateItem(c *fiber.Ctx) error {
 	id := c.Params("id")
-	
+
 	var item models.Item
 	if err := c.BodyParser(&item); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -104,7 +104,7 @@ func (h *Handler) UpdateItem(c *fiber.Ctx) error {
 // DeleteItem handles DELETE /api/items/:id
 func (h *Handler) DeleteItem(c *fiber.Ctx) error {
 	id := c.Params("id")
-	
+
 	if err := h.repo.DeleteItem(c.Context(), id); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "Failed to delete item",
