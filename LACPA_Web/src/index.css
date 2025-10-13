@@ -1,0 +1,21 @@
+/* index.css or app.css */
+
+@import "tailwindcss";
+
+:root {
+  /* your custom design tokens here */
+  --color-brand: oklch(0.84 0.18 117.33);
+  --font-display: "Satoshi", "sans-serif";
+  --breakpoint-3xl: 1920px;
+}
+
+/* Your Tailwind layers */
+@layer base {
+  /* custom base styles */
+}
+@layer components {
+  /* custom component styles */
+}
+@layer utilities {
+  /* custom utility classes or extensions */
+}
