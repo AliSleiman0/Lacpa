@@ -1,0 +1,492 @@
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Rounded Border + Synchronized Star Glow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: #000;
+            font-family: Inter, system-ui, sans-serif;
+        }
+
+        .hero-wrap {
+            position: relative;
+            width: 100%;
+            max-width: 1100px;
+            margin: 80px auto;
+            padding: 40px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* pill button (container) */
+        .traveling-border-btn {
+            position: relative;
+            display: inline-block;
+            padding: 24px 56px;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            border-radius: 999px;
+            z-index: 5;
+            font-size: 20px;
+            font-weight: 600;
+            overflow: visible;
+        }
+
+        /* actual background + clipping container for "inside" stars */
+        .btn-bg {
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: inherit;
+            background: rgba(17, 17, 17, 1);
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .btn-label {
+            position: relative;
+            z-index: 12;
+            display: inline-block;
+            pointer-events: none;
+        }
+
+        .traveling-border-btn:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.03);
+        }
+
+        .traveling-border-btn:hover .btn-bg {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .btn-border-svg {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: visible;
+            z-index: 20;
+            display: block;
+        }
+
+        .btn-border-rect {
+            fill: none;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        /* stars base */
+        .svg-star {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            will-change: transform, opacity, filter;
+            animation: float 4s ease-in-out infinite;
+            opacity: 0;
+            /* start hidden until glow triggers */
+            filter: drop-shadow(0 6px 10px rgba(255, 255, 255, 0.02));
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(-50%, -52%) scale(var(--s, 1));
+            }
+
+            50% {
+                transform: translate(-50%, -48%) scale(calc(var(--s, 1)*1.02));
+            }
+
+            100% {
+                transform: translate(-50%, -52%) scale(var(--s, 1));
+            }
+        }
+
+        /* glow animation (brief pulse around the moment border passes) */
+        /* note: duration is set dynamically to match border loop; keyframe uses percent windows */
+        @keyframes starGlow {
+            0% {
+                opacity: 0;
+                filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0));
+                transform: translate(-50%, -50%) scale(var(--s, 1));
+            }
+
+            45% {
+                opacity: 0;
+                filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0));
+            }
+
+            50% {
+                opacity: 1;
+                filter: drop-shadow(0 0 18px rgba(255, 255, 255, 0.9));
+                transform: translate(-50%, -50%) scale(calc(var(--s, 1) * 1.06));
+            }
+
+            60% {
+                opacity: 0.2;
+                filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.45));
+            }
+
+            100% {
+                opacity: 0;
+                filter: drop-shadow(0 0 0 rgba(255, 255, 255, 0));
+            }
+        }
+
+        /* zone stacking classes */
+        .star-outside {
+            z-index: 1;
+        }
+
+        /* behind button */
+        .star-over {
+            z-index: 30;
+        }
+
+        /* above border */
+        .star-inside {
+            z-index: 5;
+        }
+
+        /* inside clipped area (in btn-bg) */
+
+        svg {
+            display: block;
+        }
+    </style>
+
+
+<body>
+    <div id="hero-wrap" class="hero-wrap">
+        <button id="cta-btn" class="traveling-border-btn" aria-label="Join Now" type="button">
+            <div class="btn-bg" id="btn-bg" aria-hidden="true"></div>
+
+            <svg class="btn-border-svg" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                preserveAspectRatio="none">
+                <defs>
+                    <linearGradient id="strokeGrad" x1="0%" x2="100%">
+                        <stop offset="0%" stop-color="rgba(255,255,255,0.0)" />
+                        <stop offset="40%" stop-color="#fff" stop-opacity="0.95" />
+                        <stop offset="100%" stop-color="rgba(255,255,255,0.0)" />
+                    </linearGradient>
+                </defs>
+                <rect class="btn-border-rect" x="0" y="0" rx="0" ry="0" width="0" height="0" stroke="url(#strokeGrad)"
+                    stroke-width="3"></rect>
+            </svg>
+
+            <span class="btn-label">Join Now</span>
+        </button>
+
+        <!-- star symbol -->
+        <svg aria-hidden="true" style="position:absolute; width:0; height:0; overflow:hidden;">
+            <symbol id="star-symbol" viewBox="0 0 6 6">
+                <g opacity="1" filter="url(#starGlow)">
+                    <path
+                        d="M2.90489 2.2927C2.93483 2.20057 3.06517 2.20057 3.09511 2.29271L3.20206 2.62188C3.21545 2.66309 3.25385 2.69098 3.29717 2.69098H3.64329C3.74016 2.69098 3.78044 2.81494 3.70207 2.87188L3.42205 3.07533C3.387 3.10079 3.37234 3.14593 3.38572 3.18713L3.49268 3.51631C3.52261 3.60844 3.41717 3.68506 3.3388 3.62812L3.05878 3.42467C3.02373 3.39921 2.97627 3.39921 2.94122 3.42467L2.6612 3.62812C2.58283 3.68506 2.47739 3.60844 2.50732 3.51631L2.61428 3.18713C2.62766 3.14593 2.613 3.10079 2.57795 3.07533L2.29793 2.87188C2.21956 2.81494 2.25984 2.69098 2.35671 2.69098H2.70283C2.74615 2.69098 2.78455 2.66309 2.79794 2.62188L2.90489 2.2927Z"
+                        fill="white" />
+                </g>
+                <defs>
+                    <filter id="starGlow" x="-6" y="-6" width="20" height="20" color-interpolation-filters="sRGB">
+                        <feGaussianBlur stdDeviation="1.2" result="blur" />
+                        <feMerge>
+                            <feMergeNode in="blur" />
+                            <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                    </filter>
+                </defs>
+            </symbol>
+        </svg>
+    </div>
+
+    <script>
+        /* ================= CONFIG ================= */
+        const ZONE_PROBS = { outside: 0.15, over: 0.35, inside: 0.20 };
+        const NUM_STARS = 36;
+        const MIN_SIZE = 15;
+        const MAX_SIZE = 30;
+        const OUTWARD_MIN = 3;
+        const OUTWARD_JITTER = 6;
+        const INWARD_MIN = 10;
+        const INWARD_JITTER = 22;
+        const SPEED_FACTOR = 2;   // slows both border and star float
+        const GLOW_WINDOW = 0.12; // fraction of loop during which glow occurs (controls sharpness)
+        const SAMPLES = 300;     // sampling resolution when finding star's point on the path
+
+        /* ================= BORDER (unchanged layout logic) ================= */
+        (function () {
+            const btn = document.getElementById('cta-btn');
+            const svg = btn.querySelector('.btn-border-svg');
+            const rect = svg.querySelector('.btn-border-rect');
+            const strokeWidth = 3;
+
+            let dynamicKeyframesStyle = document.getElementById('btn-dash-keyframes');
+            if (!dynamicKeyframesStyle) {
+                dynamicKeyframesStyle = document.createElement('style');
+                dynamicKeyframesStyle.id = 'btn-dash-keyframes';
+                document.head.appendChild(dynamicKeyframesStyle);
+            }
+
+            // We'll also keep a reference to the rounded rect path used for measurements
+            let pathForMeasure = null;
+            let borderDuration = 4 * SPEED_FACTOR; // fallback default (overwritten by calc)
+
+            function roundedRectPath(x, y, w, h, rx) {
+                // produce path string for a rect with rx corner radius
+                return `
+        M ${x + rx} ${y}
+        H ${x + w - rx}
+        A ${rx} ${rx} 0 0 1 ${x + w} ${y + rx}
+        V ${y + h - rx}
+        A ${rx} ${rx} 0 0 1 ${x + w - rx} ${y + h}
+        H ${x + rx}
+        A ${rx} ${rx} 0 0 1 ${x} ${y + h - rx}
+        V ${y + rx}
+        A ${rx} ${rx} 0 0 1 ${x + rx} ${y}
+        Z
+      `.replace(/\s+/g, ' ').trim();
+            }
+
+            function updateBorderAnimation() {
+                const w = Math.max(2, Math.round(btn.clientWidth));
+                const h = Math.max(2, Math.round(btn.clientHeight));
+
+                svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+                svg.setAttribute('width', '100%');
+                svg.setAttribute('height', '100%');
+
+                const half = strokeWidth / 2;
+                const rx = Math.max(0, (h - strokeWidth) / 2);
+                const x = half, y = half;
+                const rw = Math.max(0, w - strokeWidth);
+                const rh = Math.max(0, h - strokeWidth);
+
+                rect.setAttribute('x', x); rect.setAttribute('y', y);
+                rect.setAttribute('width', rw); rect.setAttribute('height', rh);
+                rect.setAttribute('rx', rx); rect.setAttribute('ry', rx);
+                rect.setAttribute('stroke-width', strokeWidth);
+
+                // build an SVG path that matches the rounded rect exactly and attach it (hidden) for measurement
+                const d = roundedRectPath(x, y, rw, rh, rx);
+                if (!pathForMeasure) {
+                    pathForMeasure = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                    pathForMeasure.setAttribute('fill', 'none');
+                    pathForMeasure.setAttribute('stroke', 'none');
+                    pathForMeasure.style.display = 'none';
+                    svg.appendChild(pathForMeasure);
+                }
+                pathForMeasure.setAttribute('d', d);
+
+                // measure length and configure dash
+                const length = (typeof pathForMeasure.getTotalLength === 'function') ? Math.round(pathForMeasure.getTotalLength()) : Math.round(2 * (rw + rh));
+                const dash = Math.max(150, Math.round(length * 0.12));
+                const gap = Math.max(8, length - dash);
+                rect.style.strokeDasharray = `${dash} ${gap}`;
+                rect.style.strokeDashoffset = '0px';
+                rect.style.stroke = 'url(#strokeGrad)';
+
+                // compute border animation duration proportional to length, scaled by SPEED_FACTOR
+                const baseDuration = Math.max(1.0, length / 400);
+                borderDuration = baseDuration * SPEED_FACTOR; // store for stars sync
+                const keyframeName = `dashAnim_${length}`;
+
+                dynamicKeyframesStyle.textContent = `
+        @keyframes ${keyframeName} {
+          to { stroke-dashoffset: -${length}px; }
+        }
+      `;
+                rect.style.animation = `${keyframeName} ${borderDuration}s linear infinite`;
+            }
+
+            window.addEventListener('load', updateBorderAnimation);
+            let to;
+            window.addEventListener('resize', () => {
+                clearTimeout(to);
+                to = setTimeout(updateBorderAnimation, 110);
+            });
+
+            // expose for star code
+            window.__borderMeasurement = {
+                getPath: () => pathForMeasure,
+                getLength: () => pathForMeasure ? pathForMeasure.getTotalLength() : 0,
+                getDuration: () => borderDuration
+            };
+            window.updateRoundedButtonBorder = updateBorderAnimation;
+        })();
+
+        /* ================= Stars placement + synchronized glow ================= */
+        (function () {
+            const hero = document.getElementById('hero-wrap');
+            const btn = document.getElementById('cta-btn');
+            const btnBg = document.getElementById('btn-bg');
+
+            function chooseZone() {
+                const r = Math.random();
+                if (r < ZONE_PROBS.outside) return 'outside';
+                if (r < ZONE_PROBS.outside + ZONE_PROBS.over) return 'over';
+                return 'inside';
+            }
+
+            function createStarNode(zone, idx) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'svg-star';
+                wrapper.classList.add(zone === 'outside' ? 'star-outside' : zone === 'over' ? 'star-over' : 'star-inside');
+
+                wrapper.style.width = 'auto'; wrapper.style.height = 'auto';
+                wrapper.style.setProperty('--i', idx);
+                wrapper.style.setProperty('--s', (0.6 + Math.random() * 0.9).toFixed(2));
+                const starBase = 3 + Math.random() * 3;
+                wrapper.style.animation = `float ${(starBase * SPEED_FACTOR).toFixed(2)}s ease-in-out ${(Math.random() * -2).toFixed(2)}s infinite`;
+
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('viewBox', '0 0 6 6');
+                svg.setAttribute('aria-hidden', 'true');
+                svg.innerHTML = '<use href="#star-symbol"></use>';
+                wrapper.appendChild(svg);
+                return wrapper;
+            }
+
+            function findClosestLengthOnPath(path, targetX, targetY, samples = SAMPLES) {
+                const total = path.getTotalLength();
+                let best = 0;
+                let bestDist = Infinity;
+                for (let i = 0; i <= samples; i++) {
+                    const t = (i / samples) * total;
+                    const pt = path.getPointAtLength(t);
+                    const dx = pt.x - targetX;
+                    const dy = pt.y - targetY;
+                    const d2 = dx * dx + dy * dy;
+                    if (d2 < bestDist) { bestDist = d2; best = t; }
+                }
+                return { lengthAt: best, distanceSq: bestDist, total };
+            }
+
+            function clearStars() {
+                hero.querySelectorAll('.svg-star').forEach(n => n.remove());
+                btnBg.querySelectorAll('.svg-star').forEach(n => n.remove());
+            }
+
+            function placeStarsAndSyncGlow() {
+                clearStars();
+
+                const bRect = btn.getBoundingClientRect();
+                const wrapRect = hero.getBoundingClientRect();
+                const cx = bRect.left + bRect.width / 2 - wrapRect.left;
+                const cy = bRect.top + bRect.height / 2 - wrapRect.top;
+
+                const a = bRect.width / 2 + 6;
+                const b = bRect.height / 2 + 4;
+
+                const borderInfo = window.__borderMeasurement;
+                const path = borderInfo.getPath();
+                const pathLength = path ? path.getTotalLength() : 0;
+                const loopDuration = borderInfo.getDuration() || 4;
+
+                for (let i = 0; i < NUM_STARS; i++) {
+                    const zone = chooseZone();
+                    const star = createStarNode(zone, i);
+
+                    // Use full circle (0 to 2π) for even distribution
+                    const frac = (NUM_STARS === 1) ? 0.5 : (i / NUM_STARS);
+                    const baseAngle = frac * 2 * Math.PI; // Full circle
+                    const angle = baseAngle + (Math.random() * 0.12 - 0.06);
+
+                    // Position on ellipse perimeter (full circumference)
+                    let x = cx + a * Math.cos(angle);
+                    let y = cy + b * Math.sin(angle);
+
+                    const nx = Math.cos(angle), ny = Math.sin(angle);
+
+                    if (zone === 'outside') {
+                        const outward = OUTWARD_MIN + Math.random() * OUTWARD_JITTER;
+                        x += nx * outward;
+                        y += ny * outward;
+                        hero.appendChild(star);
+                    } else if (zone === 'over') {
+                        const outward = 1 + Math.random() * (OUTWARD_JITTER / 2);
+                        x += nx * outward;
+                        y += ny * outward;
+                        hero.appendChild(star);
+                    } else {
+                        const inward = INWARD_MIN + Math.random() * INWARD_JITTER;
+                        x -= nx * inward;
+                        y -= ny * inward;
+                        btnBg.appendChild(star);
+                    }
+
+                    // Size + base opacity
+                    const size = Math.round(MIN_SIZE + Math.random() * (MAX_SIZE - MIN_SIZE));
+                    star.style.left = `${x}px`;
+                    star.style.top = `${y}px`;
+                    star.style.width = `${size}px`;
+                    star.style.height = 'auto';
+                    star.style.setProperty('--s', (size / MAX_SIZE).toFixed(2));
+                    star.style.opacity = 0;
+
+                    const innerSvg = star.querySelector('svg');
+                    if (innerSvg) {
+                        innerSvg.setAttribute('width', size);
+                        innerSvg.setAttribute('height', size);
+                    }
+
+                    // FIXED: Synchronize glow with border - account for animation direction and timing
+                    if (path && pathLength > 4) {
+                        const svgRect = btn.querySelector('.btn-border-svg').getBoundingClientRect();
+                        const sx = (x - (bRect.left - wrapRect.left));
+                        const sy = (y - (bRect.top - wrapRect.top));
+
+                        const nearest = findClosestLengthOnPath(path, sx, sy, SAMPLES);
+                        const lengthAt = nearest.lengthAt;
+
+                        // The border animation moves from positive dashOffset to negative
+                        // We need to calculate when the gradient passes the star position
+                        // The gradient starts at the beginning and moves clockwise around the button
+
+                        // Calculate the normalized position (0 to 1) along the path
+                        const normalizedPosition = lengthAt / pathLength;
+
+                        // The border animation moves the gradient in the negative direction
+                        // So we need to invert the timing to match the visual movement
+                        // Also account for the fact that the animation starts with the gradient visible
+                        const delay = - (1 - normalizedPosition) * loopDuration + 0.65 ;
+
+                        const glowDuration = loopDuration;
+
+                        // Use a custom animation that matches the border's timing more precisely
+                        const glowAnim = `starGlow ${glowDuration}s linear ${delay}s infinite`;
+                        star.style.animation = `${star.style.animation}, ${glowAnim}`;
+                    }
+
+                    // Slight rotation variety
+                    const rot = (Math.random() * 30 - 15).toFixed(1);
+                    star.style.transform = `translate(-50%,-50%) rotate(${rot}deg)`;
+                }
+            }
+
+            window.addEventListener('load', () => {
+                placeStarsAndSyncGlow();
+                if (window.updateRoundedButtonBorder) window.updateRoundedButtonBorder();
+            });
+
+            let rez;
+            window.addEventListener('resize', () => {
+                clearTimeout(rez);
+                rez = setTimeout(() => {
+                    placeStarsAndSyncGlow();
+                    if (window.updateRoundedButtonBorder) window.updateRoundedButtonBorder();
+                }, 150);
+            });
+
+            window.placeStarsAndSyncGlow = placeStarsAndSyncGlow;
+        })();
+    </script>
+</body>
+
+</html>
