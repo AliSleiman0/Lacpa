@@ -354,16 +354,55 @@
             }
         }
 
+        /* Mobile menu positioning adjustments for nav states */
+        .nav-static #mobile-menu {
+            position: absolute;
+        }
+
+        .nav-fixed #mobile-menu {
+            position: fixed;
+            left: 1rem;
+            right: 1rem;
+            max-width: calc(64rem - 2rem); /* max-w-4xl minus padding */
+            margin: 0 auto;
+        }
+
         /* Ensure nav doesn't affect layout flow */
         nav {
             z-index: 50;
+            transition: all 0.3s ease-in-out;
+        }
+
+        /* Navigation positioning states */
+        .nav-static {
+            position: absolute !important;
+            transform: translateX(-50%) !important;
+            left: 50% !important;
+            top: 0 !important; /* Will be set by JavaScript after header loads */
+            width: 100% !important;
+            max-width: 64rem !important; /* max-w-4xl */
+            margin: 0 !important;
+            padding: 0 1rem;
+        }
+
+        .nav-fixed {
+            position: fixed !important;
+            top: 1.25rem !important; /* top-5 */
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: 100% !important;
+            max-width: 64rem !important; /* max-w-4xl */
+            padding: 0 1rem;
         }
     </style>
 </head>
 
 <body class="min-h-screen bg-[#202020] bg-cover relative">
     <div hx-get="components/header.html" hx-swap="innerHTML" hx-trigger="load"></div>
-        <nav class="fixed top-5 left-1/2 transform -translate-x-1/2 w-full max-w-4xl px-4 z-50">
+    
+    <!-- Navigation container with positioning context -->
+    <div class="relative">
+        <nav class="nav-static z-50" id="main-nav">
             <div class="relative nav-pill rounded-full px-3 md:px-6 py-3 flex items-center nav-content">
 
                 <!-- animated traveling glow -->
@@ -406,7 +445,7 @@
                 </ul>
             </div>
         </nav>
-
+    </div>
 
         <!-- Accessibility note: keyboard focus styling -->
         <script>
@@ -478,6 +517,101 @@
                 clearTimeout(resizeTimeout);
                 resizeTimeout = setTimeout(initGlowAnimation, 100);
             });
+
+            // Navigation scroll behavior
+            function initScrollNavigation() {
+                const nav = document.getElementById('main-nav');
+                const headerElement = document.querySelector('[hx-trigger="load"]'); // The header.html container
+                
+                if (!nav) return;
+
+                let headerHeight = 0;
+                let isInitialized = false;
+                
+                // Function to update header height and position nav
+                function updateHeaderHeight() {
+                    if (headerElement) {
+                        const newHeight = headerElement.offsetHeight || 0;
+                        if (newHeight > 0) {
+                            headerHeight = newHeight;
+                            isInitialized = true;
+                            // Update nav position immediately if in static mode
+                            if (nav.classList.contains('nav-static')) {
+                                nav.style.top = `${headerHeight + 20}px`; // 20px offset below header
+                            }
+                        }
+                    }
+                }
+
+                // Initial height calculation (likely to be 0 on first load)
+                updateHeaderHeight();
+
+                // Update height after HTMX loads the header - THIS IS KEY
+                document.addEventListener('htmx:afterSwap', function(event) {
+                    if (event.detail.target === headerElement) {
+                        setTimeout(() => {
+                            updateHeaderHeight();
+                            // Force initial position update after header loads
+                            handleScroll();
+                        }, 100);
+                    }
+                });
+
+                // Also listen for htmx:afterSettle as backup
+                document.addEventListener('htmx:afterSettle', function(event) {
+                    if (event.detail.target === headerElement && !isInitialized) {
+                        setTimeout(() => {
+                            updateHeaderHeight();
+                            handleScroll();
+                        }, 100);
+                    }
+                });
+
+                // Scroll handler
+                function handleScroll() {
+                    // Don't run scroll logic until header is loaded
+                    if (!isInitialized || headerHeight === 0) {
+                        updateHeaderHeight();
+                        return;
+                    }
+
+                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                    const threshold = headerHeight - 20; // Switch slightly before reaching the header bottom
+
+                    if (scrollTop > threshold) {
+                        // Switch to fixed positioning (viewport based)
+                        if (nav.classList.contains('nav-static')) {
+                            nav.classList.remove('nav-static');
+                            nav.classList.add('nav-fixed');
+                        }
+                    } else {
+                        // Switch to absolute positioning (header relative)
+                        if (nav.classList.contains('nav-fixed')) {
+                            nav.classList.remove('nav-fixed');
+                            nav.classList.add('nav-static');
+                        }
+                        // Update position based on header height
+                        if (nav.classList.contains('nav-static')) {
+                            nav.style.top = `${headerHeight + 20}px`; // 20px offset below header
+                        }
+                    }
+                }
+
+                // Add scroll listener with throttling
+                let scrollTimeout;
+                window.addEventListener('scroll', function() {
+                    if (scrollTimeout) {
+                        clearTimeout(scrollTimeout);
+                    }
+                    scrollTimeout = setTimeout(handleScroll, 10);
+                });
+
+                // Initial check - but only after a brief delay to allow header to potentially load
+                setTimeout(handleScroll, 200);
+            }
+
+            // Initialize scroll navigation
+            document.addEventListener('DOMContentLoaded', initScrollNavigation);
         </script>
         
     <!-- Main content container -->
