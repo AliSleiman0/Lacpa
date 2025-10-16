@@ -242,11 +242,246 @@
             filter: brightness(0.8) contrast(1.2);
         }
     </style>
+    <style>
+        /* small bespoke styles to match the visual from the image */
+        .nav-pill {
+            background: rgba(22, 24, 28, 0.55);
+            box-shadow: 0 6px 20px rgba(10, 11, 13, 0.6);
+            backdrop-filter: blur(6px);
+        }
+
+        .left-glow {
+            width: 88px;
+            height: 40px;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: 9999px;
+            background: linear-gradient(90deg, #1e90ff 0%, #7b61ff 100%);
+            filter: blur(18px);
+            opacity: 0.95;
+            z-index: 0;
+        }
+
+        .nav-glow {
+            width: 60px;
+            height: 30px;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            border-radius: 9999px;
+            background: linear-gradient(90deg, #1e90ff 0%, #7b61ff 100%);
+            filter: blur(12px);
+            opacity: 0.95;
+            z-index: 0;
+        }
+
+        @media (min-width: 768px) {
+            .nav-glow {
+                width: 70px;
+                height: 35px;
+                filter: blur(15px);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .nav-glow {
+                width: 88px;
+                height: 40px;
+                filter: blur(18px);
+            }
+        }
+
+        .nav-content {
+            z-index: 10;
+        }
+
+        /* subtle hover/active underline effect */
+        .nav-link {
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            bottom: -8px;
+            width: 60%;
+            height: 4px;
+            border-radius: 9999px;
+            background: linear-gradient(90deg, #60a5fa, #7c3aed);
+            transition: transform .28s cubic-bezier(.2, .9, .2, 1);
+            opacity: 0.95;
+        }
+
+        @media (min-width: 1024px) {
+            .nav-link::after {
+                height: 6px;
+            }
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        /* Responsive nav adjustments */
+        @media (max-width: 767px) {
+            .nav-pill {
+                backdrop-filter: blur(4px);
+            }
+        }
+
+        /* Ensure mobile menu has proper backdrop */
+        #mobile-menu {
+            background: rgba(22, 24, 28, 0.95);
+            backdrop-filter: blur(8px);
+            box-shadow: 0 6px 20px rgba(10, 11, 13, 0.6);
+        }
+
+        /* Mobile menu positioning fix */
+        @media (max-width: 767px) {
+            #mobile-menu {
+                transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+            
+            #mobile-menu:not(.hidden) {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Ensure nav doesn't affect layout flow */
+        nav {
+            z-index: 50;
+        }
+    </style>
 </head>
 
-<body class="min-h-screen bg-[#202020] bg-cover bg-center bg-no-repeat bg-fixed">
+<body class="min-h-screen bg-[#202020] bg-cover relative">
     <div hx-get="components/header.html" hx-swap="innerHTML" hx-trigger="load"></div>
-    <div>
+        <nav class="fixed top-5 left-1/2 transform -translate-x-1/2 w-full max-w-4xl px-4 z-50">
+            <div class="relative nav-pill rounded-full px-3 md:px-6 py-3 flex items-center nav-content">
+
+                <!-- animated traveling glow -->
+                <div class="nav-glow" id="traveling-glow" aria-hidden="true"></div>
+
+                <!-- Desktop nav items -->
+                <ul class="hidden md:flex gap-4 lg:gap-8 justify-between items-center w-full text-white text-sm lg:text-lg font-medium tracking-tight">
+                    <li><a href="#" class="nav-link active px-1 lg:px-2 py-1">Home</a></li>
+                    <li><a href="#" class="nav-link px-1 lg:px-2 py-1">Discover LACPA</a></li>
+                    <li><a href="#" class="nav-link px-1 lg:px-2 py-1">Membership</a></li>
+                    <li><a href="#" class="nav-link px-1 lg:px-2 py-1">Events &amp; News</a></li>
+                    <li><a href="#" class="nav-link px-1 lg:px-2 py-1">Academy</a></li>
+                </ul>
+
+                <!-- Mobile menu button -->
+                <div class="md:hidden flex items-center justify-between w-full">
+                    <span class="text-white font-medium">LACPA</span>
+                    <button type="button" class="text-white hover:text-gray-300 focus:outline-none focus:text-gray-300" 
+                            id="mobile-menu-button" aria-expanded="false" aria-label="Open main menu">
+                        <!-- Hamburger icon (default) -->
+                        <svg class="h-6 w-6" id="menu-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <!-- Close icon (hidden by default) -->
+                        <svg class="h-6 w-6 hidden" id="close-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile menu -->
+            <div class="md:hidden hidden absolute top-full left-4 right-4 mt-2 nav-pill rounded-lg px-4 py-4 z-50" id="mobile-menu">
+                <ul class="space-y-3 text-white">
+                    <li><a href="#" class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Home</a></li>
+                    <li><a href="#" class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Discover LACPA</a></li>
+                    <li><a href="#" class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Membership</a></li>
+                    <li><a href="#" class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Events &amp; News</a></li>
+                    <li><a href="#" class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Academy</a></li>
+                </ul>
+            </div>
+        </nav>
+
+
+        <!-- Accessibility note: keyboard focus styling -->
+        <script>
+            // simple keyboard focus style for links
+            document.querySelectorAll('a').forEach(a => {
+                a.addEventListener('focus', () => a.classList.add('ring-2', 'ring-white/25', 'rounded'));
+                a.addEventListener('blur', () => a.classList.remove('ring-2', 'ring-white/25', 'rounded'));
+            });
+
+            // Anime.js navigation glow animation
+            let glowAnimation = null;
+
+            function initGlowAnimation() {
+                const travelingGlow = document.getElementById('traveling-glow');
+                const navContainer = travelingGlow?.parentElement;
+                const desktopNav = document.querySelector('ul.hidden.md\\:flex');
+                
+                if (travelingGlow && navContainer && desktopNav) {
+                    // Stop existing animation if any
+                    if (glowAnimation) {
+                        glowAnimation.pause();
+                    }
+
+                    // Check if we're on desktop (md breakpoint and above)
+                    const isDesktop = window.innerWidth >= 768;
+                    
+                    if (isDesktop) {
+                        // Show glow animation only on desktop
+                        travelingGlow.style.display = 'block';
+                        
+                        // Get responsive glow width based on screen size
+                        let glowWidth = 60; // mobile default
+                        if (window.innerWidth >= 1024) {
+                            glowWidth = 88; // lg screens
+                        } else if (window.innerWidth >= 768) {
+                            glowWidth = 70; // md screens
+                        }
+
+                        // Calculate the maximum travel distance
+                        const navWidth = navContainer.offsetWidth;
+                        const padding = window.innerWidth >= 768 ? 24 : 12; // responsive padding
+                        const maxTravel = navWidth - glowWidth - padding;
+                        
+                        // Create the continuous traveling animation
+                        glowAnimation = anime({
+                            targets: '#traveling-glow',
+                            left: [
+                                { value: padding / 2, duration: 0 }, // start position
+                                { value: maxTravel, duration: 3000 }, // travel to right
+                                { value: padding / 2, duration: 3000 } // travel back to left
+                            ],
+                            easing: 'easeInOutQuad',
+                            loop: true,
+                            direction: 'normal'
+                        });
+                    } else {
+                        // Hide glow animation on mobile
+                        travelingGlow.style.display = 'none';
+                    }
+                }
+            }
+
+            // Initialize animation on DOM load
+            document.addEventListener('DOMContentLoaded', initGlowAnimation);
+
+            // Reinitialize animation on window resize
+            let resizeTimeout;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(initGlowAnimation, 100);
+            });
+        </script>
+        
+    <!-- Main content container -->
+    <div class="relative">
         <!-- Hero Carousel Section -->
         <div class="mb-8">
 
@@ -382,302 +617,315 @@
             </div>
 
         </div>
-    </div>
 
-    <div class="text-white">
 
-        <div class="container mx-auto py-16 text-center">
-            <h2 class="text-4xl font-bold mb-10">Publications</h2>
+        <div class="text-white">
 
-            <!-- Splide Carousel -->
-            <div class="splide" id="splide">
-                <div class="splide__track">
-                    <ul class="splide__list">
-                        <!-- Card 1 -->
-                        <li class="splide__slide">
-                            <div class="card">
-                                <img src="../assets/p_1.png" alt="Assembly" class="w-full h-full object-cover">
-                                <div class="overlay">
-                                    <div class="overlay-text">Assembly</div>
-                                </div>
-                            </div>
-                        </li>
+            <div class="container mx-auto py-16 text-center">
+                <h2 class="text-4xl font-bold mb-10">Publications</h2>
 
-                        <!-- Card 2 -->
-                        <li class="splide__slide">
-                            <div class="card">
-                                <img src="../assets/p_2.png" alt="Trainings & Workshops"
-                                    class="w-full h-full object-cover">
-                                <div class="overlay">
-                                    <div class="overlay-text">Trainings & Workshops</div>
-                                </div>
-                            </div>
-                        </li>
-
-                        <!-- Card 3 -->
-                        <li class="splide__slide">
-                            <div class="card">
-                                <img src="../assets/p_3.png" alt="Other Events" class="w-full h-full object-cover">
-                                <div class="overlay">
-                                    <div class="overlay-text">Other Events</div>
-                                </div>
-                            </div>
-                        </li>
-
-                        <!-- Card 4 -->
-                        <li class="splide__slide">
-                            <div class="card">
-                                <img src="../assets/p_4.png" alt="Policies" class="w-full h-full object-cover">
-                                <div class="overlay">
-                                    <div class="overlay-text">Policies</div>
-                                </div>
-                            </div>
-                        </li>
-
-                        <!-- Card 5 -->
-                        <li class="splide__slide">
-                            <div class="card">
-                                <img src="../assets/p_5.png" alt="Call For General Assembly"
-                                    class="w-full h-full object-cover">
-                                <div class="overlay">
-                                    <div class="overlay-text">Call For General Assembly</div>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="splide__slide">
-                            <div class="card">
-                                <img src="../assets/p_5.png" alt="Call For General Assembly"
-                                    class="w-full h-full object-cover">
-                                <div class="overlay">
-                                    <div class="overlay-text">Call For General Assembly</div>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class=" px-8 pb-8 text-white">
-            <h2 class="text-4xl font-bold mb-10 text-center">Events and News</h2>
-            <!-- Carousel Container -->
-            <div class="splide" id="splide2">
-                <div class="splide__track">
-                    <ul class="splide__list">
-                        <!-- Event 1 -->
-                        <li class="splide__slide">
-                            <div class="custom-card max-w-sm mx-auto">
-                                <div class="relative inline-block">
-                                    <!-- Gradient background behind image (shadow effect) -->
-                                    <div class="absolute inset-0 z-0 rounded-t-lg blur-[14px] scale-105"
-                                        style="background: linear-gradient(180deg, #00A63F 0%, #55BBEA 33.17%, #284179 65.87%, #E355EA 100%);">
-                                    </div>
-
-                                    <!-- Actual image, above the gradient -->
-                                    <img src="../assets/e_1.png" alt="Event Image 1" class="relative z-10 rounded-t-lg"
-                                        style="box-shadow: 0px 0px 10px 0px rgba(85, 187, 234, 0.5);">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="text-xl font-semibold">Signing MOU Between LACPA And LAMAC</h3>
-                                    <p class="mt-2 text-sm text-gray-400 ">
-                                        The Lebanese Association of Certified Public Accountants (LACPA), Represented By
-                                        Its President...
-                                    </p>
-                                    <div class="mt-4 text-center">
-                                        <p class="event-date">From: 18/06/2019 - To: 20/06/2019</p>
-                                        <p class="cpe-hours">CPE Hours: 6</p>
+                <!-- Splide Carousel -->
+                <div class="splide px-2" id="splide">
+                    <div class="splide__track">
+                        <ul class="splide__list">
+                            <!-- Card 1 -->
+                            <li class="splide__slide">
+                                <div class="card">
+                                    <img src="../assets/p_1.png" alt="Assembly" class="w-full h-full object-cover">
+                                    <div class="overlay">
+                                        <div class="overlay-text">Assembly</div>
                                     </div>
                                 </div>
-                            </div>
-                        </li>
+                            </li>
 
-                        <!-- Event 2 -->
-                        <li class="splide__slide">
-                            <div class="custom-card max-w-sm mx-auto">
-                                <div class="relative inline-block">
-                                    <!-- Gradient background behind image (shadow effect) -->
-                                    <div class="absolute inset-0 z-0 rounded-t-lg blur-[14px] scale-105"
-                                        style="background: linear-gradient(180deg, #00A63F 0%, #55BBEA 33.17%, #284179 65.87%, #E355EA 100%);">
-                                    </div>
-
-                                    <!-- Actual image, above the gradient -->
-                                    <img src="../assets/e_2.png" alt="Event Image 2" class="relative z-10 rounded-t-lg"
-                                        style="box-shadow: 0px 0px 10px 0px rgba(85, 187, 234, 0.5);">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="text-xl font-semibold">Visit Of The Director General Of Social Security
-                                    </h3>
-                                    <p class="mt-2 text-sm  text-gray-400 ">
-                                        A Delegation From The Lebanese Association Of Certified Public Accountants...
-                                    </p>
-                                    <div class="mt-4 text-center">
-                                        <p class="event-date">From: 18/06/2019 - To: 20/06/2019</p>
-                                        <p class="cpe-hours">CPE Hours: 6</p>
+                            <!-- Card 2 -->
+                            <li class="splide__slide">
+                                <div class="card">
+                                    <img src="../assets/p_2.png" alt="Trainings & Workshops"
+                                        class="w-full h-full object-cover">
+                                    <div class="overlay">
+                                        <div class="overlay-text">Trainings & Workshops</div>
                                     </div>
                                 </div>
-                            </div>
-                        </li>
+                            </li>
 
-                        <!-- Event 3 -->
-                        <li class="splide__slide">
-                            <div class="custom-card max-w-sm mx-auto">
-                                <div class="relative inline-block">
-                                    <!-- Gradient background behind image (shadow effect) -->
-                                    <div class="absolute inset-0 z-0 rounded-t-lg blur-[14px] scale-105"
-                                        style="background: linear-gradient(180deg, #00A63F 0%, #55BBEA 33.17%, #284179 65.87%, #E355EA 100%);">
-                                    </div>
-
-                                    <!-- Actual image, above the gradient -->
-                                    <img src="../assets/e_3.png" alt="Event Image 3" class="relative z-10 rounded-t-lg"
-                                        style="box-shadow: 0px 0px 10px 0px rgba(85, 187, 234, 0.5);">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="text-xl font-semibold">Reception For The New Council</h3>
-                                    <p class="mt-2 text-sm  text-gray-400 ">
-                                        On The Occasion Of The Election Of The New Council Of The Lebanese
-                                        Association...
-                                    </p>
-                                    <div class="mt-4 text-center">
-                                        <p class="event-date">From: 18/06/2019 - To: 20/06/2019</p>
-                                        <p class="cpe-hours">CPE Hours: 6</p>
+                            <!-- Card 3 -->
+                            <li class="splide__slide">
+                                <div class="card">
+                                    <img src="../assets/p_3.png" alt="Other Events" class="w-full h-full object-cover">
+                                    <div class="overlay">
+                                        <div class="overlay-text">Other Events</div>
                                     </div>
                                 </div>
-                            </div>
-                        </li>
+                            </li>
 
-                        <!-- Event 4 -->
-                        <li class="splide__slide">
-                            <div class="custom-card max-w-sm mx-auto ">
-                                <div class="relative inline-block">
-                                    <!-- Gradient background behind image (shadow effect) -->
-                                    <div class="absolute inset-0 z-0 rounded-t-lg blur-[14px] scale-105"
-                                        style="background: linear-gradient(180deg, #00A63F 0%, #55BBEA 33.17%, #284179 65.87%, #E355EA 100%);">
-                                    </div>
-
-                                    <!-- Actual image, above the gradient -->
-                                    <img src="../assets/e_4.png" alt="Event Image 4" class="relative z-10 rounded-t-lg"
-                                        style="box-shadow: 0px 0px 10px 0px rgba(85, 187, 234, 0.5);">
-                                </div>
-
-                                <div class="p-4">
-                                    <h3 class="text-xl font-semibold">Reception For The New Council</h3>
-                                    <p class="mt-2 text-sm  text-gray-400 ">
-                                        The Lebanese Association Of Certified Public Accountants (LACPA) Highlights The
-                                        Importance...
-                                    </p>
-                                    <div class="mt-4 text-center">
-                                        <p class="event-date">From: 18/06/2019 - To: 20/06/2019</p>
-                                        <p class="cpe-hours">CPE Hours: 6</p>
+                            <!-- Card 4 -->
+                            <li class="splide__slide">
+                                <div class="card">
+                                    <img src="../assets/p_4.png" alt="Policies" class="w-full h-full object-cover">
+                                    <div class="overlay">
+                                        <div class="overlay-text">Policies</div>
                                     </div>
                                 </div>
-                            </div>
-                        </li>
-                        <li class="splide__slide">
-                            <div class="custom-card max-w-sm mx-auto">
-                                <div class="relative inline-block">
-                                    <!-- Gradient background behind image (shadow effect) -->
-                                    <div class="absolute inset-0 z-0 rounded-t-lg blur-[14px] scale-105"
-                                        style="background: linear-gradient(180deg, #00A63F 0%, #55BBEA 33.17%, #284179 65.87%, #E355EA 100%);">
-                                    </div>
+                            </li>
 
-                                    <!-- Actual image, above the gradient -->
-                                    <img src="../assets/e_2.png" alt="Event Image 5" class="relative z-10 rounded-t-lg"
-                                        style="box-shadow: 0px 0px 10px 0px rgba(85, 187, 234, 0.5);">
-                                </div>
-                                <div class="p-4">
-                                    <h3 class="text-xl font-semibold">Reception For The New Council</h3>
-                                    <p class="mt-2 text-sm">
-                                        The Lebanese Association Of Certified Public Accountants (LACPA) Highlights The
-                                        Importance...
-                                    </p>
-                                    <div class="mt-4 text-center">
-                                        <p class="event-date">From: 18/06/2019 - To: 20/06/2019</p>
-                                        <p class="cpe-hours">CPE Hours: 6</p>
+                            <!-- Card 5 -->
+                            <li class="splide__slide">
+                                <div class="card">
+                                    <img src="../assets/p_5.png" alt="Call For General Assembly"
+                                        class="w-full h-full object-cover">
+                                    <div class="overlay">
+                                        <div class="overlay-text">Call For General Assembly</div>
                                     </div>
                                 </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <!-- Contact Us Section -->
-        <section class=" p-12">
-            <h2 class="text-3xl ml-24  font-semibold border-l-4 border-[#55BBEA] pl-4 mb-4" >Contact Us</h2>
-
-            <div class="grid md:grid-cols-2 gap-8 items-start">
-                <!-- Left: Contact Details -->
-                <div>
-                    <h3 class="text-cyan-400 text-xl font-semibold mb-2">We Are Happy To Serve You!</h3>
-                    <p class="text-sm text-gray-300 mb-6">
-                        Students, Authorized Training Partners, Authorized Recruitment Partners may reach out to the
-                        below mentioned contact details for queries. <strong>Note:</strong> Saturdays and Sundays are
-                        off and no replies can be
-                        expected on those days.
-                    </p>
-
-                    <div class="space-y-6 text-sm">
-                        <div class="grid grid-cols-1 md:grid-cols-2  grid-rows-1 md:grid-rows-2 gap-6 px-4">
-                            <!-- Phone -->
-                            <div class="flex items-start space-x-4">
-                                <div class="text-cyan-400 text-xl">
-                                 <i class="fa-solid fa-phone" style="color: rgba(85, 187, 234, 1)"></i>
+                            </li>
+                            <li class="splide__slide">
+                                <div class="card">
+                                    <img src="../assets/p_5.png" alt="Call For General Assembly"
+                                        class="w-full h-full object-cover">
+                                    <div class="overlay">
+                                        <div class="overlay-text">Call For General Assembly</div>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p class="font-semibold">Contact Number</p>
-                                    <p>T +961 1 616013</p>
-                                    <p>F +961 1 616011</p>
-                                </div>
-                            </div>
-
-                            <!-- Email -->
-                            <div class="flex items-start space-x-4">
-                                <div class="text-cyan-400 text-xl">
-                                   
-                                  <i class="fa-solid fa-envelope" style="color: rgba(85, 187, 234, 1)"></i>
-                                </div>
-                                <div>
-                                    <p class="font-semibold">Email Address</p>
-                                    <p>info@lacpa.org.lb</p>
-                                </div>
-                            </div>
-
-
-                            <!-- Address -->
-                            <div class="flex items-start space-x-4">
-                                <div class="text-cyan-400 text-xl">
-                                    <i class="fa-solid fa-map-pin" style="color: rgba(85, 187, 234, 1)"></i>
-                                </div>
-                                <div>
-                                    <p class="font-semibold">Address</p>
-                                    <p>Mathaf Square – Hotel Dieu Street – Mathaf Center – 1st Floor</p>
-                                    <p>P.O.Box: 11-5821 – Beirut – Lebanon</p>
-                                </div>
-                            </div>
-
-                            <!-- Working Days -->
-                            <div class="flex items-start space-x-4">
-                                <div class="text-cyan-400 text-xl">
-                                   <i class="fa-solid fa-clock" style="color: rgba(85, 187, 234, 1)"></i>
-                                </div>
-                                <div>
-                                    <p class="font-semibold">Working Days</p>
-                                    <p>Monday - Friday: 8:30 - 16:00</p>
-                                </div>
-                            </div>
-                        </div>
-
-
+                            </li>
+                        </ul>
                     </div>
                 </div>
+            </div>
 
-                <!-- Right: Map -->
-                <div class="rounded-lg overflow-hidden shadow-lg map-container h-[350px]" style="box-shadow: 0px 0px 10px 0px rgba(85, 187, 234, 0.5);
-">
-                    <div id="map"></div>
+            <div class=" px-8 pb-8 text-white">
+                <h2 class="text-4xl font-bold mb-10 text-center">Events and News</h2>
+                <!-- Carousel Container -->
+                <div class="splide" id="splide2">
+                    <div class="splide__track">
+                        <ul class="splide__list">
+                            <!-- Event 1 -->
+                            <li class="splide__slide">
+                                <div class="custom-card max-w-sm mx-auto">
+                                    <div class="relative inline-block">
+                                        <!-- Gradient background behind image (shadow effect) -->
+                                        <div class="absolute inset-0 z-0 rounded-t-lg blur-[14px] scale-105"
+                                            style="background: linear-gradient(180deg, #00A63F 0%, #55BBEA 33.17%, #284179 65.87%, #E355EA 100%);">
+                                        </div>
+
+                                        <!-- Actual image, above the gradient -->
+                                        <img src="../assets/e_1.png" alt="Event Image 1"
+                                            class="relative z-10 rounded-t-lg"
+                                            style="box-shadow: 0px 0px 10px 0px rgba(85, 187, 234, 0.5);">
+                                    </div>
+                                    <div class="p-4">
+                                        <h3 class="text-xl font-semibold">Signing MOU Between LACPA And LAMAC</h3>
+                                        <p class="mt-2 text-sm text-gray-400 ">
+                                            The Lebanese Association of Certified Public Accountants (LACPA),
+                                            Represented By
+                                            Its President...
+                                        </p>
+                                        <div class="mt-4 text-center">
+                                            <p class="event-date">From: 18/06/2019 - To: 20/06/2019</p>
+                                            <p class="cpe-hours">CPE Hours: 6</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!-- Event 2 -->
+                            <li class="splide__slide">
+                                <div class="custom-card max-w-sm mx-auto">
+                                    <div class="relative inline-block">
+                                        <!-- Gradient background behind image (shadow effect) -->
+                                        <div class="absolute inset-0 z-0 rounded-t-lg blur-[14px] scale-105"
+                                            style="background: linear-gradient(180deg, #00A63F 0%, #55BBEA 33.17%, #284179 65.87%, #E355EA 100%);">
+                                        </div>
+
+                                        <!-- Actual image, above the gradient -->
+                                        <img src="../assets/e_2.png" alt="Event Image 2"
+                                            class="relative z-10 rounded-t-lg"
+                                            style="box-shadow: 0px 0px 10px 0px rgba(85, 187, 234, 0.5);">
+                                    </div>
+                                    <div class="p-4">
+                                        <h3 class="text-xl font-semibold">Visit Of The Director General Of Social
+                                            Security
+                                        </h3>
+                                        <p class="mt-2 text-sm  text-gray-400 ">
+                                            A Delegation From The Lebanese Association Of Certified Public
+                                            Accountants...
+                                        </p>
+                                        <div class="mt-4 text-center">
+                                            <p class="event-date">From: 18/06/2019 - To: 20/06/2019</p>
+                                            <p class="cpe-hours">CPE Hours: 6</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!-- Event 3 -->
+                            <li class="splide__slide">
+                                <div class="custom-card max-w-sm mx-auto">
+                                    <div class="relative inline-block">
+                                        <!-- Gradient background behind image (shadow effect) -->
+                                        <div class="absolute inset-0 z-0 rounded-t-lg blur-[14px] scale-105"
+                                            style="background: linear-gradient(180deg, #00A63F 0%, #55BBEA 33.17%, #284179 65.87%, #E355EA 100%);">
+                                        </div>
+
+                                        <!-- Actual image, above the gradient -->
+                                        <img src="../assets/e_3.png" alt="Event Image 3"
+                                            class="relative z-10 rounded-t-lg"
+                                            style="box-shadow: 0px 0px 10px 0px rgba(85, 187, 234, 0.5);">
+                                    </div>
+                                    <div class="p-4">
+                                        <h3 class="text-xl font-semibold">Reception For The New Council</h3>
+                                        <p class="mt-2 text-sm  text-gray-400 ">
+                                            On The Occasion Of The Election Of The New Council Of The Lebanese
+                                            Association...
+                                        </p>
+                                        <div class="mt-4 text-center">
+                                            <p class="event-date">From: 18/06/2019 - To: 20/06/2019</p>
+                                            <p class="cpe-hours">CPE Hours: 6</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <!-- Event 4 -->
+                            <li class="splide__slide">
+                                <div class="custom-card max-w-sm mx-auto ">
+                                    <div class="relative inline-block">
+                                        <!-- Gradient background behind image (shadow effect) -->
+                                        <div class="absolute inset-0 z-0 rounded-t-lg blur-[14px] scale-105"
+                                            style="background: linear-gradient(180deg, #00A63F 0%, #55BBEA 33.17%, #284179 65.87%, #E355EA 100%);">
+                                        </div>
+
+                                        <!-- Actual image, above the gradient -->
+                                        <img src="../assets/e_4.png" alt="Event Image 4"
+                                            class="relative z-10 rounded-t-lg"
+                                            style="box-shadow: 0px 0px 10px 0px rgba(85, 187, 234, 0.5);">
+                                    </div>
+
+                                    <div class="p-4">
+                                        <h3 class="text-xl font-semibold">Reception For The New Council</h3>
+                                        <p class="mt-2 text-sm  text-gray-400 ">
+                                            The Lebanese Association Of Certified Public Accountants (LACPA) Highlights
+                                            The
+                                            Importance...
+                                        </p>
+                                        <div class="mt-4 text-center">
+                                            <p class="event-date">From: 18/06/2019 - To: 20/06/2019</p>
+                                            <p class="cpe-hours">CPE Hours: 6</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="splide__slide">
+                                <div class="custom-card max-w-sm mx-auto">
+                                    <div class="relative inline-block">
+                                        <!-- Gradient background behind image (shadow effect) -->
+                                        <div class="absolute inset-0 z-0 rounded-t-lg blur-[14px] scale-105"
+                                            style="background: linear-gradient(180deg, #00A63F 0%, #55BBEA 33.17%, #284179 65.87%, #E355EA 100%);">
+                                        </div>
+
+                                        <!-- Actual image, above the gradient -->
+                                        <img src="../assets/e_2.png" alt="Event Image 5"
+                                            class="relative z-10 rounded-t-lg"
+                                            style="box-shadow: 0px 0px 10px 0px rgba(85, 187, 234, 0.5);">
+                                    </div>
+                                    <div class="p-4">
+                                        <h3 class="text-xl font-semibold">Reception For The New Council</h3>
+                                        <p class="mt-2 text-sm">
+                                            The Lebanese Association Of Certified Public Accountants (LACPA) Highlights
+                                            The
+                                            Importance...
+                                        </p>
+                                        <div class="mt-4 text-center">
+                                            <p class="event-date">From: 18/06/2019 - To: 20/06/2019</p>
+                                            <p class="cpe-hours">CPE Hours: 6</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </section>
+            <!-- Contact Us Section -->
+            <section class=" p-12">
+                <h2 class="text-3xl md:ml-24  font-semibold border-l-4 border-[#55BBEA] pl-4 mb-4">Contact Us</h2>
+
+                <div class="grid md:grid-cols-2 gap-8 items-start">
+                    <!-- Left: Contact Details -->
+                    <div>
+                        <h3 class="text-cyan-400 text-xl font-semibold mb-2">We Are Happy To Serve You!</h3>
+                        <p class="text-sm text-gray-300 mb-6">
+                            Students, Authorized Training Partners, Authorized Recruitment Partners may reach out to the
+                            below mentioned contact details for queries. <strong>Note:</strong> Saturdays and Sundays
+                            are
+                            off and no replies can be
+                            expected on those days.
+                        </p>
+
+                        <div class="space-y-6 text-sm">
+                            <div class="grid grid-cols-1 md:grid-cols-2  grid-rows-1 md:grid-rows-2 gap-6 px-4">
+                                <!-- Phone -->
+                                <div class="flex items-start space-x-4">
+                                    <div class="text-cyan-400 text-xl">
+                                        <i class="fa-solid fa-phone" style="color: rgba(85, 187, 234, 1)"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">Contact Number</p>
+                                        <p>T +961 1 616013</p>
+                                        <p>F +961 1 616011</p>
+                                    </div>
+                                </div>
+
+                                <!-- Email -->
+                                <div class="flex items-start space-x-4">
+                                    <div class="text-cyan-400 text-xl">
+
+                                        <i class="fa-solid fa-envelope" style="color: rgba(85, 187, 234, 1)"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">Email Address</p>
+                                        <p>info@lacpa.org.lb</p>
+                                    </div>
+                                </div>
+
+
+                                <!-- Address -->
+                                <div class="flex items-start space-x-4">
+                                    <div class="text-cyan-400 text-xl">
+                                        <i class="fa-solid fa-map-pin" style="color: rgba(85, 187, 234, 1)"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">Address</p>
+                                        <p>Mathaf Square – Hotel Dieu Street – Mathaf Center – 1st Floor</p>
+                                        <p>P.O.Box: 11-5821 – Beirut – Lebanon</p>
+                                    </div>
+                                </div>
+
+                                <!-- Working Days -->
+                                <div class="flex items-start space-x-4">
+                                    <div class="text-cyan-400 text-xl">
+                                        <i class="fa-solid fa-clock" style="color: rgba(85, 187, 234, 1)"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-semibold">Working Days</p>
+                                        <p>Monday - Friday: 8:30 - 16:00</p>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <!-- Right: Map -->
+                    <div class="rounded-lg overflow-hidden shadow-lg map-container h-[350px]" style="box-shadow: 0px 0px 10px 0px rgba(85, 187, 234, 0.5);
+">
+                        <div id="map"></div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
     </div>
     <!-- Initialize Splide Carousels -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
@@ -723,10 +971,14 @@
             arrows: false,
             breakpoints: {
                 640: {
-                    perPage: 1,
+                    perPage: 1.5,  // Show 1.5 cards on phone screens
+                    gap: '0.75rem', // Slightly smaller gap on mobile
                 },
                 768: {
-                    perPage: 2,
+                    perPage: 2,    // Show 2 cards on tablet screens
+                },
+                1024: {
+                    perPage: 3,    // Show 3 cards on smaller desktop screens
                 },
             },
         }).mount();
@@ -735,17 +987,24 @@
         // Initialize Splide.js
         new Splide('#splide', {
             type: 'loop',
-            perPage: 5,
+            perPage: 3,
             perMove: 1,
             gap: '1rem',
             pagination: false,
             arrows: false,
             breakpoints: {
                 640: {
-                    perPage: 1,
+                    perPage: 1.5,  // Show 1.5 cards on phone screens
+                    gap: '0.75rem', // Slightly smaller gap on mobile
                 },
                 768: {
-                    perPage: 2,
+                    perPage: 2,    // Show 2 cards on tablet screens
+                },
+                1024: {
+                    perPage: 3,    // Show 3 cards on smaller desktop screens
+                },
+                1280: {
+                    perPage: 4,    // Show 4 cards on medium desktop screens
                 },
             },
         }).mount();
@@ -771,6 +1030,91 @@
             }).mount();
 
 
+        });
+    </script>
+
+    <!-- Mobile menu toggle script -->
+    <script>
+        function initializeMobileMenu() {
+            const menuBtn = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            if (!menuBtn || !mobileMenu) {
+                console.log('Mobile menu elements not found');
+                return;
+            }
+
+            // Check if already initialized
+            if (menuBtn.hasAttribute('data-initialized')) {
+                return;
+            }
+
+            // Mark as initialized
+            menuBtn.setAttribute('data-initialized', 'true');
+
+            const menuIcon = document.getElementById('menu-icon');
+            const closeIcon = document.getElementById('close-icon');
+
+            // Simple toggle function
+            function toggleMenu() {
+                const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
+
+                if (isExpanded) {
+                    // Close menu
+                    mobileMenu.classList.add('hidden');
+                    menuBtn.setAttribute('aria-expanded', 'false');
+                    menuBtn.setAttribute('aria-label', 'Open main menu');
+                    if (menuIcon) menuIcon.classList.remove('hidden');
+                    if (closeIcon) closeIcon.classList.add('hidden');
+                } else {
+                    // Open menu
+                    mobileMenu.classList.remove('hidden');
+                    menuBtn.setAttribute('aria-expanded', 'true');
+                    menuBtn.setAttribute('aria-label', 'Close main menu');
+                    if (menuIcon) menuIcon.classList.add('hidden');
+                    if (closeIcon) closeIcon.classList.remove('hidden');
+                }
+            }
+
+            // Add click event listener
+            menuBtn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleMenu();
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', function (event) {
+                if (!menuBtn.contains(event.target) && !mobileMenu.contains(event.target)) {
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                        menuBtn.setAttribute('aria-expanded', 'false');
+                        menuBtn.setAttribute('aria-label', 'Open main menu');
+                        if (menuIcon) menuIcon.classList.remove('hidden');
+                        if (closeIcon) closeIcon.classList.add('hidden');
+                    }
+                }
+            });
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializeMobileMenu);
+        } else {
+            initializeMobileMenu();
+        }
+
+        // Handle HTMX loading - this is the key part for dynamic content
+        document.addEventListener('htmx:afterSwap', function (event) {
+            if (event.detail.target.querySelector('#mobile-menu-button') ||
+                event.detail.target.id === 'mobile-menu-button') {
+                setTimeout(initializeMobileMenu, 100);
+            }
+        });
+
+        // Additional HTMX event listeners
+        document.addEventListener('htmx:afterSettle', function (event) {
+            setTimeout(initializeMobileMenu, 100);
         });
     </script>
 
