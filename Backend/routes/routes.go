@@ -59,18 +59,12 @@ func SetupRoutes(app *fiber.App, repo repository.Repository) {
 		})
 	})
 
-	// Initialize handlers with repository dependency
-	// Main handler for item operations (uses unified repository interface)
-	itemHandler := handler.NewHandler(repo)
-
-	// Specialized user handler (also uses unified repository interface)
-	userHandler := handler.NewUserHandler(repo)
-
 	// Setup route groups - each function handles its own route configuration
-	SetupItemRoutes(api, itemHandler) // Configures /api/items/* routes
-	SetupUserRoutes(api, userHandler) // Configures /api/users/* routes
+	mainPageHandler := handler.NewMainPageHandler(repo)
+	SetupMainPageRoutes(api, mainPageHandler) // Configures /api/main/* routes
 
 	// Future route groups can be added here:
-	// SetupOrderRoutes(api, orderHandler)    // Would configure /api/orders/* routes
+	// SetupItemRoutes(api, itemHandler)       // Would configure /api/items/* routes
+	// SetupOrderRoutes(api, orderHandler)     // Would configure /api/orders/* routes
 	// SetupProductRoutes(api, productHandler) // Would configure /api/products/* routes
 }

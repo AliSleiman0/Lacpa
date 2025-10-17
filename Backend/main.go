@@ -41,8 +41,8 @@ func main() {
 	repo := repository.NewMongoRepository(database)
 
 	// Initialize HTML template engine
-	// Templates will be loaded from "./views" directory
-	engine := html.New("./views", ".html")
+	// Templates will be loaded from "./templates" directory
+	engine := html.New("./templates", ".html")
 
 	// Enable development mode for template reloading (optional)
 	if getEnv("APP_ENV", "development") == "development" {
@@ -60,11 +60,12 @@ func main() {
 	app.Use(logger.New())
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
-		AllowHeaders: "Origin, Content-Type, Accept",
+		AllowMethods: "GET, POST, PUT, DELETE, OPTIONS",
+		AllowHeaders: "Origin, Content-Type, Accept, Authorization, X-Requested-With, HX-Request, HX-Trigger, HX-Target, HX-Current-URL, HX-Boosted, HX-History-Restore-Request",
 	}))
 
-	// Serve static files from LACPA_Web
-	app.Static("/", "./LACPA_Web")
+	// Serve static files from LACPA_Web (parent directory)
+	app.Static("/", "../LACPA_Web")
 
 	// Setup all API routes (includes health check and all endpoints)
 	routes.SetupRoutes(app, repo)

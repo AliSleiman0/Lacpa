@@ -8,11 +8,11 @@
                 <!-- Desktop nav items -->
                 <ul
                     class="hidden md:flex gap-4 lg:gap-8 justify-between items-center w-full text-white text-sm lg:text-lg font-medium tracking-tight">
-                    <li><a href="#" class="nav-link active px-1 lg:px-2 py-1">Home</a></li>
-                    <li><a href="#" class="nav-link px-1 lg:px-2 py-1">Discover LACPA</a></li>
-                    <li><a href="#" class="nav-link px-1 lg:px-2 py-1">Membership</a></li>
-                    <li><a href="#" class="nav-link px-1 lg:px-2 py-1">Events &amp; News</a></li>
-                    <li><a href="#" class="nav-link px-1 lg:px-2 py-1">Academy</a></li>
+                    <li><a href="#" class="nav-link active px-1 lg:px-2 py-1" hx-get="http://localhost:3000/api/main/landing/" hx-trigger="click" hx-target="#main-content">Home</a></li>
+                    <li><a href="#" class="nav-link px-1 lg:px-2 py-1" hx-get="http://localhost:3000/api/main/discover/" hx-trigger="click" hx-target="#main-content">Discover LACPA</a></li>
+                    <li><a href="#" class="nav-link px-1 lg:px-2 py-1" hx-get="http://localhost:3000/api/main/membership/" hx-trigger="click" hx-target="#main-content">Membership</a></li>
+                    <li><a href="#" class="nav-link px-1 lg:px-2 py-1" hx-get="http://localhost:3000/api/main/events/" hx-trigger="click" hx-target="#main-content">Events &amp; News</a></li>
+                    <li><a href="#" class="nav-link px-1 lg:px-2 py-1" hx-get="http://localhost:3000/api/main/academy/" hx-trigger="click" hx-target="#main-content">Academy</a></li>
                 </ul>
 
                 <!-- Mobile menu button -->
@@ -39,15 +39,11 @@
             <div class="md:hidden hidden absolute top-full left-4 right-4 mt-2 nav-pill rounded-lg px-4 py-4 z-50"
                 id="mobile-menu">
                 <ul class="space-y-3 text-white">
-                    <li><a href="#" class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Home</a></li>
-                    <li><a href="#" class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Discover
-                            LACPA</a></li>
-                    <li><a href="#"
-                            class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Membership</a></li>
-                    <li><a href="#" class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Events &amp;
-                            News</a></li>
-                    <li><a href="#" class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Academy</a>
-                    </li>
+                    <li><a href="#" class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors" hx-get="http://localhost:3000/api/main/landing/" hx-trigger="click" hx-target="#main-content">Home</a></li>
+                    <li><a href="#" class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors" hx-get="http://localhost:3000/api/main/discover/" hx-trigger="click" hx-target="#main-content">Discover LACPA</a></li>
+                    <li><a href="#" class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors" hx-get="http://localhost:3000/api/main/membership/" hx-trigger="click" hx-target="#main-content">Membership</a></li>
+                    <li><a href="#" class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors" hx-get="http://localhost:3000/api/main/events/" hx-trigger="click" hx-target="#main-content">Events &amp; News</a></li>
+                    <li><a href="#" class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors" hx-get="http://localhost:3000/api/main/academy/" hx-trigger="click" hx-target="#main-content">Academy</a></li>
                 </ul>
             </div>
         </nav>
