@@ -1,4 +1,4 @@
-/* index.css or app.css */
+/* index.css - Main stylesheet for LACPA Web */
 
 @import "tailwindcss";
 
@@ -18,4 +18,391 @@
 }
 @layer utilities {
   /* custom utility classes or extensions */
+}
+
+/* ==========================================
+   CAROUSEL & SLIDER COMPONENTS
+   ========================================== */
+.splide__slide div[style*="background-image"] {
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    width: 100% !important;
+}
+
+.splide__track {
+    overflow: hidden;
+}
+
+.splide__list {
+    width: 100% !important;
+}
+
+/* ==========================================
+   BUTTON COMPONENTS
+   ========================================== */
+.traveling-border-btn {
+    position: relative;
+    display: inline-block;
+    padding: 12px 24px;
+    color: #ffffff;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: 0.5s;
+    letter-spacing: 2px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.3);
+    border: none;
+    cursor: pointer;
+}
+
+.traveling-border-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.5),
+        0 0 25px rgba(255, 255, 255, 0.3),
+        0 0 50px rgba(255, 255, 255, 0.1);
+}
+
+.traveling-border-btn span {
+    position: absolute;
+    display: block;
+}
+
+.traveling-border-btn span:nth-child(1) {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ffffff);
+    animation: animate1 2s linear infinite;
+}
+
+@keyframes animate1 {
+    0% {
+        left: -100%;
+    }
+
+    50%,
+    100% {
+        left: 100%;
+    }
+}
+
+.traveling-border-btn span:nth-child(2) {
+    top: -100%;
+    right: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, #ffffff);
+    animation: animate2 2s linear infinite;
+    animation-delay: 0.5s;
+}
+
+@keyframes animate2 {
+    0% {
+        top: -100%;
+    }
+
+    50%,
+    100% {
+        top: 100%;
+    }
+}
+
+.traveling-border-btn span:nth-child(3) {
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(270deg, transparent, #ffffff);
+    animation: animate3 2s linear infinite;
+    animation-delay: 1s;
+}
+
+@keyframes animate3 {
+    0% {
+        right: -100%;
+    }
+
+    50%,
+    100% {
+        right: 100%;
+    }
+}
+
+.traveling-border-btn span:nth-child(4) {
+    bottom: -100%;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(360deg, transparent, #ffffff);
+    animation: animate4 2s linear infinite;
+    animation-delay: 1.5s;
+}
+
+@keyframes animate4 {
+    0% {
+        bottom: -100%;
+    }
+
+    50%,
+    100% {
+        bottom: 100%;
+    }
+}
+
+/* ==========================================
+   CARD COMPONENTS
+   ========================================== */
+.card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 2rem;
+    border: 2px solid rgba(15, 106, 252, 0.767);
+}
+
+.card img {
+    transition: transform 0.3s ease;
+}
+
+.card:hover img {
+    transform: scale(1.1);
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card:hover .overlay {
+    opacity: 1;
+}
+
+.overlay-text {
+    color: white;
+    font-size: 1.5rem;
+    text-align: center;
+    padding: 10px;
+}
+
+/* ==========================================
+   SPECIFIC COMPONENT STYLING
+   ========================================== */
+/* Custom Styling for the carousel */
+.splide__slide img {
+    border-radius: 8px;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.custom-card {
+    padding: 1rem;
+    background-color: #1f2937;
+    color: white;
+    border-radius: 10px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+
+.custom-card img {
+    height: 150px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.custom-card .p-4 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.event-date,
+.cpe-hours {
+    font-size: 0.875rem;
+}
+
+#map {
+    height: 350px;
+    border-radius: 0.5rem;
+    /* rounded-lg */
+    filter: brightness(0.8) contrast(1.2);
+}
+
+/* ==========================================
+   NAVIGATION COMPONENTS & EFFECTS
+   ========================================== */
+/* Navigation pill styling with glassmorphism */
+.nav-pill {
+    background: rgba(22, 24, 28, 0.55);
+    box-shadow: 0 6px 20px rgba(10, 11, 13, 0.6);
+    backdrop-filter: blur(6px);
+}
+
+.left-glow {
+    width: 88px;
+    height: 40px;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 9999px;
+    background: linear-gradient(90deg, #1e90ff 0%, #7b61ff 100%);
+    filter: blur(18px);
+    opacity: 0.95;
+    z-index: 0;
+}
+
+.nav-glow {
+    width: 60px;
+    height: 30px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 9999px;
+    background: linear-gradient(90deg, #1e90ff 0%, #7b61ff 100%);
+    filter: blur(12px);
+    opacity: 0.95;
+    z-index: 0;
+}
+
+@media (min-width: 768px) {
+    .nav-glow {
+        width: 70px;
+        height: 35px;
+        filter: blur(15px);
+    }
+}
+
+@media (min-width: 1024px) {
+    .nav-glow {
+        width: 88px;
+        height: 40px;
+        filter: blur(18px);
+    }
+}
+
+.nav-content {
+    z-index: 10;
+}
+
+/* ==========================================
+   NAVIGATION LINK EFFECTS
+   ========================================== */
+/* subtle hover/active underline effect */
+.nav-link {
+    position: relative;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    bottom: -8px;
+    width: 60%;
+    height: 4px;
+    border-radius: 9999px;
+    background: linear-gradient(90deg, #60a5fa, #7c3aed);
+    transition: transform .28s cubic-bezier(.2, .9, .2, 1);
+    opacity: 0.95;
+}
+
+@media (min-width: 1024px) {
+    .nav-link::after {
+        height: 6px;
+    }
+}
+
+.nav-link:hover::after,
+.nav-link.active::after {
+    transform: translateX(-50%) scaleX(1);
+}
+
+/* ==========================================
+   RESPONSIVE NAVIGATION ADJUSTMENTS
+   ========================================== */
+/* Responsive nav adjustments */
+@media (max-width: 767px) {
+    .nav-pill {
+        backdrop-filter: blur(4px);
+    }
+}
+
+/* Ensure mobile menu has proper backdrop */
+#mobile-menu {
+    background: rgba(22, 24, 28, 0.95);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 6px 20px rgba(10, 11, 13, 0.6);
+}
+
+/* Mobile menu positioning fix */
+@media (max-width: 767px) {
+    #mobile-menu {
+        transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+        transform: translateY(-10px);
+        opacity: 0;
+    }
+
+    #mobile-menu:not(.hidden) {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Mobile menu positioning adjustments for nav states */
+.nav-static #mobile-menu {
+    position: absolute;
+}
+
+.nav-fixed #mobile-menu {
+    position: fixed;
+    left: 1rem;
+    right: 1rem;
+    max-width: calc(64rem - 2rem);
+    /* max-w-4xl minus padding */
+    margin: 0 auto;
+}
+
+/* Ensure nav doesn't affect layout flow */
+nav {
+    z-index: 50;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Navigation positioning states */
+.nav-static {
+    position: absolute !important;
+    transform: translateX(-50%) !important;
+    left: 50% !important;
+    top: 5px !important;
+    /* Will be set by JavaScript after header loads */
+    width: 100% !important;
+    max-width: 64rem !important;
+    /* max-w-4xl */
+    margin: 0 !important;
+    padding: 0 1rem;
+}
+
+.nav-fixed {
+    position: fixed !important;
+    top: 1.25rem !important;
+    /* top-5 */
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 100% !important;
+    max-width: 64rem !important;
+    /* max-w-4xl */
+    padding: 0 1rem;
 }
