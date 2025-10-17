@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lacpa</title>
+
+    <!-- External CSS Libraries -->
+    <!-- Flag Icons CSS -->
+    <link rel="stylesheet" href="../node_modules/flag-icons/css/flag-icons.min.css">
+
+    <!-- FontAwesome CSS -->
+    <link rel="stylesheet" href="../node_modules/@fortawesome/fontawesome-free/css/all.min.css">
+
+    <!-- Splide CSS -->
+    <link rel="stylesheet" href="../node_modules/@splidejs/splide/dist/css/splide.min.css">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="index.css">
+
+    <!-- JavaScript Libraries -->
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+    <!-- Splide JavaScript -->
+    <script src="../node_modules/@splidejs/splide/dist/js/splide.min.js"></script>
+
+    <!-- Anime.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+</head>
+<!-- ========================================
+     BODY SECTION - Main Content
+ ======================================== -->
+
+<body class="min-h-screen bg-[#202020] bg-cover relative">
+    <!-- ========================================
+         HEADER SECTION
+         ======================================== -->
+    <div hx-get="components/header.html" hx-swap="innerHTML" hx-trigger="load"></div>
+    <!-- ========================================
+         NAVIGATION SECTION
+         ======================================== -->
+    <!-- Navigation container with positioning context -->
+
+    <!-- -------pages will be rendered here-------- -->
+    <!-- <div hx-get="http://localhost:3000/api/main/landing/" hx-trigger="load" hx-swap="innerHTML" id="main-div"></div> -->
+    <!-- -------pages will be rendered here-------- -->
+    <!-- <div hx-get="http://localhost:3000/api/main/landing/" hx-trigger="load" hx-swap="innerHTML" id="main-div"></div> -->
+    <style>
+        /* small helpers to mimic glowing avatar ring and card backdrop */
+        .card-bg {
+            background: linear-gradient(180deg, rgba(45, 55, 72, 1) 0%, rgba(15, 23, 42, 1) 100%);
+        }
+
+        .glass {
+            backdrop-filter: blur(6px);
+        }
+    </style>
+
+
+    <div class="bg-[#0A0A0A] text-slate-200 min-h-screen px-6">
+        <div class="">
+            <nav class="max-w-6xl mx-auto z-50 pb-3 " id="main-nav2">
+                <div class=" nav-pill rounded-full px-3 md:px-6 py-3 flex items-center nav-content">
+                    <!-- animated traveling glow -->
+                    <div class="nav-glow" id="traveling-glow" aria-hidden="true"></div>
+                    <!-- Desktop nav items -->
+                    <ul
+                        class="hidden md:flex gap-4 lg:gap-8 justify-between items-center w-full text-white text-sm lg:text-lg font-medium tracking-tight">
+                        <li><a class="nav-link active px-1 lg:px-2 py-1" hx-get="main/landing" hx-trigger="click"
+                                hx-swap="innerHTML" hx-target="#main-div">Home</a></li>
+                        <li><a class="nav-link px-1 lg:px-2 py-1" hx-get="main/discover" hx-trigger="click"
+                                hx-swap="innerHTML" hx-target="#main-div">Discover LACPA</a></li>
+                        <li><a class="nav-link px-1 lg:px-2 py-1" hx-get="main/membership" hx-trigger="click"
+                                hx-swap="innerHTML" hx-target="#main-div">Membership</a></li>
+                        <li><a class="nav-link px-1 lg:px-2 py-1" hx-get="main/events" hx-trigger="click"
+                                hx-swap="innerHTML" hx-target="#main-div">Events &amp; News</a></li>
+                        <li><a class="nav-link px-1 lg:px-2 py-1" hx-get="main/academy" hx-trigger="click"
+                                hx-swap="innerHTML" hx-target="#main-div">Academy</a></li>
+                    </ul>
+                    <!-- Mobile menu button -->
+                    <div class="md:hidden flex items-center justify-between w-full">
+                        <span class="text-white font-medium">LACPA</span>
+                        <button type="button"
+                            class="text-white hover:text-gray-300 focus:outline-none focus:text-gray-300"
+                            id="mobile-menu-button" aria-expanded="false" aria-label="Open main menu">
+                            <!-- Hamburger icon (default) -->
+                            <svg class="h-6 w-6" id="menu-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                            <!-- Close icon (hidden by default) -->
+                            <svg class="h-6 w-6 hidden" id="close-icon" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <!-- Mobile menu -->
+                <div class="md:hidden hidden  top-full left-4 right-4 mt-2 nav-pill rounded-lg px-4 py-4 z-50"
+                    id="mobile-menu">
+                    <ul class="space-y-3 text-white">
+                        <li><a hx-get="main/landing" hx-trigger="click" hx-swap="innerHTML" hx-target="#main-div"
+                                class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Home</a></li>
+                        <li><a hx-get="main/discover" hx-trigger="click" hx-swap="innerHTML" hx-target="#main-div"
+                                class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Discover
+                                LACPA</a></li>
+                        <li><a hx-get="main/membership" hx-trigger="click" hx-swap="innerHTML" hx-target="#main-div"
+                                class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Membership</a>
+                        </li>
+                        <li>
+                            <a hx-get="main/events" hx-trigger="click" hx-swap="innerHTML" hx-target="#main-div"
+                                class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Events &amp;
+                                News</a>
+                        </li>
+                        <li>
+                            <a hx-get="main/academy" hx-trigger="click" hx-swap="innerHTML" hx-target="#main-div"
+                                class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Academy</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+        <div class="max-w-[1200px] mx-auto ">
+            <!-- Header -->
+            <header class="flex items-center gap-4 mb-6">
+                <h1 class="text-2xl font-semibold tracking-tight">LACPA Members</h1>
+
+
+                <div class="flex-1">
+                    <div class="relative max-w-xl mx-auto">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
+                            </svg>
+                        </span>
+                        <input placeholder="Search Using A Name"
+                            class="w-full pl-11 pr-12 py-3 rounded-full bg-[#0b1220] border border-slate-700 focus:border-sky-500 outline-none shadow-sm" />
+                        <button
+                            class="absolute right-2 top-1/2 -translate-y-1/2 bg-slate-800 p-2 rounded-full border border-slate-700 hover:bg-slate-700">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-300" viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M12 2a1 1 0 011 1v2.07a7.002 7.002 0 014.9 4.9H20a1 1 0 110 2h-2.09a7.002 7.002 0 01-4.9 4.9V21a1 1 0 11-2 0v-2.09a7.002 7.002 0 01-4.9-4.9H4a1 1 0 110-2h2.07a7.002 7.002 0 014.9-4.9V3a1 1 0 011-1z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+
+                <button class="ml-2 p-2 rounded-full bg-[#0b1220] border border-slate-700 hover:bg-slate-800">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-300" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 12h18M3 20h18" />
+                    </svg>
+                </button>
+            </header>
+
+
+            <!-- Tabs -->
+            <div class="flex items-center gap-6 mb-5 ">
+                <nav class="flex gap-4 items-center">
+                    <button class="px-1 text-slate-200 font-medium">Individual</button>
+                    <button class="px-1 text-slate-400">Firms</button>
+                </nav>
+
+
+                <!-- filter pills -->
+                <div class="flex-1 flex flex-wrap gap-3 justify-end">
+                    <button class="px-4 py-2 rounded-2xl border border-slate-700 bg-transparent">All Members<br /><span
+                            class="text-xs text-slate-400">2,342 Members</span></button>
+                    <button class="px-4 py-2 rounded-2xl border border-sky-500/40">Apprentices<br /><span
+                            class="text-xs text-sky-400">1,200 Members</span></button>
+                    <button class="px-4 py-2 rounded-2xl border border-slate-700">Practicing Members<br /><span
+                            class="text-xs text-slate-400">500 Members</span></button>
+                    <button class="px-4 py-2 rounded-2xl border border-slate-700">Non-Practicing Members<br /><span
+                            class="text-xs text-slate-400">200 Members</span></button>
+                    <button class="px-4 py-2 rounded-2xl border border-slate-700">LACPA Retired<br /><span
+                            class="text-xs text-slate-400">500 Members</span></button>
+                </div>
+            </div>
+
+
+            <!-- Grid of cards -->
+            <main>
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
+                    <!-- 1 -->
+                    <article
+                        class="relative rounded-xl overflow-hidden shadow-lg border border-slate-800 p-4 card-bg glass">
+                        <div class="absolute top-3 right-3 flex gap-2 items-center">
+                            <div
+                                class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-sm">
+                                🎓</div>
+                        </div>
+
+
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="shadow-xl w-16 h-16 rounded-full shadow-white"> <img src="../assets/girl.png" alt="avatar"
+                                    class="w-16 h-16 rounded-full object-cover ring-4 ring-slate-800 " /></div>
+
+                            <div class="flex-1 text-center">
+                                <h3 class="text-lg font-semibold mb-4">Boushra El Obeid</h3>
+                                <p class="text-sm text-slate-400 mb-4">Apprentices</p>
+                                <div class="flex flex-nowrap justify-between items-center">
+                                    <span class="text-slate-400 font-medium">LACPA ID</span>
+                                    <span class="text-white font-medium">3666</span>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </article>
+
+
+                     <article
+                        class="relative rounded-xl overflow-hidden shadow-lg border border-slate-800 p-4 card-bg glass">
+                        <div class="absolute top-3 right-3 flex gap-2 items-center">
+                            <div
+                                class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-sm">
+                                🎓</div>
+                        </div>
+
+
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="shadow-xl w-16 h-16 rounded-full shadow-white"> <img src="../assets/girl.png" alt="avatar"
+                                    class="w-16 h-16 rounded-full object-cover ring-4 ring-slate-800 " /></div>
+
+                            <div class="flex-1 text-center">
+                                <h3 class="text-lg font-semibold mb-4">Boushra El Obeid</h3>
+                                <p class="text-sm text-slate-400 mb-4">Apprentices</p>
+                                <div class="flex flex-nowrap justify-between items-center">
+                                    <span class="text-slate-400 font-medium">LACPA ID</span>
+                                    <span class="text-white font-medium">3666</span>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </article>
+                     <article
+                        class="relative rounded-xl overflow-hidden shadow-lg border border-slate-800 p-4 card-bg glass">
+                        <div class="absolute top-3 right-3 flex gap-2 items-center">
+                            <div
+                                class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-sm">
+                                🎓</div>
+                        </div>
+
+
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="shadow-xl w-16 h-16 rounded-full shadow-white"> <img src="../assets/girl.png" alt="avatar"
+                                    class="w-16 h-16 rounded-full object-cover ring-4 ring-slate-800 " /></div>
+
+                            <div class="flex-1 text-center">
+                                <h3 class="text-lg font-semibold mb-4">Boushra El Obeid</h3>
+                                <p class="text-sm text-slate-400 mb-4">Apprentices</p>
+                                <div class="flex flex-nowrap justify-between items-center">
+                                    <span class="text-slate-400 font-medium">LACPA ID</span>
+                                    <span class="text-white font-medium">3666</span>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </article>
+                     <article
+                        class="relative rounded-xl overflow-hidden shadow-lg border border-slate-800 p-4 card-bg glass">
+                        <div class="absolute top-3 right-3 flex gap-2 items-center">
+                            <div
+                                class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-sm">
+                                🎓</div>
+                        </div>
+
+
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="shadow-xl w-16 h-16 rounded-full shadow-white"> <img src="../assets/girl.png" alt="avatar"
+                                    class="w-16 h-16 rounded-full object-cover ring-4 ring-slate-800 " /></div>
+
+                            <div class="flex-1 text-center">
+                                <h3 class="text-lg font-semibold mb-4">Boushra El Obeid</h3>
+                                <p class="text-sm text-slate-400 mb-4">Apprentices</p>
+                                <div class="flex flex-nowrap justify-between items-center">
+                                    <span class="text-slate-400 font-medium">LACPA ID</span>
+                                    <span class="text-white font-medium">3666</span>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </article>
+                     <article
+                        class="relative rounded-xl overflow-hidden shadow-lg border border-slate-800 p-4 card-bg glass">
+                        <div class="absolute top-3 right-3 flex gap-2 items-center">
+                            <div
+                                class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-sm">
+                                🎓</div>
+                        </div>
+
+
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="shadow-xl w-16 h-16 rounded-full shadow-white"> <img src="../assets/girl.png" alt="avatar"
+                                    class="w-16 h-16 rounded-full object-cover ring-4 ring-slate-800 " /></div>
+
+                            <div class="flex-1 text-center">
+                                <h3 class="text-lg font-semibold mb-4">Boushra El Obeid</h3>
+                                <p class="text-sm text-slate-400 mb-4">Apprentices</p>
+                                <div class="flex flex-nowrap justify-between items-center">
+                                    <span class="text-slate-400 font-medium">LACPA ID</span>
+                                    <span class="text-white font-medium">3666</span>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </article>
+                     <article
+                        class="relative rounded-xl overflow-hidden shadow-lg border border-slate-800 p-4 card-bg glass">
+                        <div class="absolute top-3 right-3 flex gap-2 items-center">
+                            <div
+                                class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-sm">
+                                🎓</div>
+                        </div>
+
+
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="shadow-xl w-16 h-16 rounded-full shadow-white"> <img src="../assets/girl.png" alt="avatar"
+                                    class="w-16 h-16 rounded-full object-cover ring-4 ring-slate-800 " /></div>
+
+                            <div class="flex-1 text-center">
+                                <h3 class="text-lg font-semibold mb-4">Boushra El Obeid</h3>
+                                <p class="text-sm text-slate-400 mb-4">Apprentices</p>
+                                <div class="flex flex-nowrap justify-between items-center">
+                                    <span class="text-slate-400 font-medium">LACPA ID</span>
+                                    <span class="text-white font-medium">3666</span>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </article>
+                     <article
+                        class="relative rounded-xl overflow-hidden shadow-lg border border-slate-800 p-4 card-bg glass">
+                        <div class="absolute top-3 right-3 flex gap-2 items-center">
+                            <div
+                                class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-sm">
+                                🎓</div>
+                        </div>
+
+
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="shadow-xl w-16 h-16 rounded-full shadow-white"> <img src="../assets/girl.png" alt="avatar"
+                                    class="w-16 h-16 rounded-full object-cover ring-4 ring-slate-800 " /></div>
+
+                            <div class="flex-1 text-center">
+                                <h3 class="text-lg font-semibold mb-4">Boushra El Obeid</h3>
+                                <p class="text-sm text-slate-400 mb-4">Apprentices</p>
+                                <div class="flex flex-nowrap justify-between items-center">
+                                    <span class="text-slate-400 font-medium">LACPA ID</span>
+                                    <span class="text-white font-medium">3666</span>
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </article>
+                </div>
+        </div>
+
+
+
+        <!-- Pagination -->
+        <div class="py-4 flex justify-center items-center gap-3 bg-[#0A0A0A]">
+            <button class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700">&lt;</button>
+            <div class="flex gap-2 
+        ">
+                <button class="w-9 h-9 rounded-full bg-sky-600">1</button>
+                <button class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700">2</button>
+                <button class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700">3</button>
+                <button class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700">4</button>
+                <button class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700">5</button>
+            </div>
+            <button class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700">&gt;</button>
+        </div>
+
+
+        </main>
+        <!-- Footer loaded with HTMX -->
+        <div hx-get="components/footer.html" hx-trigger="load"></div>
+
+        <!-- Initialize Splide Carousels -->
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+        <!-- Custom JavaScript for HTMX response handling -->
+        <script src="../js/app.js"></script>
+</body>
+
+</html>
