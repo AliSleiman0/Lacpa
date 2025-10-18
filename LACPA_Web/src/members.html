@@ -64,10 +64,40 @@
         .glass {
             backdrop-filter: blur(6px);
         }
+
+        /* Card state transitions */
+        .card-content {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .card-content.fade-out {
+            opacity: 0;
+            transform: scale(0.95);
+        }
+
+        .card-content.fade-in {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Navigation arrows styling */
+        .nav-arrow {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-arrow:hover {
+            transform: scale(1.1);
+            background-color: rgba(56, 189, 248, 0.2);
+        }
+
+        .nav-arrow:active {
+            transform: scale(0.95);
+        }
     </style>
 
 
-    <div class="bg-[#0A0A0A] text-slate-200 min-h-screen px-6">
+    <div class="bg-[rgba(32, 32, 32, 1)] text-slate-200  mx-auto px-4">
         <div class="">
             <nav class="max-w-6xl mx-auto z-50 pb-3 " id="main-nav2">
                 <div class=" nav-pill rounded-full px-3 md:px-6 py-3 flex items-center nav-content">
@@ -133,14 +163,22 @@
             </nav>
         </div>
 
-        <div class="max-w-[1200px] mx-auto ">
+        <div class="max-w-[1200px] mx-auto">
             <!-- Header -->
-            <header class="flex items-center gap-4 mb-6">
-                <h1 class="text-2xl font-semibold tracking-tight">LACPA Members</h1>
+            <header class="mb-6">
+                <!-- Mobile Layout: Stack vertically -->
+                <div class="md:hidden space-y-4">
+                    <!-- Title and mobile filter button -->
+                    <div class="flex items-center justify-between">
+                        <h1 class="text-xl font-semibold tracking-tight">LACPA Members</h1>
+                        <button
+                            class="p-2 rounded-full bg-[#0b1220] border border-slate-700 hover:bg-slate-800 transition-colors">
+                            <i class="fas fa-filter h-5 w-5 text-slate-300"></i>
+                        </button>
+                    </div>
 
-
-                <div class="flex-1">
-                    <div class="relative max-w-xl mx-auto">
+                    <!-- Mobile search bar -->
+                    <div class="relative">
                         <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
@@ -149,9 +187,9 @@
                             </svg>
                         </span>
                         <input placeholder="Search Using A Name"
-                            class="w-full pl-11 pr-12 py-3 rounded-full bg-[#0b1220] border border-slate-700 focus:border-sky-500 outline-none shadow-sm" />
+                            class="w-full pl-11 pr-12 py-3 rounded-full bg-[#0b1220] border border-slate-700 focus:border-sky-500 outline-none shadow-sm transition-colors" />
                         <button
-                            class="absolute right-2 top-1/2 -translate-y-1/2 bg-slate-800 p-2 rounded-full border border-slate-700 hover:bg-slate-700">
+                            class="absolute right-2 top-1/2 -translate-y-1/2 bg-slate-800 p-2 rounded-full border border-slate-700 hover:bg-slate-700 transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-300" viewBox="0 0 24 24"
                                 fill="currentColor">
                                 <path
@@ -161,252 +199,740 @@
                     </div>
                 </div>
 
+                <!-- Desktop Layout: Inline title with search -->
+                <div class="hidden md:flex items-center gap-6">
+                    <h1 class="text-2xl lg:text-3xl font-semibold tracking-tight whitespace-nowrap">LACPA Members</h1>
 
-                <button class="ml-2 p-2 rounded-full bg-[#0b1220] border border-slate-700 hover:bg-slate-800">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-300" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 12h18M3 20h18" />
-                    </svg>
-                </button>
+                    <div class="flex-1 max-w-2xl">
+                        <div class="relative">
+                            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
+                                </svg>
+                            </span>
+                            <input placeholder="Search Using A Name"
+                                class="w-full pl-12 pr-14 py-3.5 rounded-full bg-[#0b1220] border border-slate-700 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 outline-none shadow-sm transition-all duration-200" />
+                            <button
+                                class="absolute right-3 top-1/2 -translate-y-1/2 bg-slate-800 p-2.5 rounded-full border border-slate-700 hover:bg-slate-700 hover:border-slate-600 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-300"
+                                    viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M12 2a1 1 0 011 1v2.07a7.002 7.002 0 014.9 4.9H20a1 1 0 110 2h-2.09a7.002 7.002 0 01-4.9 4.9V21a1 1 0 11-2 0v-2.09a7.002 7.002 0 01-4.9-4.9H4a1 1 0 110-2h2.07a7.002 7.002 0 014.9-4.9V3a1 1 0 011-1z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button
+                        class="p-3 rounded-full bg-[#0b1220] border border-slate-700 hover:bg-slate-800 hover:border-slate-600 transition-colors">
+                        <i class="fas fa-filter h-5 w-5 text-slate-300"></i>
+                    </button>
+                </div>
             </header>
 
 
-            <!-- Tabs -->
-            <div class="flex items-center gap-6 mb-5 ">
+            <!-- Tabs and Filters -->
+            <div class="mb-5 space-y-4">
+                <!-- Tabs -->
                 <nav class="flex gap-4 items-center">
-                    <button class="px-1 text-slate-200 font-medium">Individual</button>
-                    <button class="px-1 text-slate-400">Firms</button>
+                    <button class="px-1 text-slate-200 font-medium text-sm md:text-base">Individual</button>
+                    <button class="px-1 text-slate-400 text-sm md:text-base">Firms</button>
                 </nav>
 
-
-                <!-- filter pills -->
-                <div class="flex-1 flex flex-wrap gap-3 justify-end">
-                    <button class="px-4 py-2 rounded-2xl border border-slate-700 bg-transparent">All Members<br /><span
-                            class="text-xs text-slate-400">2,342 Members</span></button>
-                    <button class="px-4 py-2 rounded-2xl border border-sky-500/40">Apprentices<br /><span
-                            class="text-xs text-sky-400">1,200 Members</span></button>
-                    <button class="px-4 py-2 rounded-2xl border border-slate-700">Practicing Members<br /><span
-                            class="text-xs text-slate-400">500 Members</span></button>
-                    <button class="px-4 py-2 rounded-2xl border border-slate-700">Non-Practicing Members<br /><span
-                            class="text-xs text-slate-400">200 Members</span></button>
-                    <button class="px-4 py-2 rounded-2xl border border-slate-700">LACPA Retired<br /><span
-                            class="text-xs text-slate-400">500 Members</span></button>
+                <!-- Filter pills -->
+                <div class="flex flex-wrap gap-2 md:gap-3 justify-center md:justify-end">
+                    <button
+                        class="px-2 md:px-4 py-2 rounded-2xl border border-slate-700 bg-transparent text-xs md:text-sm">
+                        <span class="block">All Members</span>
+                        <span class="text-xs text-slate-400">2,342 Members</span>
+                    </button>
+                    <button class="px-2 md:px-4 py-2 rounded-2xl border border-sky-500/40 text-xs md:text-sm">
+                        <span class="block">Apprentices</span>
+                        <span class="text-xs text-sky-400">1,200 Members</span>
+                    </button>
+                    <button class="px-2 md:px-4 py-2 rounded-2xl border border-slate-700 text-xs md:text-sm">
+                        <span class="block">Practicing</span>
+                        <span class="text-xs text-slate-400">500 Members</span>
+                    </button>
+                    <button class="px-2 md:px-4 py-2 rounded-2xl border border-slate-700 text-xs md:text-sm">
+                        <span class="block">Non-Practicing</span>
+                        <span class="text-xs text-slate-400">200 Members</span>
+                    </button>
+                    <button class="px-2 md:px-4 py-2 rounded-2xl border border-slate-700 text-xs md:text-sm">
+                        <span class="block">Retired</span>
+                        <span class="text-xs text-slate-400">500 Members</span>
+                    </button>
                 </div>
             </div>
 
 
             <!-- Grid of cards -->
             <main>
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-6">
-                    <!-- 1 -->
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mx-auto">
+                    <!-- 1 - Enhanced Multi-State Card -->
                     <article
-                        class="relative rounded-xl overflow-hidden shadow-lg border border-slate-800 p-4 card-bg glass">
+                        class="member-card relative rounded-xl overflow-hidden shadow-lg border border-slate-800 p-4 card-bg glass"
+                        data-state="0">
+                        <!-- Badge -->
                         <div class="absolute top-3 right-3 flex gap-2 items-center">
                             <div
                                 class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-sm">
-                                🎓</div>
+                                🎓
+                            </div>
                         </div>
 
-
-                        <div class="flex flex-col items-center gap-3">
-                            <div class="shadow-xl w-16 h-16 rounded-full shadow-white"> <img src="../assets/girl.png" alt="avatar"
-                                    class="w-16 h-16 rounded-full object-cover ring-4 ring-slate-800 " /></div>
-
-                            <div class="flex-1 text-center">
-                                <h3 class="text-lg font-semibold mb-4">Boushra El Obeid</h3>
-                                <p class="text-sm text-slate-400 mb-4">Apprentices</p>
-                                <div class="flex flex-nowrap justify-between items-center">
-                                    <span class="text-slate-400 font-medium">LACPA ID</span>
-                                    <span class="text-white font-medium">3666</span>
+                        <!-- State 0: Basic Info -->
+                        <div class="card-content card-state-0 fade-in">
+                            <div class="flex flex-col items-center gap-3">
+                                <div class="shadow-xl w-16 h-16 rounded-full shadow-white">
+                                    <img src="../assets/girl.png" alt="avatar"
+                                        class="w-16 h-16 rounded-full object-cover ring-4 ring-slate-800" />
                                 </div>
 
+                                <div class="flex-1 text-center w-full">
+                                    <h3 class="text-lg font-semibold mb-2">Boushra El Obeid</h3>
+                                    <p class="text-sm text-slate-400 mb-3">Apprentices</p>
+                                    <div class="flex flex-nowrap justify-between items-center mb-3">
+                                        <span class="text-slate-400 text-xs font-medium">LACPA ID</span>
+                                        <span class="text-white text-xs font-medium">3666</span>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <!-- Navigation: Share & Forward -->
+                            <div class="flex justify-between items-center mt-3">
+                                <button
+                                    class="share-btn p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-emerald-500 transition-colors"
+                                    aria-label="Share">
+                                    <i class="fas fa-share-alt text-emerald-400 text-sm"></i>
+                                </button>
+                                <button
+                                    class="nav-arrow nav-forward p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-sky-500"
+                                    aria-label="Next">
+                                    <i class="fas fa-arrow-right text-sky-400 text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Share Overlay State -->
+                        <div class="share-overlay absolute inset-0 p-4 opacity-0 z-20" style="pointer-events: none; background: linear-gradient(135deg, rgba(30, 58, 138, 0.95) 0%, rgba(17, 24, 39, 0.95) 100%);">
+                            <!-- Close Button -->
+                            <button class="close-share absolute top-2 right-2 p-1.5 rounded-full bg-slate-800/50 border border-slate-700 hover:border-red-500 transition-colors" aria-label="Close">
+                                <i class="fas fa-times text-red-400 text-xs"></i>
+                            </button>
+
+                            <div class="flex flex-col items-center justify-center h-full gap-2">
+                                <!-- QR Code -->
+                                <div class="bg-white p-2 rounded-xl shadow-xl">
+                                    <div class="w-20 h-20 flex items-center justify-center">
+                                        <!-- QR Code Placeholder - Replace with actual QR generation -->
+                                        <svg class="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                            <!-- Simple QR-like pattern -->
+                                            <rect x="0" y="0" width="20" height="20" fill="#000"/>
+                                            <rect x="80" y="0" width="20" height="20" fill="#000"/>
+                                            <rect x="0" y="80" width="20" height="20" fill="#000"/>
+                                            <rect x="25" y="25" width="50" height="50" fill="#000"/>
+                                            <rect x="35" y="35" width="30" height="30" fill="#fff"/>
+                                            <rect x="10" y="30" width="10" height="40" fill="#000"/>
+                                            <rect x="30" y="10" width="40" height="10" fill="#000"/>
+                                            <rect x="70" y="30" width="10" height="40" fill="#000"/>
+                                            <rect x="30" y="70" width="40" height="10" fill="#000"/>
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <!-- Member Info -->
+                                <h3 class="text-base font-bold text-white mb-0.5">Boushra El Obeid</h3>
+                                <p class="text-sky-300 text-xs mb-1">Apprentices</p>
+                                <div class="flex items-center gap-1.5 mb-2">
+                                    <span class="text-slate-300 text-xs">LACPA ID</span>
+                                    <span class="text-white text-xs font-bold">3666</span>
+                                </div>
+
+                                <!-- Share Link Button -->
+                                <button class="px-4 py-1.5 rounded-full border border-sky-400/50 bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 font-medium transition-all duration-200 text-xs">
+                                    <i class="fas fa-link mr-1.5 text-xs"></i>
+                                    Share Link
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- State 1: Contact Info -->
+                        <div class="card-content card-state-1 absolute inset-0 p-4 opacity-0"
+                            style="pointer-events: none;">
+                            <div class="flex flex-col h-full">
+                                <h3 class="text-center text-lg font-semibold mb-1">Boushra El Obeid</h3>
+
+                                <div class="flex-1 space-y-2 overflow-y-auto text-sm">
+                                    <!-- Phone -->
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas fa-phone text-sky-400 w-4"></i>
+                                        <span class="text-slate-300 text-xs">+961 01 123 456</span>
+                                    </div>
+
+                                    <!-- Email -->
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas fa-envelope text-sky-400 w-4"></i>
+                                        <span class="text-slate-300 text-xs truncate">boushra@gmail.com</span>
+                                    </div>
+
+                                    <!-- Address -->
+                                    <div class="flex items-start gap-2">
+                                        <i class="fas fa-map-marker-alt text-sky-400 w-4 mt-0.5"></i>
+                                        <span class="text-slate-300 text-xs">Mount Lebanon - Metn - Zalqa</span>
+                                    </div>
+
+                                    <!-- Firm -->
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas fa-building text-sky-400 w-4"></i>
+                                        <span class="text-slate-300 text-xs">Nabil El Haj</span>
+                                    </div>
+
+                                    <!-- LinkedIn -->
+                                    <div class="flex items-center gap-2">
+                                        <i class="fab fa-linkedin text-sky-400 w-4"></i>
+                                        <span
+                                            class="text-sky-300 text-xs truncate underline">linkedin.com/in/boushr...</span>
+                                    </div>
+                                </div>
+
+                                <!-- Navigation: Both arrows -->
+                                <div class="flex justify-between mt-3">
+                                    <button
+                                        class="nav-arrow nav-back p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-sky-500"
+                                        aria-label="Previous">
+                                        <i class="fas fa-arrow-left text-sky-400 text-sm"></i>
+                                    </button>
+                                    <button
+                                        class="nav-arrow nav-forward p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-sky-500"
+                                        aria-label="Next">
+                                        <i class="fas fa-arrow-right text-sky-400 text-sm"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- State 2: Biography/Description -->
+                        <div class="card-content card-state-2 absolute inset-0 p-4 opacity-0"
+                            style="pointer-events: none;">
+                            <div class="flex flex-col h-full">
+                                <div class="flex items-center justify-center mb-3">
+                                    <i class="fas fa-align-left text-sky-400 text-xl"></i>
+                                </div>
+
+                                <div class="flex-1 overflow-y-auto">
+                                    <p class="text-slate-300 text-xs leading-relaxed text-center">
+                                        Elie Georges Abboud is the President of his organization. He is recognized as a
+                                        strong and respected leader. 
+                                    </p>
+                                </div>
+
+                                <!-- Navigation: Back only -->
+                                <div class="flex justify-start mt-3">
+                                    <button
+                                        class="nav-arrow nav-back p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-sky-500"
+                                        aria-label="Previous">
+                                        <i class="fas fa-arrow-left text-sky-400 text-sm"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </article>
 
-
-                     <article
-                        class="relative rounded-xl overflow-hidden shadow-lg border border-slate-800 p-4 card-bg glass">
+<article
+                        class="member-card relative rounded-xl overflow-hidden shadow-lg border border-slate-800 p-4 card-bg glass"
+                        data-state="0">
+                        <!-- Badge -->
                         <div class="absolute top-3 right-3 flex gap-2 items-center">
                             <div
                                 class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-sm">
-                                🎓</div>
+                                🎓
+                            </div>
                         </div>
 
-
-                        <div class="flex flex-col items-center gap-3">
-                            <div class="shadow-xl w-16 h-16 rounded-full shadow-white"> <img src="../assets/girl.png" alt="avatar"
-                                    class="w-16 h-16 rounded-full object-cover ring-4 ring-slate-800 " /></div>
-
-                            <div class="flex-1 text-center">
-                                <h3 class="text-lg font-semibold mb-4">Boushra El Obeid</h3>
-                                <p class="text-sm text-slate-400 mb-4">Apprentices</p>
-                                <div class="flex flex-nowrap justify-between items-center">
-                                    <span class="text-slate-400 font-medium">LACPA ID</span>
-                                    <span class="text-white font-medium">3666</span>
+                        <!-- State 0: Basic Info -->
+                        <div class="card-content card-state-0 fade-in">
+                            <div class="flex flex-col items-center gap-3">
+                                <div class="shadow-xl w-16 h-16 rounded-full shadow-white">
+                                    <img src="../assets/girl.png" alt="avatar"
+                                        class="w-16 h-16 rounded-full object-cover ring-4 ring-slate-800" />
                                 </div>
 
+                                <div class="flex-1 text-center w-full">
+                                    <h3 class="text-lg font-semibold mb-2">Boushra El Obeid</h3>
+                                    <p class="text-sm text-slate-400 mb-3">Apprentices</p>
+                                    <div class="flex flex-nowrap justify-between items-center mb-3">
+                                        <span class="text-slate-400 text-xs font-medium">LACPA ID</span>
+                                        <span class="text-white text-xs font-medium">3666</span>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <!-- Navigation: Share & Forward -->
+                            <div class="flex justify-between items-center mt-3">
+                                <button
+                                    class="share-btn p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-emerald-500 transition-colors"
+                                    aria-label="Share">
+                                    <i class="fas fa-share-alt text-emerald-400 text-sm"></i>
+                                </button>
+                                <button
+                                    class="nav-arrow nav-forward p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-sky-500"
+                                    aria-label="Next">
+                                    <i class="fas fa-arrow-right text-sky-400 text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Share Overlay State -->
+                        <div class="share-overlay absolute inset-0 p-4 opacity-0 z-20" style="pointer-events: none; background: linear-gradient(135deg, rgba(30, 58, 138, 0.95) 0%, rgba(17, 24, 39, 0.95) 100%);">
+                            <!-- Close Button -->
+                            <button class="close-share absolute top-2 right-2 p-1.5 rounded-full bg-slate-800/50 border border-slate-700 hover:border-red-500 transition-colors" aria-label="Close">
+                                <i class="fas fa-times text-red-400 text-xs"></i>
+                            </button>
+
+                            <div class="flex flex-col items-center justify-center h-full gap-2">
+                                <!-- QR Code -->
+                                <div class="bg-white p-2 rounded-xl shadow-xl">
+                                    <div class="w-20 h-20 flex items-center justify-center">
+                                        <!-- QR Code Placeholder - Replace with actual QR generation -->
+                                        <svg class="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                            <!-- Simple QR-like pattern -->
+                                            <rect x="0" y="0" width="20" height="20" fill="#000"/>
+                                            <rect x="80" y="0" width="20" height="20" fill="#000"/>
+                                            <rect x="0" y="80" width="20" height="20" fill="#000"/>
+                                            <rect x="25" y="25" width="50" height="50" fill="#000"/>
+                                            <rect x="35" y="35" width="30" height="30" fill="#fff"/>
+                                            <rect x="10" y="30" width="10" height="40" fill="#000"/>
+                                            <rect x="30" y="10" width="40" height="10" fill="#000"/>
+                                            <rect x="70" y="30" width="10" height="40" fill="#000"/>
+                                            <rect x="30" y="70" width="40" height="10" fill="#000"/>
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <!-- Member Info -->
+                                <h3 class="text-base font-bold text-white mb-0.5">Boushra El Obeid</h3>
+                                <p class="text-sky-300 text-xs mb-1">Apprentices</p>
+                                <div class="flex items-center gap-1.5 mb-2">
+                                    <span class="text-slate-300 text-xs">LACPA ID</span>
+                                    <span class="text-white text-xs font-bold">3666</span>
+                                </div>
+
+                                <!-- Share Link Button -->
+                                <button class="px-4 py-1.5 rounded-full border border-sky-400/50 bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 font-medium transition-all duration-200 text-xs">
+                                    <i class="fas fa-link mr-1.5 text-xs"></i>
+                                    Share Link
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- State 1: Contact Info -->
+                        <div class="card-content card-state-1 absolute inset-0 p-4 opacity-0"
+                            style="pointer-events: none;">
+                            <div class="flex flex-col h-full">
+                                <h3 class="text-center text-lg font-semibold mb-1">Boushra El Obeid</h3>
+
+                                <div class="flex-1 space-y-2 overflow-y-auto text-sm">
+                                    <!-- Phone -->
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas fa-phone text-sky-400 w-4"></i>
+                                        <span class="text-slate-300 text-xs">+961 01 123 456</span>
+                                    </div>
+
+                                    <!-- Email -->
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas fa-envelope text-sky-400 w-4"></i>
+                                        <span class="text-slate-300 text-xs truncate">boushra@gmail.com</span>
+                                    </div>
+
+                                    <!-- Address -->
+                                    <div class="flex items-start gap-2">
+                                        <i class="fas fa-map-marker-alt text-sky-400 w-4 mt-0.5"></i>
+                                        <span class="text-slate-300 text-xs">Mount Lebanon - Metn - Zalqa</span>
+                                    </div>
+
+                                    <!-- Firm -->
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas fa-building text-sky-400 w-4"></i>
+                                        <span class="text-slate-300 text-xs">Nabil El Haj</span>
+                                    </div>
+
+                                    <!-- LinkedIn -->
+                                    <div class="flex items-center gap-2">
+                                        <i class="fab fa-linkedin text-sky-400 w-4"></i>
+                                        <span
+                                            class="text-sky-300 text-xs truncate underline">linkedin.com/in/boushr...</span>
+                                    </div>
+                                </div>
+
+                                <!-- Navigation: Both arrows -->
+                                <div class="flex justify-between mt-3">
+                                    <button
+                                        class="nav-arrow nav-back p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-sky-500"
+                                        aria-label="Previous">
+                                        <i class="fas fa-arrow-left text-sky-400 text-sm"></i>
+                                    </button>
+                                    <button
+                                        class="nav-arrow nav-forward p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-sky-500"
+                                        aria-label="Next">
+                                        <i class="fas fa-arrow-right text-sky-400 text-sm"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- State 2: Biography/Description -->
+                        <div class="card-content card-state-2 absolute inset-0 p-4 opacity-0"
+                            style="pointer-events: none;">
+                            <div class="flex flex-col h-full">
+                                <div class="flex items-center justify-center mb-3">
+                                    <i class="fas fa-align-left text-sky-400 text-xl"></i>
+                                </div>
+
+                                <div class="flex-1 overflow-y-auto">
+                                    <p class="text-slate-300 text-xs leading-relaxed text-center">
+                                        Elie Georges Abboud is the President of his organization. He is recognized as a
+                                        strong and respected leader. 
+                                    </p>
+                                </div>
+
+                                <!-- Navigation: Back only -->
+                                <div class="flex justify-start mt-3">
+                                    <button
+                                        class="nav-arrow nav-back p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-sky-500"
+                                        aria-label="Previous">
+                                        <i class="fas fa-arrow-left text-sky-400 text-sm"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </article>
-                     <article
-                        class="relative rounded-xl overflow-hidden shadow-lg border border-slate-800 p-4 card-bg glass">
+                    <article
+                        class="member-card relative rounded-xl overflow-hidden shadow-lg border border-slate-800 p-4 card-bg glass"
+                        data-state="0">
+                        <!-- Badge -->
                         <div class="absolute top-3 right-3 flex gap-2 items-center">
                             <div
                                 class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-sm">
-                                🎓</div>
-                        </div>
-
-
-                        <div class="flex flex-col items-center gap-3">
-                            <div class="shadow-xl w-16 h-16 rounded-full shadow-white"> <img src="../assets/girl.png" alt="avatar"
-                                    class="w-16 h-16 rounded-full object-cover ring-4 ring-slate-800 " /></div>
-
-                            <div class="flex-1 text-center">
-                                <h3 class="text-lg font-semibold mb-4">Boushra El Obeid</h3>
-                                <p class="text-sm text-slate-400 mb-4">Apprentices</p>
-                                <div class="flex flex-nowrap justify-between items-center">
-                                    <span class="text-slate-400 font-medium">LACPA ID</span>
-                                    <span class="text-white font-medium">3666</span>
-                                </div>
-
-
+                                🎓
                             </div>
                         </div>
-                    </article>
-                     <article
-                        class="relative rounded-xl overflow-hidden shadow-lg border border-slate-800 p-4 card-bg glass">
-                        <div class="absolute top-3 right-3 flex gap-2 items-center">
-                            <div
-                                class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-sm">
-                                🎓</div>
-                        </div>
 
-
-                        <div class="flex flex-col items-center gap-3">
-                            <div class="shadow-xl w-16 h-16 rounded-full shadow-white"> <img src="../assets/girl.png" alt="avatar"
-                                    class="w-16 h-16 rounded-full object-cover ring-4 ring-slate-800 " /></div>
-
-                            <div class="flex-1 text-center">
-                                <h3 class="text-lg font-semibold mb-4">Boushra El Obeid</h3>
-                                <p class="text-sm text-slate-400 mb-4">Apprentices</p>
-                                <div class="flex flex-nowrap justify-between items-center">
-                                    <span class="text-slate-400 font-medium">LACPA ID</span>
-                                    <span class="text-white font-medium">3666</span>
+                        <!-- State 0: Basic Info -->
+                        <div class="card-content card-state-0 fade-in">
+                            <div class="flex flex-col items-center gap-3">
+                                <div class="shadow-xl w-16 h-16 rounded-full shadow-white">
+                                    <img src="../assets/girl.png" alt="avatar"
+                                        class="w-16 h-16 rounded-full object-cover ring-4 ring-slate-800" />
                                 </div>
 
+                                <div class="flex-1 text-center w-full">
+                                    <h3 class="text-lg font-semibold mb-2">Boushra El Obeid</h3>
+                                    <p class="text-sm text-slate-400 mb-3">Apprentices</p>
+                                    <div class="flex flex-nowrap justify-between items-center mb-3">
+                                        <span class="text-slate-400 text-xs font-medium">LACPA ID</span>
+                                        <span class="text-white text-xs font-medium">3666</span>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <!-- Navigation: Share & Forward -->
+                            <div class="flex justify-between items-center mt-3">
+                                <button
+                                    class="share-btn p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-emerald-500 transition-colors"
+                                    aria-label="Share">
+                                    <i class="fas fa-share-alt text-emerald-400 text-sm"></i>
+                                </button>
+                                <button
+                                    class="nav-arrow nav-forward p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-sky-500"
+                                    aria-label="Next">
+                                    <i class="fas fa-arrow-right text-sky-400 text-sm"></i>
+                                </button>
                             </div>
                         </div>
-                    </article>
-                     <article
-                        class="relative rounded-xl overflow-hidden shadow-lg border border-slate-800 p-4 card-bg glass">
-                        <div class="absolute top-3 right-3 flex gap-2 items-center">
-                            <div
-                                class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-sm">
-                                🎓</div>
-                        </div>
 
+                        <!-- Share Overlay State -->
+                        <div class="share-overlay absolute inset-0 p-4 opacity-0 z-20" style="pointer-events: none; background: linear-gradient(135deg, rgba(30, 58, 138, 0.95) 0%, rgba(17, 24, 39, 0.95) 100%);">
+                            <!-- Close Button -->
+                            <button class="close-share absolute top-2 right-2 p-1.5 rounded-full bg-slate-800/50 border border-slate-700 hover:border-red-500 transition-colors" aria-label="Close">
+                                <i class="fas fa-times text-red-400 text-xs"></i>
+                            </button>
 
-                        <div class="flex flex-col items-center gap-3">
-                            <div class="shadow-xl w-16 h-16 rounded-full shadow-white"> <img src="../assets/girl.png" alt="avatar"
-                                    class="w-16 h-16 rounded-full object-cover ring-4 ring-slate-800 " /></div>
-
-                            <div class="flex-1 text-center">
-                                <h3 class="text-lg font-semibold mb-4">Boushra El Obeid</h3>
-                                <p class="text-sm text-slate-400 mb-4">Apprentices</p>
-                                <div class="flex flex-nowrap justify-between items-center">
-                                    <span class="text-slate-400 font-medium">LACPA ID</span>
-                                    <span class="text-white font-medium">3666</span>
+                            <div class="flex flex-col items-center justify-center h-full gap-2">
+                                <!-- QR Code -->
+                                <div class="bg-white p-2 rounded-xl shadow-xl">
+                                    <div class="w-20 h-20 flex items-center justify-center">
+                                        <!-- QR Code Placeholder - Replace with actual QR generation -->
+                                        <svg class="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                            <!-- Simple QR-like pattern -->
+                                            <rect x="0" y="0" width="20" height="20" fill="#000"/>
+                                            <rect x="80" y="0" width="20" height="20" fill="#000"/>
+                                            <rect x="0" y="80" width="20" height="20" fill="#000"/>
+                                            <rect x="25" y="25" width="50" height="50" fill="#000"/>
+                                            <rect x="35" y="35" width="30" height="30" fill="#fff"/>
+                                            <rect x="10" y="30" width="10" height="40" fill="#000"/>
+                                            <rect x="30" y="10" width="40" height="10" fill="#000"/>
+                                            <rect x="70" y="30" width="10" height="40" fill="#000"/>
+                                            <rect x="30" y="70" width="40" height="10" fill="#000"/>
+                                        </svg>
+                                    </div>
                                 </div>
 
+                                <!-- Member Info -->
+                                <h3 class="text-base font-bold text-white mb-0.5">Boushra El Obeid</h3>
+                                <p class="text-sky-300 text-xs mb-1">Apprentices</p>
+                                <div class="flex items-center gap-1.5 mb-2">
+                                    <span class="text-slate-300 text-xs">LACPA ID</span>
+                                    <span class="text-white text-xs font-bold">3666</span>
+                                </div>
 
+                                <!-- Share Link Button -->
+                                <button class="px-4 py-1.5 rounded-full border border-sky-400/50 bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 font-medium transition-all duration-200 text-xs">
+                                    <i class="fas fa-link mr-1.5 text-xs"></i>
+                                    Share Link
+                                </button>
                             </div>
                         </div>
-                    </article>
-                     <article
-                        class="relative rounded-xl overflow-hidden shadow-lg border border-slate-800 p-4 card-bg glass">
-                        <div class="absolute top-3 right-3 flex gap-2 items-center">
-                            <div
-                                class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-sm">
-                                🎓</div>
-                        </div>
 
+                        <!-- State 1: Contact Info -->
+                        <div class="card-content card-state-1 absolute inset-0 p-4 opacity-0"
+                            style="pointer-events: none;">
+                            <div class="flex flex-col h-full">
+                                <h3 class="text-center text-lg font-semibold mb-1">Boushra El Obeid</h3>
 
-                        <div class="flex flex-col items-center gap-3">
-                            <div class="shadow-xl w-16 h-16 rounded-full shadow-white"> <img src="../assets/girl.png" alt="avatar"
-                                    class="w-16 h-16 rounded-full object-cover ring-4 ring-slate-800 " /></div>
+                                <div class="flex-1 space-y-2 overflow-y-auto text-sm">
+                                    <!-- Phone -->
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas fa-phone text-sky-400 w-4"></i>
+                                        <span class="text-slate-300 text-xs">+961 01 123 456</span>
+                                    </div>
 
-                            <div class="flex-1 text-center">
-                                <h3 class="text-lg font-semibold mb-4">Boushra El Obeid</h3>
-                                <p class="text-sm text-slate-400 mb-4">Apprentices</p>
-                                <div class="flex flex-nowrap justify-between items-center">
-                                    <span class="text-slate-400 font-medium">LACPA ID</span>
-                                    <span class="text-white font-medium">3666</span>
+                                    <!-- Email -->
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas fa-envelope text-sky-400 w-4"></i>
+                                        <span class="text-slate-300 text-xs truncate">boushra@gmail.com</span>
+                                    </div>
+
+                                    <!-- Address -->
+                                    <div class="flex items-start gap-2">
+                                        <i class="fas fa-map-marker-alt text-sky-400 w-4 mt-0.5"></i>
+                                        <span class="text-slate-300 text-xs">Mount Lebanon - Metn - Zalqa</span>
+                                    </div>
+
+                                    <!-- Firm -->
+                                    <div class="flex items-center gap-2">
+                                        <i class="fas fa-building text-sky-400 w-4"></i>
+                                        <span class="text-slate-300 text-xs">Nabil El Haj</span>
+                                    </div>
+
+                                    <!-- LinkedIn -->
+                                    <div class="flex items-center gap-2">
+                                        <i class="fab fa-linkedin text-sky-400 w-4"></i>
+                                        <span
+                                            class="text-sky-300 text-xs truncate underline">linkedin.com/in/boushr...</span>
+                                    </div>
                                 </div>
 
-
+                                <!-- Navigation: Both arrows -->
+                                <div class="flex justify-between mt-3">
+                                    <button
+                                        class="nav-arrow nav-back p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-sky-500"
+                                        aria-label="Previous">
+                                        <i class="fas fa-arrow-left text-sky-400 text-sm"></i>
+                                    </button>
+                                    <button
+                                        class="nav-arrow nav-forward p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-sky-500"
+                                        aria-label="Next">
+                                        <i class="fas fa-arrow-right text-sky-400 text-sm"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </article>
-                     <article
-                        class="relative rounded-xl overflow-hidden shadow-lg border border-slate-800 p-4 card-bg glass">
-                        <div class="absolute top-3 right-3 flex gap-2 items-center">
-                            <div
-                                class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-sm">
-                                🎓</div>
-                        </div>
 
-
-                        <div class="flex flex-col items-center gap-3">
-                            <div class="shadow-xl w-16 h-16 rounded-full shadow-white"> <img src="../assets/girl.png" alt="avatar"
-                                    class="w-16 h-16 rounded-full object-cover ring-4 ring-slate-800 " /></div>
-
-                            <div class="flex-1 text-center">
-                                <h3 class="text-lg font-semibold mb-4">Boushra El Obeid</h3>
-                                <p class="text-sm text-slate-400 mb-4">Apprentices</p>
-                                <div class="flex flex-nowrap justify-between items-center">
-                                    <span class="text-slate-400 font-medium">LACPA ID</span>
-                                    <span class="text-white font-medium">3666</span>
+                        <!-- State 2: Biography/Description -->
+                        <div class="card-content card-state-2 absolute inset-0 p-4 opacity-0"
+                            style="pointer-events: none;">
+                            <div class="flex flex-col h-full">
+                                <div class="flex items-center justify-center mb-3">
+                                    <i class="fas fa-align-left text-sky-400 text-xl"></i>
                                 </div>
 
+                                <div class="flex-1 overflow-y-auto">
+                                    <p class="text-slate-300 text-xs leading-relaxed text-center">
+                                        Elie Georges Abboud is the President of his organization. He is recognized as a
+                                        strong and respected leader. 
+                                    </p>
+                                </div>
 
+                                <!-- Navigation: Back only -->
+                                <div class="flex justify-start mt-3">
+                                    <button
+                                        class="nav-arrow nav-back p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-sky-500"
+                                        aria-label="Previous">
+                                        <i class="fas fa-arrow-left text-sky-400 text-sm"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </article>
                 </div>
+            </main>
+
         </div>
+    </div>
 
 
 
-        <!-- Pagination -->
-        <div class="py-4 flex justify-center items-center gap-3 bg-[#0A0A0A]">
-            <button class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700">&lt;</button>
-            <div class="flex gap-2 
+    <!-- Pagination -->
+    <div class="py-4 flex justify-center items-center gap-3 bg-[rgba(32, 32, 32, 1)]">
+        <button class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700">&lt;</button>
+        <div class="flex gap-2 
         ">
-                <button class="w-9 h-9 rounded-full bg-sky-600">1</button>
-                <button class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700">2</button>
-                <button class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700">3</button>
-                <button class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700">4</button>
-                <button class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700">5</button>
-            </div>
-            <button class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700">&gt;</button>
+            <button class="w-9 h-9 rounded-full bg-sky-600">1</button>
+            <button class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700">2</button>
+            <button class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700">3</button>
+            <button class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700">4</button>
+            <button class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700">5</button>
         </div>
+        <button class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700">&gt;</button>
+    </div>
 
 
-        </main>
-        <!-- Footer loaded with HTMX -->
-        <div hx-get="components/footer.html" hx-trigger="load"></div>
+    </main>
+    <!-- Footer loaded with HTMX -->
+    </div>
 
-        <!-- Initialize Splide Carousels -->
-        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <!-- Initialize Splide Carousels -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-        <!-- Custom JavaScript for HTMX response handling -->
-        <script src="../js/app.js"></script>
+    <!-- Custom JavaScript for HTMX response handling -->
+    <script src="../js/app.js"></script>
+
+    <!-- Member Card Navigation Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Initialize all member cards
+            const cards = document.querySelectorAll('.member-card');
+
+            cards.forEach(card => {
+                let currentState = 0;
+                const maxStates = 2; // 0, 1, 2 = 3 states total
+
+                // Get all state elements
+                const states = [
+                    card.querySelector('.card-state-0'),
+                    card.querySelector('.card-state-1'),
+                    card.querySelector('.card-state-2')
+                ];
+
+                // Function to update card state with animation
+                function updateCardState(newState) {
+                    if (newState < 0 || newState > maxStates) return;
+
+                    const currentStateEl = states[currentState];
+                    const newStateEl = states[newState];
+
+                    // Fade out current state
+                    currentStateEl.classList.add('fade-out');
+                    currentStateEl.classList.remove('fade-in');
+
+                    // Use Anime.js for smooth transition
+                    anime({
+                        targets: currentStateEl,
+                        opacity: 0,
+                        scale: 0.95,
+                        duration: 300,
+                        easing: 'easeInOutQuad',
+                        complete: function () {
+                            currentStateEl.style.pointerEvents = 'none';
+                            currentStateEl.style.position = 'absolute';
+
+                            // Fade in new state
+                            newStateEl.style.position = 'relative';
+                            newStateEl.style.pointerEvents = 'auto';
+                            newStateEl.classList.remove('fade-out');
+                            newStateEl.classList.add('fade-in');
+
+                            anime({
+                                targets: newStateEl,
+                                opacity: [0, 1],
+                                scale: [0.95, 1],
+                                duration: 300,
+                                easing: 'easeOutQuad'
+                            });
+                        }
+                    });
+
+                    currentState = newState;
+                    card.dataset.state = currentState;
+                }
+
+                // Event delegation for navigation buttons
+                card.addEventListener('click', function (e) {
+                    const target = e.target.closest('.nav-arrow, .share-btn, .close-share');
+                    if (!target) return;
+
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Add click animation for buttons
+                    anime({
+                        targets: target,
+                        scale: [1, 0.9, 1],
+                        duration: 200,
+                        easing: 'easeInOutQuad'
+                    });
+
+                    // Handle share button
+                    if (target.classList.contains('share-btn')) {
+                        const shareOverlay = card.querySelector('.share-overlay');
+                        shareOverlay.style.pointerEvents = 'auto';
+                        anime({
+                            targets: shareOverlay,
+                            opacity: [0, 1],
+                            scale: [0.95, 1],
+                            duration: 400,
+                            easing: 'easeOutQuad'
+                        });
+                    }
+                    // Handle close share button
+                    else if (target.classList.contains('close-share')) {
+                        const shareOverlay = card.querySelector('.share-overlay');
+                        anime({
+                            targets: shareOverlay,
+                            opacity: 0,
+                            scale: 0.95,
+                            duration: 300,
+                            easing: 'easeInQuad',
+                            complete: function () {
+                                shareOverlay.style.pointerEvents = 'none';
+                            }
+                        });
+                    }
+                    // Handle navigation
+                    else if (target.classList.contains('nav-forward')) {
+                        // Move forward
+                        if (currentState < maxStates) {
+                            updateCardState(currentState + 1);
+                        }
+                    } else if (target.classList.contains('nav-back')) {
+                        // Move backward
+                        if (currentState > 0) {
+                            updateCardState(currentState - 1);
+                        }
+                    }
+                });
+
+                // Initialize first state
+                states[0].style.position = 'relative';
+                states[0].style.pointerEvents = 'auto';
+            });
+        });
+    </script>
 </body>
+<div hx-get="components/footer.html" hx-trigger="load"></div>
 
 </html>

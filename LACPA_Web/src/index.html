@@ -58,11 +58,11 @@
                 <!-- Desktop nav items -->
                 <ul
                     class="hidden md:flex gap-4 lg:gap-8 justify-between items-center w-full text-white text-sm lg:text-lg font-medium tracking-tight">
-                    <li><a class="nav-link active px-1 lg:px-2 py-1" hx-get="main/landing" hx-trigger="click"
+                    <li><a class="nav-link active px-1 lg:px-2 py-1" hx-get="http://localhost:3000/api/main/landing/" hx-trigger="click"
                             hx-swap="innerHTML" hx-target="#main-div">Home</a></li>
                     <li><a class="nav-link px-1 lg:px-2 py-1" hx-get="main/discover" hx-trigger="click"
                             hx-swap="innerHTML" hx-target="#main-div">Discover LACPA</a></li>
-                    <li><a class="nav-link px-1 lg:px-2 py-1" hx-get="main/membership" hx-trigger="click"
+                    <li><a class="nav-link px-1 lg:px-2 py-1" hx-get="http://localhost:3000/members/individuals" hx-trigger="click"
                             hx-swap="innerHTML" hx-target="#main-div">Membership</a></li>
                     <li><a class="nav-link px-1 lg:px-2 py-1" hx-get="main/events" hx-trigger="click"
                             hx-swap="innerHTML" hx-target="#main-div">Events &amp; News</a></li>
@@ -92,12 +92,12 @@
             <div class="md:hidden hidden absolute top-full left-4 right-4 mt-2 nav-pill rounded-lg px-4 py-4 z-50"
                 id="mobile-menu">
                 <ul class="space-y-3 text-white">
-                    <li><a hx-get="main/landing" hx-trigger="click" hx-swap="innerHTML" hx-target="#main-div"
+                    <li><a hx-get="http://localhost:3000/api/main/landing/" hx-trigger="click" hx-swap="innerHTML" hx-target="#main-div"
                             class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Home</a></li>
                     <li><a hx-get="main/discover" hx-trigger="click" hx-swap="innerHTML" hx-target="#main-div"
                             class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Discover
                             LACPA</a></li>
-                    <li><a hx-get="main/membership" hx-trigger="click" hx-swap="innerHTML" hx-target="#main-div"
+                    <li><a hx-get="http://localhost:3000/members/individuals" hx-trigger="click" hx-swap="innerHTML" hx-target="#main-div"
                             class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Membership</a></li>
                     <li>
                         <a hx-get="main/events" hx-trigger="click" hx-swap="innerHTML" hx-target="#main-div"

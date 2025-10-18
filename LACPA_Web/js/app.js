@@ -469,3 +469,153 @@ document.addEventListener('htmx:afterSwap', function(event) {
 document.addEventListener('htmx:afterSettle', function(event) {
     setTimeout(initializeSplideCarousels, 100);
 });
+
+// ========================================
+// MEMBER CARD NAVIGATION
+// ========================================
+
+// Member Card Navigation - Initialize after HTMX swap or DOMContentLoaded
+function initializeMemberCards() {
+    // Initialize all member cards
+    const cards = document.querySelectorAll('.member-card');
+
+    cards.forEach(card => {
+        // Skip if already initialized to prevent duplicate event listeners
+        if (card.dataset.initialized === 'true') return;
+        card.dataset.initialized = 'true';
+
+        let currentState = 0;
+        const maxStates = 2; // 0, 1, 2 = 3 states total
+
+        // Get all state elements
+        const states = [
+            card.querySelector('.card-state-0'),
+            card.querySelector('.card-state-1'),
+            card.querySelector('.card-state-2')
+        ];
+
+        // Function to update card state with animation
+        function updateCardState(newState) {
+            if (newState < 0 || newState > maxStates) return;
+
+            const currentStateEl = states[currentState];
+            const newStateEl = states[newState];
+
+            // Fade out current state
+            currentStateEl.classList.add('fade-out');
+            currentStateEl.classList.remove('fade-in');
+
+            // Use Anime.js for smooth transition
+            anime({
+                targets: currentStateEl,
+                opacity: 0,
+                scale: 0.95,
+                duration: 300,
+                easing: 'easeInOutQuad',
+                complete: function () {
+                    currentStateEl.style.pointerEvents = 'none';
+                    currentStateEl.style.position = 'absolute';
+
+                    // Fade in new state
+                    newStateEl.style.position = 'relative';
+                    newStateEl.style.pointerEvents = 'auto';
+                    newStateEl.classList.remove('fade-out');
+                    newStateEl.classList.add('fade-in');
+
+                    anime({
+                        targets: newStateEl,
+                        opacity: [0, 1],
+                        scale: [0.95, 1],
+                        duration: 300,
+                        easing: 'easeOutQuad'
+                    });
+                }
+            });
+
+            currentState = newState;
+            card.dataset.state = currentState;
+        }
+
+        // Event delegation for navigation buttons
+        card.addEventListener('click', function (e) {
+            const target = e.target.closest('.nav-arrow, .share-btn, .close-share');
+            if (!target) return;
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            // Add click animation for buttons
+            anime({
+                targets: target,
+                scale: [1, 0.9, 1],
+                duration: 200,
+                easing: 'easeInOutQuad'
+            });
+
+            // Handle share button
+            if (target.classList.contains('share-btn')) {
+                const shareOverlay = card.querySelector('.share-overlay');
+                shareOverlay.style.pointerEvents = 'auto';
+                anime({
+                    targets: shareOverlay,
+                    opacity: [0, 1],
+                    scale: [0.95, 1],
+                    duration: 400,
+                    easing: 'easeOutQuad'
+                });
+            }
+            // Handle close share button
+            else if (target.classList.contains('close-share')) {
+                const shareOverlay = card.querySelector('.share-overlay');
+                anime({
+                    targets: shareOverlay,
+                    opacity: 0,
+                    scale: 0.95,
+                    duration: 300,
+                    easing: 'easeInQuad',
+                    complete: function () {
+                        shareOverlay.style.pointerEvents = 'none';
+                    }
+                });
+            }
+            // Handle navigation
+            else if (target.classList.contains('nav-forward')) {
+                // Move forward
+                if (currentState < maxStates) {
+                    updateCardState(currentState + 1);
+                }
+            } else if (target.classList.contains('nav-back')) {
+                // Move backward
+                if (currentState > 0) {
+                    updateCardState(currentState - 1);
+                }
+            }
+        });
+
+        // Initialize first state
+        states[0].style.position = 'relative';
+        states[0].style.pointerEvents = 'auto';
+    });
+}
+
+// Initialize on DOMContentLoaded (for direct page loads)
+document.addEventListener('DOMContentLoaded', function() {
+    initializeMemberCards();
+});
+
+// Re-initialize after HTMX swaps content
+document.body.addEventListener('htmx:afterSwap', function(event) {
+    // Check if the swapped content contains member cards
+    const target = event.detail.target;
+    if (target.querySelector('.member-card') || target.classList.contains('member-card')) {
+        initializeMemberCards();
+    }
+});
+
+// Also handle htmx:load event for additional safety
+document.body.addEventListener('htmx:load', function(event) {
+    const element = event.detail.elt;
+    if (element.querySelector('.member-card') || element.classList.contains('member-card')) {
+        initializeMemberCards();
+    }
+});

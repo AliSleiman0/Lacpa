@@ -246,7 +246,7 @@
    ========================================== */
 /* Navigation pill styling with glassmorphism */
 .nav-pill {
-    background: rgba(22, 24, 28, 0.55);
+    background: rgba(8, 9, 10, 0.55);
     box-shadow: 0 6px 20px rgba(10, 11, 13, 0.6);
     backdrop-filter: blur(6px);
 }

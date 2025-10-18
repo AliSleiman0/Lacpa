@@ -26,5 +26,5 @@ func (h *MainPageHandler) RenderPage(c *fiber.Ctx) error {
 	}
 
 	// Render with layout
-	return c.Render("LACPA/main_LACPA/index", data, "layouts/main")
+	return c.Render("LACPA/main_LACPA/index", data)
 }

@@ -1,7 +1,6 @@
 package repository
 
 import (
-	
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -43,9 +42,11 @@ func NewMainRepository(db *mongo.Database) MainRepository {
 //	users, err := repo.GetAllUsers(ctx)
 type Repository interface {
 	MainRepository
+	CouncilRepository
 }
 type MongoRepositoryManager struct {
 	MainRepository
+	CouncilRepository
 	// Future repositories will be added here as embedded interfaces
 	// ItemRepository
 	// UserRepository
@@ -53,7 +54,8 @@ type MongoRepositoryManager struct {
 
 func NewMongoRepository(db *mongo.Database) Repository {
 	return &MongoRepositoryManager{
-		MainRepository: NewMainRepository(db),
+		MainRepository:    NewMainRepository(db),
+		CouncilRepository: NewCouncilRepository(db),
 		// Future repositories will be initialized here:
 		// OrderRepository: NewOrderRepository(db),
 	}
