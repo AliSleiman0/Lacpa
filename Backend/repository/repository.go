@@ -43,10 +43,14 @@ func NewMainRepository(db *mongo.Database) MainRepository {
 type Repository interface {
 	MainRepository
 	CouncilRepository
+	EventRepository
+	MembersRepository
 }
 type MongoRepositoryManager struct {
 	MainRepository
 	CouncilRepository
+	EventRepository
+	MembersRepository
 	// Future repositories will be added here as embedded interfaces
 	// ItemRepository
 	// UserRepository
@@ -56,6 +60,8 @@ func NewMongoRepository(db *mongo.Database) Repository {
 	return &MongoRepositoryManager{
 		MainRepository:    NewMainRepository(db),
 		CouncilRepository: NewCouncilRepository(db),
+		EventRepository:   NewEventRepository(db),
+		MembersRepository: NewMembersRepository(db),
 		// Future repositories will be initialized here:
 		// OrderRepository: NewOrderRepository(db),
 	}

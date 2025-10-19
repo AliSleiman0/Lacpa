@@ -1,3 +1,15 @@
+// Wrap entire application in IIFE to prevent duplicate execution and global scope pollution
+(function() {
+    'use strict';
+    
+    // Prevent multiple initializations - single source of truth
+    if (window.lacpaAppInitialized) {
+        console.log('[LACPA] App already initialized, preventing duplicate execution');
+        return;
+    }
+    window.lacpaAppInitialized = true;
+    console.log('[LACPA] Initializing app...');
+
 // Custom HTMX event handlers and utilities
 
 // Handle HTMX responses for items list
@@ -62,12 +74,76 @@ function escapeHtml(text) {
 // NAVIGATION JAVASCRIPT & ANIMATIONS
 // ========================================
 
-// Simple keyboard focus style for links
+// Load correct content based on current URL path
+function loadPageFromURL() {
+    const path = window.location.pathname;
+    const search = window.location.search; // Get query parameters like ?page=2
+    const mainDiv = document.getElementById('main-div');
+    
+    if (!mainDiv) {
+        console.error('main-div not found');
+        return;
+    }
+    
+    // Ensure HTMX is loaded before using it
+    if (typeof htmx === 'undefined') {
+        console.error('HTMX not loaded, retrying...');
+        setTimeout(loadPageFromURL, 100);
+        return;
+    }
+    
+    // Map URL paths to API endpoints
+    const routeMap = {
+        '/': 'http://localhost:3000/api/main/landing/',
+        '/discover': 'http://localhost:3000/main/discover',
+        '/membership': 'http://localhost:3000/membership',
+        '/members/individuals': 'http://localhost:3000/membership', // Legacy support
+        '/membership/apply-now': 'http://localhost:3000/membership/apply-now',
+        '/membership/firms': 'http://localhost:3000/membership/firms',
+        '/events': 'http://localhost:3000/events',
+        '/academy': 'http://localhost:3000/main/academy',
+        // Discover sub-routes
+        '/discover/president-letter': 'http://localhost:3000/discover/president-letter',
+        '/discover/board-of-directors': 'http://localhost:3000/discover/board-of-directors',
+        '/discover/vision-mission': 'http://localhost:3000/discover/vision-mission',
+        '/discover/regulation': 'http://localhost:3000/discover/regulation',
+        '/discover/pension-fund': 'http://localhost:3000/discover/pension-fund',
+        '/discover/mutual-fund': 'http://localhost:3000/discover/mutual-fund'
+    };
+    
+    // Get the endpoint for current path, default to home
+    let endpoint = routeMap[path] || routeMap['/'];
+    
+    // Append query parameters if they exist (for pagination, filters, etc.)
+    if (search) {
+        endpoint += search;
+    }
+    
+    console.log('Loading from:', endpoint);
+    
+    // Use HTMX to load the content
+    htmx.ajax('GET', endpoint, {
+        target: '#main-div',
+        swap: 'innerHTML'
+    });
+}
+
+// ALWAYS wait for DOMContentLoaded - fixes race condition with cached pages
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('[LACPA] DOMContentLoaded fired, loading page...');
+    loadPageFromURL();
+    
+    // Keyboard focus styles
     document.querySelectorAll('a').forEach(a => {
         a.addEventListener('focus', () => a.classList.add('ring-2', 'ring-white/25', 'rounded'));
         a.addEventListener('blur', () => a.classList.remove('ring-2', 'ring-white/25', 'rounded'));
     });
+});
+
+// Handle browser back/forward buttons
+window.addEventListener('popstate', function(event) {
+    console.log('[LACPA] Popstate event, loading page...');
+    loadPageFromURL();
 });
 
 // Anime.js navigation glow animation
@@ -232,6 +308,37 @@ document.addEventListener('DOMContentLoaded', initScrollNavigation);
 // MOBILE MENU FUNCTIONALITY
 // ========================================
 
+// Mobile dropdown toggle function (global for onclick)
+window.toggleMobileDropdown = function(event, dropdownId) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const button = event.currentTarget;
+    const dropdown = document.getElementById(dropdownId);
+    
+    if (!dropdown) return;
+    
+    // Toggle the dropdown
+    const isVisible = dropdown.classList.contains('show');
+    
+    if (isVisible) {
+        dropdown.classList.remove('show');
+        button.classList.remove('active');
+    } else {
+        // Close all other dropdowns first
+        document.querySelectorAll('.mobile-dropdown').forEach(d => {
+            d.classList.remove('show');
+        });
+        document.querySelectorAll('.mobile-dropdown-toggle').forEach(b => {
+            b.classList.remove('active');
+        });
+        
+        // Open this dropdown
+        dropdown.classList.add('show');
+        button.classList.add('active');
+    }
+};
+
 function initializeMobileMenu() {
     const menuBtn = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
@@ -290,6 +397,24 @@ function initializeMobileMenu() {
                 if (menuIcon) menuIcon.classList.remove('hidden');
                 if (closeIcon) closeIcon.classList.add('hidden');
             }
+        }
+    });
+    
+    // Close menu when clicking on any navigation link (including dropdowns)
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('dropdown-link') || 
+            e.target.classList.contains('mobile-dropdown-link') ||
+            (e.target.closest('a') && e.target.closest('a').hasAttribute('hx-get'))) {
+            // Close mobile menu after a short delay to allow HTMX to process
+            setTimeout(() => {
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                    menuBtn.setAttribute('aria-expanded', 'false');
+                    menuBtn.setAttribute('aria-label', 'Open main menu');
+                    if (menuIcon) menuIcon.classList.remove('hidden');
+                    if (closeIcon) closeIcon.classList.add('hidden');
+                }
+            }, 100);
         }
     });
 }
@@ -619,3 +744,81 @@ document.body.addEventListener('htmx:load', function(event) {
         initializeMemberCards();
     }
 });
+
+// ========================================
+// EVENT PAGE TAB FILTERING
+// ========================================
+
+// Event category tab filtering
+function initializeEventTabs() {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const eventCards = document.querySelectorAll('.event-card');
+
+    if (tabButtons.length === 0 || eventCards.length === 0) return;
+
+    tabButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const category = this.getAttribute('data-category');
+
+            // Update active tab
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active', 'text-white');
+                btn.classList.add('text-slate-400');
+            });
+            this.classList.add('active', 'text-white');
+            this.classList.remove('text-slate-400');
+
+            // Filter event cards with animation
+            eventCards.forEach(card => {
+                const cardCategory = card.getAttribute('data-category');
+                
+                if (category === 'all' || cardCategory === category) {
+                    // Show card with fade-in animation
+                    card.style.display = 'block';
+                    anime({
+                        targets: card,
+                        opacity: [0, 1],
+                        scale: [0.95, 1],
+                        duration: 400,
+                        easing: 'easeOutQuad'
+                    });
+                } else {
+                    // Hide card with fade-out animation
+                    anime({
+                        targets: card,
+                        opacity: 0,
+                        scale: 0.95,
+                        duration: 300,
+                        easing: 'easeInQuad',
+                        complete: function() {
+                            card.style.display = 'none';
+                        }
+                    });
+                }
+            });
+        });
+    });
+}
+
+// Initialize on DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+    initializeEventTabs();
+});
+
+// Re-initialize after HTMX swaps content
+document.body.addEventListener('htmx:afterSwap', function(event) {
+    const target = event.detail.target;
+    if (target.querySelector('.tab-button') || target.querySelector('.event-card')) {
+        initializeEventTabs();
+    }
+    
+    // Scroll to top of events section after pagination
+    if (target.id === 'main-div') {
+        setTimeout(() => {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    }
+});
+
+// End of IIFE - execute immediately
+})();

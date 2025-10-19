@@ -9,7 +9,11 @@ import (
 // SetupMembersRoutes configures all members page routes
 func SetupMembersRoutes(app *fiber.App, repo repository.Repository) {
 	membersHandler := handler.NewMembersHandler(repo)
+	councilHandler := handler.NewCouncilHandler(repo)
 
-	// Members page routes
+	// Members page routes - support both URL patterns
 	app.Get("/members/individuals", membersHandler.GetIndividualsPage)
+	app.Get("/membership", membersHandler.GetIndividualsPage)                   // Clean URL alias
+	app.Get("/membership/firms", membersHandler.GetFirmsPage)                   // Firms page
+	app.Get("/discover/board-of-directors", councilHandler.GetBoardMembersPage) // Board members page
 }

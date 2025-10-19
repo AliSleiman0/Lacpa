@@ -266,3 +266,48 @@ func (h *CouncilHandler) GetAvailablePositions(c *fiber.Ctx) error {
 
 	return utils.SendSuccess(c, "Available positions retrieved successfully", available)
 }
+
+// GetBoardMembersPage renders the board members HTML page
+func (h *CouncilHandler) GetBoardMembersPage(c *fiber.Ctx) error {
+	// Check if this is an HTMX request (fragment) or browser request (need full page)
+	if c.Get("HX-Request") != "true" {
+		// Browser request - serve index.html and let JavaScript load the content
+		return c.SendFile("../LACPA_Web/src/index.html")
+	}
+
+	// Get all councils
+	councils, err := h.repo.GetAllCouncils(c.Context())
+	if err != nil {
+		// If error, render with empty data
+		return c.Render("LACPA/board_members/index", fiber.Map{
+			"Title":    "Board Members",
+			"Councils": []interface{}{},
+		})
+	}
+
+	// Get composition with details for each council
+	type CouncilWithMembers struct {
+		Council     models.Council
+		Composition *models.CouncilCompositionWithDetails
+	}
+
+	councilsWithMembers := make([]CouncilWithMembers, 0)
+	for _, council := range councils {
+		composition, err := h.repo.GetCouncilCompositionWithDetails(c.Context(), council.ID)
+		if err != nil {
+			// Skip if error getting composition
+			continue
+		}
+
+		councilsWithMembers = append(councilsWithMembers, CouncilWithMembers{
+			Council:     council,
+			Composition: composition,
+		})
+	}
+
+	// Render the board members page template
+	return c.Render("LACPA/board_members/board", fiber.Map{
+		"Title":    "Board Members",
+		"Councils": councilsWithMembers,
+	})
+}

@@ -196,10 +196,9 @@ func (r *councilRepository) GetCouncilCompositionWithDetails(ctx context.Context
 		CouncilName: council.Name,
 	}
 
-	// Get all active positions for this council with member details
+	// Get all positions for this council (active or inactive)
 	cursor, err := r.positionCollection.Find(ctx, bson.M{
 		"council_id": councilID,
-		"is_active":  true,
 	})
 	if err != nil {
 		return nil, err
