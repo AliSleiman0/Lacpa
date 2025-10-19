@@ -1,31 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<!-- ========================================
-     HEAD SECTION - Meta, Stylesheets, Scripts
-     ======================================== -->
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lacpa - Item Management</title>
+    <title>Lacpa</title>
 
     <!-- External CSS Libraries -->
     <!-- Flag Icons CSS -->
-    <link rel="stylesheet" href="../node_modules/flag-icons/css/flag-icons.min.css">
+    <link rel="stylesheet" href="/node_modules/flag-icons/css/flag-icons.min.css">
 
     <!-- FontAwesome CSS -->
-    <link rel="stylesheet" href="../node_modules/@fortawesome/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css">
 
     <!-- Splide CSS -->
-    <link rel="stylesheet" href="../node_modules/@splidejs/splide/dist/css/splide.min.css">
+    <link rel="stylesheet" href="/node_modules/@splidejs/splide/dist/css/splide.min.css">
 
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
         integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="index.css">
+    <link rel="stylesheet" href="/src/index.css">
 
     <!-- JavaScript Libraries -->
     <!-- Tailwind CSS CDN -->
@@ -35,45 +31,135 @@
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
 
     <!-- Splide JavaScript -->
-    <script src="../node_modules/@splidejs/splide/dist/js/splide.min.js"></script>
+    <script src="/node_modules/@splidejs/splide/dist/js/splide.min.js"></script>
 
     <!-- Anime.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
 
-
 </head>
-
 <!-- ========================================
      BODY SECTION - Main Content
-     ======================================== -->
+ ======================================== -->
 
 <body class="min-h-screen bg-[#202020] bg-cover relative">
     <!-- ========================================
          HEADER SECTION
          ======================================== -->
-    <div hx-get="components/header.html" hx-swap="innerHTML" hx-trigger="load"></div>
-
+    <div hx-get="/src/components/header.html" hx-swap="innerHTML" hx-trigger="load"></div>
     <!-- ========================================
          NAVIGATION SECTION
          ======================================== -->
     <!-- Navigation container with positioning context -->
     <div class="relative">
-        <nav class="nav-static z-50 " id="main-nav">
+        <nav class="nav-static z-50 fixed" id="main-nav">
             <div class="relative nav-pill rounded-full px-3 md:px-6 py-3 flex items-center nav-content">
-
                 <!-- animated traveling glow -->
                 <div class="nav-glow" id="traveling-glow" aria-hidden="true"></div>
-
                 <!-- Desktop nav items -->
                 <ul
                     class="hidden md:flex gap-4 lg:gap-8 justify-between items-center w-full text-white text-sm lg:text-lg font-medium tracking-tight">
-                    <li><a href="#" class="nav-link active px-1 lg:px-2 py-1">Home</a></li>
-                    <li><a href="#" class="nav-link px-1 lg:px-2 py-1">Discover LACPA</a></li>
-                    <li><a href="#" class="nav-link px-1 lg:px-2 py-1">Membership</a></li>
-                    <li><a href="#" class="nav-link px-1 lg:px-2 py-1">Events &amp; News</a></li>
-                    <li><a href="#" class="nav-link px-1 lg:px-2 py-1">Academy</a></li>
+                    <!-- Home -->
+                    <li><a class="nav-link px-1 lg:px-2 py-1" 
+                            hx-get="http://localhost:3000/api/main/landing/" 
+                            hx-trigger="click"
+                            hx-swap="innerHTML" 
+                            hx-target="#main-div"
+                            hx-push-url="/">Home</a></li>
+                    
+                    <!-- Discover LACPA with Dropdown -->
+                    <li class="nav-item">
+                        <a class="nav-link px-1 lg:px-2 py-1" 
+                            hx-get="http://localhost:3000/main/discover" 
+                            hx-trigger="click"
+                            hx-swap="innerHTML" 
+                            hx-target="#main-div"
+                            hx-push-url="/discover">
+                            Discover LACPA
+                            <span class="dropdown-arrow">▼</span>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a href="#" class="dropdown-link" 
+                                hx-get="http://localhost:3000/discover/president-letter" 
+                                hx-trigger="click"
+                                hx-swap="innerHTML" 
+                                hx-target="#main-div"
+                                hx-push-url="/discover/president-letter">President Letter</a>
+                            <a href="#" class="dropdown-link" 
+                                hx-get="http://localhost:3000/discover/board-of-directors" 
+                                hx-trigger="click"
+                                hx-swap="innerHTML" 
+                                hx-target="#main-div"
+                                hx-push-url="/discover/board-of-directors">Board of Directors</a>
+                            <a href="#" class="dropdown-link" 
+                                hx-get="http://localhost:3000/discover/vision-mission" 
+                                hx-trigger="click"
+                                hx-swap="innerHTML" 
+                                hx-target="#main-div"
+                                hx-push-url="/discover/vision-mission">Vision and Mission</a>
+                            <a href="#" class="dropdown-link" 
+                                hx-get="http://localhost:3000/discover/regulation" 
+                                hx-trigger="click"
+                                hx-swap="innerHTML" 
+                                hx-target="#main-div"
+                                hx-push-url="/discover/regulation">Regulation</a>
+                            <a href="#" class="dropdown-link" 
+                                hx-get="http://localhost:3000/discover/pension-fund" 
+                                hx-trigger="click"
+                                hx-swap="innerHTML" 
+                                hx-target="#main-div"
+                                hx-push-url="/discover/pension-fund">Pension Fund</a>
+                            <a href="#" class="dropdown-link" 
+                                hx-get="http://localhost:3000/discover/mutual-fund" 
+                                hx-trigger="click"
+                                hx-swap="innerHTML" 
+                                hx-target="#main-div"
+                                hx-push-url="/discover/mutual-fund">Mutual Fund</a>
+                        </div>
+                    </li>
+                    
+                    <!-- Membership with Dropdown -->
+                    <li class="nav-item">
+                        <a class="nav-link px-1 lg:px-2 py-1" 
+                            hx-get="http://localhost:3000/membership" 
+                            hx-trigger="click"
+                            hx-swap="innerHTML" 
+                            hx-target="#main-div"
+                            hx-push-url="/membership">
+                            Membership
+                            <span class="dropdown-arrow">▼</span>
+                        </a>
+                        <div class="dropdown-menu">
+                            <a href="#" class="dropdown-link" 
+                                hx-get="http://localhost:3000/membership" 
+                                hx-trigger="click"
+                                hx-swap="innerHTML" 
+                                hx-target="#main-div"
+                                hx-push-url="/membership">Members</a>
+                            <a href="#" class="dropdown-link" 
+                                hx-get="http://localhost:3000/membership/apply-now" 
+                                hx-trigger="click"
+                                hx-swap="innerHTML" 
+                                hx-target="#main-div"
+                                hx-push-url="/membership/apply-now">Apply Now</a>
+                        </div>
+                    </li>
+                    
+                    <!-- Events & News -->
+                    <li><a class="nav-link px-1 lg:px-2 py-1" 
+                            hx-get="http://localhost:3000/events" 
+                            hx-trigger="click"
+                            hx-swap="innerHTML" 
+                            hx-target="#main-div"
+                            hx-push-url="/events">Events &amp; News</a></li>
+                    
+                    <!-- Academy -->
+                    <li><a class="nav-link px-1 lg:px-2 py-1" 
+                            hx-get="http://localhost:3000/main/academy" 
+                            hx-trigger="click"
+                            hx-swap="innerHTML" 
+                            hx-target="#main-div"
+                            hx-push-url="/academy">Academy</a></li>
                 </ul>
-
                 <!-- Mobile menu button -->
                 <div class="md:hidden flex items-center justify-between w-full">
                     <span class="text-white font-medium">LACPA</span>
@@ -93,53 +179,125 @@
                     </button>
                 </div>
             </div>
-
             <!-- Mobile menu -->
             <div class="md:hidden hidden absolute top-full left-4 right-4 mt-2 nav-pill rounded-lg px-4 py-4 z-50"
                 id="mobile-menu">
                 <ul class="space-y-3 text-white">
-                    <li><a href="#" class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Home</a></li>
-                    <li><a href="#" class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Discover
-                            LACPA</a></li>
-                    <li><a href="#"
-                            class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Membership</a></li>
-                    <li><a href="#" class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Events &amp;
-                            News</a></li>
-                    <li><a href="#" class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Academy</a>
+                    <!-- Home -->
+                    <li><a hx-get="http://localhost:3000/api/main/landing/" 
+                            hx-trigger="click" 
+                            hx-swap="innerHTML" 
+                            hx-target="#main-div"
+                            hx-push-url="/"
+                            class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Home</a></li>
+                    
+                    <!-- Discover LACPA with Mobile Dropdown -->
+                    <li>
+                        <button class="mobile-dropdown-toggle block px-3 py-2 rounded-md hover:bg-white/10 transition-colors w-full text-left"
+                                onclick="toggleMobileDropdown(event, 'discover-dropdown')">
+                            <span>Discover LACPA</span>
+                            <span class="mobile-dropdown-arrow">▼</span>
+                        </button>
+                        <div id="discover-dropdown" class="mobile-dropdown">
+                            <a href="#" class="mobile-dropdown-link"
+                                hx-get="http://localhost:3000/discover/president-letter" 
+                                hx-trigger="click"
+                                hx-swap="innerHTML" 
+                                hx-target="#main-div"
+                                hx-push-url="/discover/president-letter">President Letter</a>
+                            <a href="#" class="mobile-dropdown-link"
+                                hx-get="http://localhost:3000/discover/board-of-directors" 
+                                hx-trigger="click"
+                                hx-swap="innerHTML" 
+                                hx-target="#main-div"
+                                hx-push-url="/discover/board-of-directors">Board of Directors</a>
+                            <a href="#" class="mobile-dropdown-link"
+                                hx-get="http://localhost:3000/discover/vision-mission" 
+                                hx-trigger="click"
+                                hx-swap="innerHTML" 
+                                hx-target="#main-div"
+                                hx-push-url="/discover/vision-mission">Vision and Mission</a>
+                            <a href="#" class="mobile-dropdown-link"
+                                hx-get="http://localhost:3000/discover/regulation" 
+                                hx-trigger="click"
+                                hx-swap="innerHTML" 
+                                hx-target="#main-div"
+                                hx-push-url="/discover/regulation">Regulation</a>
+                            <a href="#" class="mobile-dropdown-link"
+                                hx-get="http://localhost:3000/discover/pension-fund" 
+                                hx-trigger="click"
+                                hx-swap="innerHTML" 
+                                hx-target="#main-div"
+                                hx-push-url="/discover/pension-fund">Pension Fund</a>
+                            <a href="#" class="mobile-dropdown-link"
+                                hx-get="http://localhost:3000/discover/mutual-fund" 
+                                hx-trigger="click"
+                                hx-swap="innerHTML" 
+                                hx-target="#main-div"
+                                hx-push-url="/discover/mutual-fund">Mutual Fund</a>
+                        </div>
+                    </li>
+                    
+                    <!-- Membership with Mobile Dropdown -->
+                    <li>
+                        <button class="mobile-dropdown-toggle block px-3 py-2 rounded-md hover:bg-white/10 transition-colors w-full text-left"
+                                onclick="toggleMobileDropdown(event, 'membership-dropdown')">
+                            <span>Membership</span>
+                            <span class="mobile-dropdown-arrow">▼</span>
+                        </button>
+                        <div id="membership-dropdown" class="mobile-dropdown">
+                            <a href="#" class="mobile-dropdown-link"
+                                hx-get="http://localhost:3000/membership" 
+                                hx-trigger="click"
+                                hx-swap="innerHTML" 
+                                hx-target="#main-div"
+                                hx-push-url="/membership">Members</a>
+                            <a href="#" class="mobile-dropdown-link"
+                                hx-get="http://localhost:3000/membership/apply-now" 
+                                hx-trigger="click"
+                                hx-swap="innerHTML" 
+                                hx-target="#main-div"
+                                hx-push-url="/membership/apply-now">Apply Now</a>
+                        </div>
+                    </li>
+                    
+                    <!-- Events & News -->
+                    <li>
+                        <a hx-get="http://localhost:3000/events" 
+                            hx-trigger="click" 
+                            hx-swap="innerHTML" 
+                            hx-target="#main-div"
+                            hx-push-url="/events"
+                            class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Events &amp; News</a>
+                    </li>
+                    
+                    <!-- Academy -->
+                    <li>
+                        <a hx-get="http://localhost:3000/main/academy" 
+                            hx-trigger="click" 
+                            hx-swap="innerHTML" 
+                            hx-target="#main-div"
+                            hx-push-url="/academy"
+                            class="block px-3 py-2 rounded-md hover:bg-white/10 transition-colors">Academy</a>
                     </li>
                 </ul>
             </div>
         </nav>
     </div>
 
-<div hx-get="pages/landing.html" hx-trigger="load"></div>
-    </div>
+    <!-- -------pages will be rendered here-------- -->
+    <div id="main-div"></div>
+    <!-- END-------pages will be rendered here-------- -->
 
-    <!-- ========================================
-         MAIN CONTENT SECTIONS
-         ======================================== -->
-    <!-- Main content container -->
-  
-
-    <!-- ========================================
-         FOOTER SECTION
-         ======================================== -->
     <!-- Footer loaded with HTMX -->
-    <div hx-get="components/footer.html" hx-trigger="load"></div>
-    </div>
+    <div hx-get="/src/components/footer.html" hx-trigger="load"></div>
 
-
-    <!-- ========================================
-         JAVASCRIPT SECTION
-         ======================================== -->
-
-    <!-- Map Library -->
     <!-- Initialize Splide Carousels -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
     <!-- Custom JavaScript for HTMX response handling -->
-    <script src="../js/app.js"></script>
+    <script src="/js/app.js"></script>
 </body>
 
 </html>

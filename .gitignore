@@ -37,3 +37,7 @@ lacpa
 # Air hot reload
 tmp/
 build-errors.log
+
+
+#node modules
+node_modules/

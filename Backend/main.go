@@ -41,8 +41,24 @@ func main() {
 	repo := repository.NewMongoRepository(database)
 
 	// Initialize HTML template engine
-	// Templates will be loaded from "./views" directory
-	engine := html.New("./views", ".html")
+	// Templates will be loaded from "./templates" directory
+	engine := html.New("./templates", ".html")
+
+	// Add template functions for pagination and helpers
+	engine.AddFunc("add", func(a, b int) int {
+		return a + b
+	})
+	engine.AddFunc("sub", func(a, b int) int {
+		return a - b
+	})
+	engine.AddFunc("iterate", func(count int) []int {
+		var i int
+		var items []int
+		for i = 0; i < count; i++ {
+			items = append(items, i)
+		}
+		return items
+	})
 
 	// Enable development mode for template reloading (optional)
 	if getEnv("APP_ENV", "development") == "development" {
@@ -60,11 +76,27 @@ func main() {
 	app.Use(logger.New())
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
-		AllowHeaders: "Origin, Content-Type, Accept",
+		AllowMethods: "GET, POST, PUT, DELETE, OPTIONS",
+		AllowHeaders: "Origin, Content-Type, Accept, Authorization, X-Requested-With, HX-Request, HX-Trigger, HX-Target, HX-Current-URL, HX-Boosted, HX-History-Restore-Request",
 	}))
 
-	// Serve static files from LACPA_Web
-	app.Static("/", "./LACPA_Web")
+	// Add no-cache headers for all static files during development
+	app.Use(func(c *fiber.Ctx) error {
+		// Set no-cache headers for JS, CSS, and HTML files
+		if getEnv("APP_ENV", "development") == "development" {
+			c.Set("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0")
+			c.Set("Pragma", "no-cache")
+			c.Set("Expires", "0")
+		}
+		return c.Next()
+	})
+
+	// Serve static files from LACPA_Web (parent directory)
+	// Disable caching for development
+	app.Static("/", "../LACPA_Web", fiber.Static{
+		CacheDuration: 0,
+		MaxAge:        0,
+	})
 
 	// Setup all API routes (includes health check and all endpoints)
 	routes.SetupRoutes(app, repo)

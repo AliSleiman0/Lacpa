@@ -4,6 +4,24 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+// MainRepository defines the interface for main page operations
+type MainRepository interface {
+	// Add methods as needed for main page functionality
+	// GetLandingPageData(ctx context.Context) (*models.LandingPage, error)
+}
+
+// mainRepository implements MainRepository interface
+type mainRepository struct {
+	db *mongo.Database
+}
+
+// NewMainRepository creates a new main repository instance
+func NewMainRepository(db *mongo.Database) MainRepository {
+	return &mainRepository{
+		db: db,
+	}
+}
+
 // Repository serves as the central orchestrator for all repository operations.
 //
 // ROLE: Aggregate Interface Pattern
@@ -23,55 +41,27 @@ import (
 //	items, err := repo.GetAllItems(ctx)
 //	users, err := repo.GetAllUsers(ctx)
 type Repository interface {
-	ItemRepository
-	UserRepository
-	// Future repositories will be added here:
-	// OrderRepository
+	MainRepository
+	CouncilRepository
+	EventRepository
+	MembersRepository
 }
-
-// MongoRepositoryManager implements the Repository interface and acts as a composition root, to be registered in main.go.
-//
-// ROLE: Composition Manager
-// - Implements the unified Repository interface by embedding all sub-repository interfaces
-// - Acts as a container that holds concrete implementations of all repositories
-// - Uses Go's interface embedding to automatically expose all methods from embedded repositories
-// - Provides a single struct that satisfies the aggregate Repository interface
-//
-// PATTERN: This follows the Composition Root pattern where all dependencies are
-// composed in one place, making dependency management centralized and clean
 type MongoRepositoryManager struct {
-	ItemRepository
-	UserRepository
+	MainRepository
+	CouncilRepository
+	EventRepository
+	MembersRepository
 	// Future repositories will be added here as embedded interfaces
+	// ItemRepository
+	// UserRepository
 }
 
-// NewMongoRepository is the factory function that creates and initializes all repositories.
-//
-// ROLE: Factory Function / Dependency Injection Root
-// - Single entry point to create the entire repository system
-// - Handles initialization of all sub-repositories with the shared database connection
-// - Ensures all repositories are properly configured with the same MongoDB database
-// - Returns the unified Repository interface, hiding implementation details
-// - Centralizes repository creation logic, making it easy to modify or extend
-//
-// PARAMETERS:
-//
-//	db: Shared MongoDB database connection that will be passed to all sub-repositories
-//
-// RETURNS:
-//
-//	Repository: Unified interface providing access to all repository operations
-//
-// EXTENSIBILITY:
-//
-//	To add a new repository (e.g., OrderRepository):
-//	1. Add OrderRepository to the Repository interface above
-//	2. Add OrderRepository to the MongoRepositoryManager struct above
-//	3. Add OrderRepository: NewOrderRepository(db) to the return statement below
 func NewMongoRepository(db *mongo.Database) Repository {
 	return &MongoRepositoryManager{
-		ItemRepository: NewItemRepository(db),
-		UserRepository: NewUserRepository(db),
+		MainRepository:    NewMainRepository(db),
+		CouncilRepository: NewCouncilRepository(db),
+		EventRepository:   NewEventRepository(db),
+		MembersRepository: NewMembersRepository(db),
 		// Future repositories will be initialized here:
 		// OrderRepository: NewOrderRepository(db),
 	}
