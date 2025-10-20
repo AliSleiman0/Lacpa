@@ -58,6 +58,9 @@ func SetupRoutes(app *fiber.App, repo repository.Repository) {
 	// Events page routes - HTML page rendering
 	SetupEventsRoutes(app, repo) // Configures /events route
 
+	// Application routes - Membership applications
+	SetupApplicationRoutes(app, repo) // Configures /membership/apply-now and /api/applications/* routes
+
 	// Future route groups can be added here:
 	// SetupItemRoutes(api, itemHandler)       // Would configure /api/items/* routes
 	// SetupOrderRoutes(api, orderHandler)     // Would configure /api/orders/* routes

@@ -29,9 +29,9 @@ func (h *MembersHandler) GetIndividualsPage(c *fiber.Ctx) error {
 		page = 1
 	}
 
-	pageSize, err := strconv.Atoi(c.Query("pageSize", "12"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize", "4"))
 	if err != nil || pageSize < 1 || pageSize > 100 {
-		pageSize = 12 // Default to 12 members per page
+		pageSize = 4 // Default to 4 members per page
 	}
 
 	// Get member type filter (optional)
@@ -99,9 +99,9 @@ func (h *MembersHandler) GetFirmsPage(c *fiber.Ctx) error {
 		page = 1
 	}
 
-	pageSize, err := strconv.Atoi(c.Query("pageSize", "12"))
+	pageSize, err := strconv.Atoi(c.Query("pageSize", "4"))
 	if err != nil || pageSize < 1 || pageSize > 100 {
-		pageSize = 12 // Default to 12 firms per page
+		pageSize = 4 // Default to 4 firms per page
 	}
 
 	// Get firm type/size filter (optional)
