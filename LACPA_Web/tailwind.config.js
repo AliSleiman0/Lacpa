@@ -14,7 +14,8 @@ module.exports = {
       },
       width: {
         '14/15': '93.333333%',
-      }
+      },
+      
     },
   },
   plugins: [],

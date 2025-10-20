@@ -1,0 +1,663 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>President Letter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    />
+
+    <style>
+      .scroll-container {
+        max-height: 180px; /* Height of visible area */
+        overflow-y: scroll; /* Allow vertical scrolling */
+        padding-right: 0.5rem; /* Optional padding */
+      }
+
+      /* Hide scrollbar for Chrome, Safari, and Opera */
+      .scroll-container::-webkit-scrollbar {
+        display: none;
+      }
+
+      /* Hide scrollbar for IE, Edge */
+      .scroll-container {
+        -ms-overflow-style: none;
+      }
+
+      /* Hide scrollbar for Firefox */
+      .scroll-container {
+        scrollbar-width: none;
+      }
+
+      :root {
+        --angle: 0deg;
+      }
+
+      .animated-border {
+        position: relative;
+        border-radius: 9999px; /* keeps it circular */
+        background: conic-gradient(
+          from var(--angle),
+          #55bbea,
+          #1b6a39,
+          #284179,
+          #55bbea
+        );
+        padding: 3px; /* border thickness */
+      }
+
+      .animated-border > div {
+        border-radius: inherit;
+        height: 100%;
+        width: 100%;
+        background: #202020;
+      }
+
+      /* @property --angle {
+        syntax: "<angle>";
+        initial-value: 0deg;
+        inherits: false;
+      } comment to be removed*/
+
+      @keyframes spin {
+        to {
+          --angle: 360deg;
+        }
+      }
+
+      .animated-border {
+        animation: spin 4s linear infinite;
+      }
+
+      .glow-anim {
+        background: linear-gradient(
+          90deg,
+          #55bbea,
+          #284179,
+          #00a63f,
+          #1b6a39,
+          #e355ea,
+          #79286c
+        );
+        background-size: 400% 400%;
+        animation: wobbleGlow 6s ease-in-out infinite;
+        opacity: 0.4;
+      }
+
+      @keyframes wobbleGlow {
+        0% {
+          background-position: 0% 50%;
+        }
+        25% {
+          background-position: 50% 0%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        75% {
+          background-position: 50% 100%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-[#202020]">
+    <!-- President Letter Section -->
+    <div
+      class="flex flex-row items-stretch mx-auto mt-8 rounded-xl overflow-hidden"
+    >
+      <!-- Image -->
+      <img
+        src="/LACPA_Web/assets/president.png"
+        alt="president image"
+        class="w-[220px] h-[220px] m-6 object-cover rounded-xl shadow-[0px_0px_10px_0px_#55BBEA80]"
+      />
+      <!-- Content -->
+      <div class="flex-1 flex flex-col justify-between p-6">
+        <div class="flex items-center justify-between">
+          <h1 class="text-white text-2xl font-semibold mb-2">
+            <span class="text-[#55BBEA]">|</span> President Letter
+          </h1>
+          <button
+            class="flex items-center gap-2 px-4 py-1 rounded-full border border-[#FFFFFF] text-[#FFFFFF] bg-[#232B34] hover:bg-[#1a222a] transition"
+          >
+            <i class="fa-solid fa-play text-[#55BBEA]"></i>
+            Play Audio
+          </button>
+        </div>
+        <div class="scroll-container overflow-y-auto max-h-[180px] pr-2">
+          <div id="scrollingText">
+            <p class="text-[#E5E7EB] text-sm leading-relaxed mb-2">
+              Dear Members, Partners, and Visitors,<br />
+              Welcome to the official website of the Lebanese Association of
+              Certified Public Accountants (LACPA).
+            </p>
+
+            <p class="text-[#E5E7EB] text-sm leading-relaxed mb-2">
+              It is with great pride and a deep sense of responsibility that I
+              address you as President of LACPA. Our Association stands at a
+              pivotal moment in its history: one shaped by growing global
+              challenges, technological transformation, and a renewed focus on
+              integrity, transparency, and public trust.
+            </p>
+
+            <p class="text-[#E5E7EB] text-sm leading-relaxed mb-2">
+              LACPA’s mission has always been to uphold the highest standards in
+              the accounting profession in Lebanon and to act as a key pillar in
+              promoting financial stability, accountability, and sustainable
+              economic development. Today, we remain committed to that mission,
+              while embracing change and driving progress.
+            </p>
+
+            <p class="text-[#E5E7EB] text-sm leading-relaxed mb-2">
+              Our strategic vision centers on three pillars:
+            </p>
+
+            <p class="text-[#E5E7EB] text-sm leading-relaxed mb-2">
+              <strong>Professional Excellence:</strong> Enhancing the
+              competencies of our members through high-quality education,
+              continuous professional development, and alignment with
+              international standards such as IFRS, ISAs, and ISQMs.
+            </p>
+
+            <p class="text-[#E5E7EB] text-sm leading-relaxed mb-2">
+              <strong>Public Interest and Ethics:</strong> Safeguarding the
+              public interest through strict adherence to our Code of Ethics,
+              promoting good governance, and reinforcing our profession’s role
+              in protecting the credibility of financial information.
+            </p>
+
+            <p class="text-[#E5E7EB] text-sm leading-relaxed mb-2">
+              <strong>Collaboration and Innovation:</strong> Strengthening
+              partnerships with national and international bodies, while
+              embracing innovation and digital transformation to ensure our
+              profession remains relevant and forward-looking.
+            </p>
+
+            <p class="text-[#E5E7EB] text-sm leading-relaxed mb-2">
+              <strong>Protection of Members' Interests:</strong> Advocating for
+              members' rights, particularly in the absence of clear regulation
+              to safeguard them against liabilities arising from negligence or
+              gross negligence. We are working to enhance social security
+              coverage, insurance protection, and retirement planning for our
+              members. As part of these efforts, LACPA has taken the initiative
+              to significantly increase financial contributions to the pension
+              fund and improve retirement benefits. Furthermore, we have
+              introduced a new law to establish the Professional Investigation
+              Authority, which is empowered to grant permission to prosecute
+              auditors in cases involving professional misconduct or negligence.
+            </p>
+
+            <p class="text-[#E5E7EB] text-sm leading-relaxed mb-2">
+              This website serves as a gateway to our services, updates,
+              publications, and initiatives. Whether you are a member seeking
+              resources, a student exploring the profession, or an institutional
+              partner, we invite you to engage with us, participate in our
+              activities, and contribute to the development of the accountancy
+              profession in Lebanon. Thank you for your trust and continued
+              support.
+            </p>
+
+            <p class="text-[#E5E7EB] text-sm leading-relaxed mb-2">
+              Warm regards,<br />
+              Elie Abboud<br />
+              President
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Meet The Board -->
+    <div class="flex flex-col items-center justify-center mt-10">
+      <h1 class="text-white text-2xl font-semibold mb-2">
+        <span class="text-[#55BBEA]">|</span> Meet The Board
+      </h1>
+      <div class="relative w-[80%] rounded-3xl overflow-hidden mt-2 group">
+        <!-- Image -->
+        <img
+          src="/LACPA_Web/assets/board.png"
+          alt="board image"
+          class="w-full rounded-3xl transition duration-500 group-hover:brightness-75"
+        />
+
+        <!-- Overlay -->
+        <div
+          class="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition duration-500 text-center p-4"
+        >
+          <h2 class="text-white text-xl font-bold mb-auto">About Us</h2>
+          <p class="text-white mb-4">
+            At LACPA, we are committed to advancing the accounting profession in
+            Lebanon through integrity, transparency, and continuous learning.
+            <br /><br />
+            Together, we uphold the highest standards and support a thriving
+            financial community for a better future.
+          </p>
+          <!-- to be animated -->
+          <button
+            id="joinButton"
+            class="relative rounded-full text-white px-6 py-3 overflow-hidden font-medium cursor-pointer"
+          >
+            How to Join
+            <!-- Animated gradient border -->
+            <span
+              id="joinButtonBorder"
+              class="absolute inset-0 rounded-full pointer-events-none"
+            ></span>
+          </button>
+        </div>
+      </div>
+      <h1 class="text-white text-2xl font-semibold mt-2">10 Current Members</h1>
+    </div>
+    <!-- 10 board members carousal -->
+    <div class="w-full flex justify-center mt-3">
+      <div class="overflow-hidden w-full m-2 ml-4">
+        <div id="carousel-track" class="flex gap-5">
+          <!-- ✅ FIRST SET -->
+          <div class="flex gap-5">
+            <!-- Member 1 -->
+            <div class="text-white flex flex-col items-center w-44">
+              <div
+                class="w-44 h-44 rounded-full overflow-hidden flex items-center justify-center bg-[#232B34]"
+              >
+                <img
+                  src="/LACPA_Web/assets/board_members/board1.png"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <p>Elie Georges Abboud</p>
+              <p>President</p>
+            </div>
+
+            <!-- Member 2 -->
+            <div class="text-white flex flex-col items-center w-44">
+              <div
+                class="w-44 h-44 rounded-full overflow-hidden flex items-center justify-center bg-[#232B34]"
+              >
+                <img
+                  src="/LACPA_Web/assets/board_members/board1.png"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <p>Member Name</p>
+              <p>Role</p>
+            </div>
+
+            <!-- Member 3 -->
+            <div class="text-white flex flex-col items-center w-44">
+              <div
+                class="w-44 h-44 rounded-full overflow-hidden flex items-center justify-center bg-[#232B34]"
+              >
+                <img
+                  src="/LACPA_Web/assets/board_members/board1.png"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <p>Member Name</p>
+              <p>Role</p>
+            </div>
+
+            <!-- Member 4 -->
+            <div class="text-white flex flex-col items-center w-44">
+              <div
+                class="w-44 h-44 rounded-full overflow-hidden flex items-center justify-center bg-[#232B34]"
+              >
+                <img
+                  src="/LACPA_Web/assets/board_members/board1.png"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <p>Member Name</p>
+              <p>Role</p>
+            </div>
+
+            <!-- Member 5 -->
+            <div class="text-white flex flex-col items-center w-44">
+              <div
+                class="w-44 h-44 rounded-full overflow-hidden flex items-center justify-center bg-[#232B34]"
+              >
+                <img
+                  src="/LACPA_Web/assets/board_members/board1.png"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <p>Member Name</p>
+              <p>Role</p>
+            </div>
+
+            <!-- Member 6 -->
+            <div class="text-white flex flex-col items-center w-44">
+              <div
+                class="w-44 h-44 rounded-full overflow-hidden flex items-center justify-center bg-[#232B34]"
+              >
+                <img
+                  src="/LACPA_Web/assets/board_members/board1.png"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <p>Member Name</p>
+              <p>Role</p>
+            </div>
+
+            <!-- Member 7 -->
+            <div class="text-white flex flex-col items-center w-44">
+              <div
+                class="w-44 h-44 rounded-full overflow-hidden flex items-center justify-center bg-[#232B34]"
+              >
+                <img
+                  src="/LACPA_Web/assets/board_members/board1.png"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <p>Member Name</p>
+              <p>Role</p>
+            </div>
+
+            <!-- Member 8 -->
+            <div class="text-white flex flex-col items-center w-44">
+              <div
+                class="w-44 h-44 rounded-full overflow-hidden flex items-center justify-center bg-[#232B34]"
+              >
+                <img
+                  src="/LACPA_Web/assets/board_members/board1.png"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <p>Member Name</p>
+              <p>Role</p>
+            </div>
+
+            <!-- Member 9 -->
+            <div class="text-white flex flex-col items-center w-44">
+              <div
+                class="w-44 h-44 rounded-full overflow-hidden flex items-center justify-center bg-[#232B34]"
+              >
+                <img
+                  src="/LACPA_Web/assets/board_members/board1.png"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <p>Member Name</p>
+              <p>Role</p>
+            </div>
+
+            <!-- Member 10 -->
+            <div class="text-white flex flex-col items-center w-44">
+              <div
+                class="w-44 h-44 rounded-full overflow-hidden flex items-center justify-center bg-[#232B34]"
+              >
+                <img
+                  src="/LACPA_Web/assets/board_members/board1.png"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <p>last Member Name</p>
+              <p>Role</p>
+            </div>
+          </div>
+
+          <!-- ✅ DUPLICATED SET (exact same) -->
+          <div class="flex gap-5">
+            <!-- Member 1 -->
+            <div class="text-white flex flex-col items-center w-44">
+              <div
+                class="w-44 h-44 rounded-full overflow-hidden flex items-center justify-center bg-[#232B34]"
+              >
+                <img
+                  src="/LACPA_Web/assets/board_members/board1.png"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <p>Elie Georges Abboud</p>
+              <p>President</p>
+            </div>
+
+            <!-- Member 2 -->
+            <div class="text-white flex flex-col items-center w-44">
+              <div
+                class="w-44 h-44 rounded-full overflow-hidden flex items-center justify-center bg-[#232B34]"
+              >
+                <img
+                  src="/LACPA_Web/assets/board_members/board1.png"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <p>Member Name</p>
+              <p>Role</p>
+            </div>
+
+            <!-- Member 3 -->
+            <div class="text-white flex flex-col items-center w-44">
+              <div
+                class="w-44 h-44 rounded-full overflow-hidden flex items-center justify-center bg-[#232B34]"
+              >
+                <img
+                  src="/LACPA_Web/assets/board_members/board1.png"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <p>Member Name</p>
+              <p>Role</p>
+            </div>
+
+            <!-- Member 4 -->
+            <div class="text-white flex flex-col items-center w-44">
+              <div
+                class="w-44 h-44 rounded-full overflow-hidden flex items-center justify-center bg-[#232B34]"
+              >
+                <img
+                  src="/LACPA_Web/assets/board_members/board1.png"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <p>Member Name</p>
+              <p>Role</p>
+            </div>
+
+            <!-- Member 5 -->
+            <div class="text-white flex flex-col items-center w-44">
+              <div
+                class="w-44 h-44 rounded-full overflow-hidden flex items-center justify-center bg-[#232B34]"
+              >
+                <img
+                  src="/LACPA_Web/assets/board_members/board1.png"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <p>Member Name</p>
+              <p>Role</p>
+            </div>
+
+            <!-- Member 6 -->
+            <div class="text-white flex flex-col items-center w-44">
+              <div
+                class="w-44 h-44 rounded-full overflow-hidden flex items-center justify-center bg-[#232B34]"
+              >
+                <img
+                  src="/LACPA_Web/assets/board_members/board1.png"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <p>Member Name</p>
+              <p>Role</p>
+            </div>
+
+            <!-- Member 7 -->
+            <div class="text-white flex flex-col items-center w-44">
+              <div
+                class="w-44 h-44 rounded-full overflow-hidden flex items-center justify-center bg-[#232B34]"
+              >
+                <img
+                  src="/LACPA_Web/assets/board_members/board1.png"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <p>Member Name</p>
+              <p>Role</p>
+            </div>
+
+            <!-- Member 8 -->
+            <div class="text-white flex flex-col items-center w-44">
+              <div
+                class="w-44 h-44 rounded-full overflow-hidden flex items-center justify-center bg-[#232B34]"
+              >
+                <img
+                  src="/LACPA_Web/assets/board_members/board1.png"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <p>Member Name</p>
+              <p>Role</p>
+            </div>
+
+            <!-- Member 9 -->
+            <div class="text-white flex flex-col items-center w-44">
+              <div
+                class="w-44 h-44 rounded-full overflow-hidden flex items-center justify-center bg-[#232B34]"
+              >
+                <img
+                  src="/LACPA_Web/assets/board_members/board1.png"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <p>Member Name</p>
+              <p>Role</p>
+            </div>
+
+            <!-- Member 10 -->
+            <div class="text-white flex flex-col items-center w-44">
+              <div
+                class="w-44 h-44 rounded-full overflow-hidden flex items-center justify-center bg-[#232B34]"
+              >
+                <img
+                  src="/LACPA_Web/assets/board_members/board1.png"
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              <p>last Member Name</p>
+              <p>Role</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- see all button for board members -->
+    <div class="flex justify-center my-6">
+      <button
+        class="border rounded-full text-white px-6 py-3 overflow-hidden font-medium cursor-pointer"
+      >
+        See All
+      </button>
+    </div>
+
+    <!-- our mission & values -->
+    <div class="flex justify-center mb-24">
+      <h1 class="text-white text-2xl font-semibold mb-2">
+        <span class="text-[#55BBEA]">|</span> Our Mission & Values
+      </h1>
+    </div>
+
+    <!-- Publications -->
+    <div class="mt-16">
+      <h1 class="text-white text-center text-2xl font-semibold mb-2">
+        <span class="text-[#55BBEA]">|</span> Publications
+      </h1>
+    </div>
+
+    <!-- How to join LACPA -->
+    <h1 class="text-white text-center text-2xl font-semibold mt-16 mb-10">
+      <span class="text-[#55BBEA]">|</span> How to join LACPA?
+    </h1>
+    <div class="flex flex-col md:flex-row gap-6 mx-6">
+      <!-- Text column (65%) -->
+      <div class="md:w-[65%] flex flex-col">
+        <h3 class="font-semibold text-xl text-[#55BBEA] mb-4">
+          Lebanese Association of Certified Public Accountants <br />
+          L’Ordre des Experts Comptables Agréés au Liban br
+        </h3>
+        <p class="text-white mb-2">
+          The application for membership in the Association is submitted using a
+          form signed by the applicant, along with identification documents, and
+          based on a written request attached to the supporting documents
+          proving that the required conditions are met. In the request, the
+          applicant must specify the register (table) in which they wish to be
+          listed.
+        </p>
+        <p class="text-white">
+          No person may be registered in the General or Permanent Register of
+          the Association in Lebanon unless they meet the following conditions
+          (or any other relevant register when applicable):
+        </p>
+        <div class="flex gap-2 mt-3">
+          <button class="border border-white rounded-full text-white px-4 py-2">
+            Join Now
+          </button>
+          <button class="border border-white rounded-full text-white px-4 py-2">
+            Contact Us
+          </button>
+        </div>
+      </div>
+
+      <!-- Cards column (35%) -->
+      <div
+        id="container"
+        hx-get="how_to_cards.html"
+        hx-trigger="load"
+        hx-swap="innerHTML"
+        class="md:w-[35%] flex justify-center items-center mt-14 md:mt-auto"
+      ></div>
+    </div>
+
+    <!-- script -->
+    <script>
+      const text = document.getElementById("scrollingText");
+      const containerHeight = text.parentElement.offsetHeight;
+      const textHeight = text.scrollHeight;
+
+      anime({
+        targets: text,
+        translateY: [0, -(textHeight - containerHeight)], // scroll upward
+        easing: "linear",
+        duration: 50000, // adjust speed (ms)
+        loop: true,
+        direction: "normal", // scroll back down
+      });
+
+      // Infinite smooth carousel animation
+      window.addEventListener("DOMContentLoaded", () => {
+        const track = document.getElementById("carousel-track");
+        let trackWidth = track.scrollWidth / 2; // width of one set
+
+        // Set initial position
+        track.style.transform = "translateX(0)";
+        track.style.transition = "none";
+
+        let start = null;
+        let duration = 20000; // 20 seconds for one full scroll, adjust as needed
+
+        function animateCarousel(timestamp) {
+          if (!start) start = timestamp;
+          let elapsed = timestamp - start;
+          let progress = (elapsed % duration) / duration;
+          let translateX = -trackWidth * progress;
+          track.style.transform = `translateX(${translateX}px)`;
+          requestAnimationFrame(animateCarousel);
+        }
+
+        requestAnimationFrame(animateCarousel);
+
+        // Responsive: recalculate on resize
+        window.addEventListener("resize", () => {
+          trackWidth = track.scrollWidth / 2;
+        });
+      });
+    </script>
+  </body>
+</html>
