@@ -34,20 +34,6 @@ import (
 //	app: Main Fiber application instance
 //	repo: Unified repository interface providing all data access methods
 func SetupRoutes(app *fiber.App, repo repository.Repository) {
-	// Web routes (HTML templates) - these serve HTML pages
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.Render("index", fiber.Map{
-			"Title":   "Home",
-			"BaseURL": "http://" + c.Get("Host"),
-		}, "layouts/main")
-	})
-
-	app.Get("/items", func(c *fiber.Ctx) error {
-		return c.Render("items", fiber.Map{
-			"Title": "Items Management",
-		}, "layouts/main")
-	})
-
 	// Create API route group - all API routes will be under /api prefix
 	api := app.Group("/api")
 
@@ -59,18 +45,35 @@ func SetupRoutes(app *fiber.App, repo repository.Repository) {
 		})
 	})
 
-	// Initialize handlers with repository dependency
-	// Main handler for item operations (uses unified repository interface)
-	itemHandler := handler.NewHandler(repo)
-
-	// Specialized user handler (also uses unified repository interface)
-	userHandler := handler.NewUserHandler(repo)
-
 	// Setup route groups - each function handles its own route configuration
-	SetupItemRoutes(api, itemHandler) // Configures /api/items/* routes
-	SetupUserRoutes(api, userHandler) // Configures /api/users/* routes
+	mainPageHandler := handler.NewMainPageHandler(repo)
+	SetupMainPageRoutes(api, mainPageHandler) // Configures /api/main/* routes
+
+	// Council routes - API endpoints for council management
+	SetupCouncilRoutes(app, repo) // Configures /api/council/* routes
+
+	// Members page routes - HTML page rendering
+	SetupMembersRoutes(app, repo) // Configures /members/* routes
+
+	// Events page routes - HTML page rendering
+	SetupEventsRoutes(app, repo) // Configures /events route
+
+	// Application routes - Membership applications
+	SetupApplicationRoutes(app, repo) // Configures /membership/apply-now and /api/applications/* routes
 
 	// Future route groups can be added here:
-	// SetupOrderRoutes(api, orderHandler)    // Would configure /api/orders/* routes
+	// SetupItemRoutes(api, itemHandler)       // Would configure /api/items/* routes
+	// SetupOrderRoutes(api, orderHandler)     // Would configure /api/orders/* routes
 	// SetupProductRoutes(api, productHandler) // Would configure /api/products/* routes
+
+	// Root route - serve index.html for the home page
+	app.Get("/", func(c *fiber.Ctx) error {
+		// Check if request is from HTMX (looking for fragments)
+		if c.Get("HX-Request") == "true" {
+			// HTMX request - redirect to landing page API
+			return c.Redirect("/api/main/landing/")
+		}
+		// Regular browser request - serve index.html
+		return c.SendFile("../LACPA_Web/src/index.html")
+	})
 }

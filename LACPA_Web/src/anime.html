@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lacpa</title>
+
+    <!-- External CSS Libraries -->
+
+    <!-- Flag Icons CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css">
+
+    <!-- FontAwesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+
+    <!-- Splide CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+       />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./index.css">
+
+    <!-- JavaScript Libraries -->
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- HTMX -->
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+
+    <!-- Splide JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+
+    <!-- Anime.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"
+      ></script>
+
+
+</head>
+<!-- ========================================
+     BODY SECTION - Main Content
+ ======================================== -->
+
+<body class="min-h-screen bg-[#202020] bg-cover relative">
+    <!-- ========================================
+         HEADER SECTION
+         ======================================== -->
+    <div hx-get="./components/header.html" hx-swap="innerHTML" hx-trigger="load"></div>
+    <!-- ========================================
+         NAVIGATION SECTION
+         ======================================== -->
+    
+
+
+    <div class="min-h-screen flex items-center justify-center p-8 bg-[#202020]">
+        <div class="relative w-full max-w-5xl" style="height: 700px;">
+            <!-- Title -->
+            <div class="absolute -top-12 left-1/2 -translate-x-1/2 text-center">
+                <h2 class="text-4xl font-bold text-white mb-2">
+                    <span class="border-l-4 border-cyan-400 pl-3">Our Mission & Values</span>
+                </h2>
+            </div>
+
+            <!-- SVG for connecting lines -->
+            <svg class="absolute inset-0 w-full h-full" style="z-index: 0;">
+                <!-- Outer circle path connecting all nodes -->
+                <ellipse id="ellipse-path" cx="51%" cy="49%" rx="41%" ry="35%" fill="none" stroke="rgba(6, 182, 212, 0.3)" stroke-width="4"/>
+            </svg>
+
+            
+
+            <!-- TOP ROW - 4 circles -->
+            <!-- Recognition (top left) -->
+            <div class="absolute" style="top: 13%; left: 22%;">
+                <div class="value-circle w-24 h-24 rounded-full flex flex-col items-center justify-center shadow-xl border-2 border-cyan-400">
+                    <i class="fas fa-award text-2xl text-white mb-1"></i>
+                    <span class="text-white text-xs font-medium">Recognition</span>
+                </div>
+            </div>
+
+            <!-- Advocacy (top center-left) -->
+            <div class="absolute" style="top: 8%; left: 38%;">
+                <div class="value-circle w-24 h-24 rounded-full flex flex-col items-center justify-center shadow-xl border-2 border-cyan-400">
+                    <i class="fas fa-bullhorn text-2xl text-white mb-1"></i>
+                    <span class="text-white text-xs font-medium">Advocacy</span>
+                </div>
+            </div>
+
+            <!-- Vision (top center-right) -->
+            <div class="absolute" style="top: 8%; right: 38%;">
+                <div class="value-circle w-24 h-24 rounded-full flex flex-col items-center justify-center shadow-xl border-2 border-cyan-400">
+                    <i class="fas fa-binoculars text-2xl text-white mb-1"></i>
+                    <span class="text-white text-xs font-medium">Vision</span>
+                </div>
+            </div>
+
+            <!-- Mission (top right) -->
+            <div class="absolute" style="top: 13%; right: 22%;">
+                <div class="value-circle w-24 h-24 rounded-full flex flex-col items-center justify-center shadow-xl border-2 border-cyan-400">
+                    <i class="fas fa-clock text-2xl text-white mb-1"></i>
+                    <span class="text-white text-xs font-medium">Mission</span>
+                </div>
+            </div>
+
+            <!-- MIDDLE ROW - 2 circles on sides -->
+            <!-- Collaboration (middle left) -->
+            <div class="absolute" style="top: 45%; left: 6%;">
+                <div class="value-circle w-24 h-24 rounded-full flex flex-col items-center justify-center shadow-xl border-2 border-cyan-400">
+                    <i class="fas fa-users text-2xl text-white mb-1"></i>
+                    <span class="text-white text-xs font-medium">Collaboration</span>
+                </div>
+            </div>
+
+            <!-- Empowerment (middle right) -->
+            <div class="absolute" style="top: 45%; right: 4%;">
+                <div class="value-circle w-24 h-24 rounded-full flex flex-col items-center justify-center shadow-xl border-2 border-cyan-400">
+                    <i class="fas fa-hand-holding-heart text-2xl text-white mb-1"></i>
+                    <span class="text-white text-xs font-medium">Empowerment</span>
+                </div>
+            </div>
+
+            <!-- BOTTOM ROW - 4 circles -->
+            <!-- Influence (bottom left) -->
+            <div class="absolute" style="bottom: 15%; left: 22%;">
+                <div class="value-circle w-24 h-24 rounded-full flex flex-col items-center justify-center shadow-xl border-2 border-cyan-400">
+                    <i class="fas fa-lightbulb text-2xl text-white mb-1"></i>
+                    <span class="text-white text-xs font-medium">Influence</span>
+                </div>
+            </div>
+
+            <!-- Stewardship (bottom center-left) -->
+            <div class="absolute" style="bottom: 10%; left: 38%;">
+                <div class="value-circle w-24 h-24 rounded-full flex flex-col items-center justify-center shadow-xl border-2 border-cyan-400">
+                    <i class="fas fa-hands-helping text-2xl text-white mb-1"></i>
+                    <span class="text-white text-xs font-medium">Stewardship</span>
+                </div>
+            </div>
+
+            <!-- Integrity (bottom center-right) -->
+            <div class="absolute" style="bottom: 10%; right: 38%;">
+                <div class="value-circle w-24 h-24 rounded-full flex flex-col items-center justify-center shadow-xl border-2 border-cyan-400">
+                    <i class="fas fa-balance-scale text-2xl text-white mb-1"></i>
+                    <span class="text-white text-xs font-medium">Integrity</span>
+                </div>
+            </div>
+
+            <!-- Excellence (bottom right) -->
+            <div class="absolute" style="bottom: 15%; right: 22%;">
+                <div class="value-circle w-24 h-24 rounded-full flex flex-col items-center justify-center shadow-xl border-2 border-cyan-400">
+                    <i class="fas fa-trophy text-2xl text-white mb-1"></i>
+                    <span class="text-white text-xs font-medium">Excellence</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer loaded with HTMX -->
+    <div hx-get="./components/footer.html" hx-trigger="load"></div>
+
+    <!-- Initialize Splide Carousels -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <!-- Custom JavaScript for HTMX response handling -->
+    <script src="../js/app.js"></script>
+
+    <!-- Anime.js Color Animation -->
+    <script>
+        // Define the 9-stage color progression matching the attached image
+        // Each stage represents a keyframe from 0% to 100%
+        const colorStages = [
+            { angle: 0, colors: ['#1a1a1a', '#4A90E2', '#1a1a1a', '#1a1a1a'] },           // 0%: Dark/black top, blue bottom
+            { angle: 45, colors: ['#1a1a1a', '#4A90E2', '#C74BCC', '#1a1a1a'] },          // 12.5%: Blue bottom-left, purple bottom-right
+            { angle: 90, colors: ['#1a1a1a', '#4A90E2', '#10B981', '#C74BCC'] },          // 25%: Blue left, green entering, purple right
+            { angle: 135, colors: ['#1a1a1a', '#C74BCC', '#10B981', '#4A90E2'] },         // 37.5%: Purple top, green bottom-left, blue right
+            { angle: 180, colors: ['#10B981', '#1a1a1a', '#C74BCC', '#4A90E2'] },         // 50%: Green left, dark top, purple mid, blue bottom
+            { angle: 225, colors: ['#10B981', '#C74BCC', '#1a1a1a', '#4A90E2'] },         // 62.5%: Green bottom-left, purple top, blue bottom-right
+            { angle: 270, colors: ['#10B981', '#C74BCC', '#4A90E2', '#1a1a1a'] },         // 75%: Green left, purple top-right, blue bottom
+            { angle: 315, colors: ['#4A90E2', '#C74BCC', '#10B981', '#1a1a1a'] },         // 87.5%: Blue bottom, purple right, green bottom-left
+            { angle: 360, colors: ['#1a1a1a', '#4A90E2', '#1a1a1a', '#1a1a1a'] },         // 100%: Back to start
+        ];
+
+        // Animate each circle with rotating conic gradient
+        document.querySelectorAll('.value-circle').forEach((circle, index) => {
+            const animObj = { 
+                stage: 0,
+                rotation: 0
+            };
+
+            anime({
+                targets: animObj,
+                stage: colorStages.length - 1,
+                rotation: 360,
+                duration: 8000,
+                easing: 'linear',
+                loop: true,
+                update: function() {
+                    // Calculate current stage index and interpolation
+                    const stageIndex = Math.floor(animObj.stage);
+                    const nextStageIndex = (stageIndex + 1) % colorStages.length;
+                    const t = animObj.stage - stageIndex; // interpolation factor 0-1
+                    
+                    const currentStage = colorStages[stageIndex];
+                    const nextStage = colorStages[nextStageIndex];
+                    
+                    // Interpolate colors between stages
+                    const interpolateColor = (color1, color2, factor) => {
+                        const r1 = parseInt(color1.slice(1, 3), 16);
+                        const g1 = parseInt(color1.slice(3, 5), 16);
+                        const b1 = parseInt(color1.slice(5, 7), 16);
+                        const r2 = parseInt(color2.slice(1, 3), 16);
+                        const g2 = parseInt(color2.slice(3, 5), 16);
+                        const b2 = parseInt(color2.slice(5, 7), 16);
+                        
+                        const r = Math.round(r1 + (r2 - r1) * factor);
+                        const g = Math.round(g1 + (g2 - g1) * factor);
+                        const b = Math.round(b1 + (b2 - b1) * factor);
+                        
+                        return `rgba(${r}, ${g}, ${b}, 0.85)`;
+                    };
+                    
+                    const color1 = interpolateColor(currentStage.colors[0], nextStage.colors[0], t);
+                    const color2 = interpolateColor(currentStage.colors[1], nextStage.colors[1], t);
+                    const color3 = interpolateColor(currentStage.colors[2], nextStage.colors[2], t);
+                    const color4 = interpolateColor(currentStage.colors[3], nextStage.colors[3], t);
+                    
+                    // Create conic gradient with rotation - using 4 colors for smoother gradient
+                    circle.style.background = `conic-gradient(from ${animObj.rotation}deg, ${color1}, ${color2}, ${color3}, ${color4}, ${color1})`;
+                },
+                delay: index * 200
+            });
+        });
+
+        // Animate center circle with the same pattern
+        const centerCircle = document.querySelector('.relative.w-56.h-56');
+        if (centerCircle) {
+            const animObj = { 
+                stage: 0,
+                rotation: 0
+            };
+
+            anime({
+                targets: animObj,
+                stage: colorStages.length - 1,
+                rotation: 360,
+                duration: 10000, // Slightly slower for center circle
+                easing: 'linear',
+                loop: true,
+                update: function() {
+                    const stageIndex = Math.floor(animObj.stage);
+                    const nextStageIndex = (stageIndex + 1) % colorStages.length;
+                    const t = animObj.stage - stageIndex;
+                    
+                    const currentStage = colorStages[stageIndex];
+                    const nextStage = colorStages[nextStageIndex];
+                    
+                    const interpolateColor = (color1, color2, factor) => {
+                        const r1 = parseInt(color1.slice(1, 3), 16);
+                        const g1 = parseInt(color1.slice(3, 5), 16);
+                        const b1 = parseInt(color1.slice(5, 7), 16);
+                        const r2 = parseInt(color2.slice(1, 3), 16);
+                        const g2 = parseInt(color2.slice(3, 5), 16);
+                        const b2 = parseInt(color2.slice(5, 7), 16);
+                        
+                        const r = Math.round(r1 + (r2 - r1) * factor);
+                        const g = Math.round(g1 + (g2 - g1) * factor);
+                        const b = Math.round(b1 + (b2 - b1) * factor);
+                        
+                        return `rgba(${r}, ${g}, ${b}, 0.85)`;
+                    };
+                    
+                    const color1 = interpolateColor(currentStage.colors[0], nextStage.colors[0], t);
+                    const color2 = interpolateColor(currentStage.colors[1], nextStage.colors[1], t);
+                    const color3 = interpolateColor(currentStage.colors[2], nextStage.colors[2], t);
+                    const color4 = interpolateColor(currentStage.colors[3], nextStage.colors[3], t);
+                    
+                    centerCircle.style.background = `conic-gradient(from ${animObj.rotation}deg, ${color1}, ${color2}, ${color3}, ${color4}, ${color1})`;
+                }
+            });
+        }
+
+        // Sequential pulsing animation for each circle in specific order
+        // Order: Recognition, Advocacy, Vision, Mission, Empowerment, Excellence, Integrity, Stewardship, Influence, Collaboration
+        const circleOrder = [
+            document.querySelector('.value-circle:has(.fa-award)'),           // Recognition
+            document.querySelector('.value-circle:has(.fa-bullhorn)'),        // Advocacy
+            document.querySelector('.value-circle:has(.fa-binoculars)'),      // Vision
+            document.querySelector('.value-circle:has(.fa-clock)'),           // Mission
+            document.querySelector('.value-circle:has(.fa-hand-holding-heart)'), // Empowerment
+            document.querySelector('.value-circle:has(.fa-trophy)'),          // Excellence
+            document.querySelector('.value-circle:has(.fa-balance-scale)'),   // Integrity
+            document.querySelector('.value-circle:has(.fa-hands-helping)'),   // Stewardship
+            document.querySelector('.value-circle:has(.fa-lightbulb)'),       // Influence
+            document.querySelector('.value-circle:has(.fa-users)')            // Collaboration
+        ];
+        
+        function createPulseSequence() {
+            const timeline = anime.timeline({
+                loop: true,
+                easing: 'easeInOutQuad'
+            });
+
+            circleOrder.forEach((circle, index) => {
+                if (circle) {
+                    // Each circle pulses in sequence with longer hold at max size
+                    timeline.add({
+                        targets: circle,
+                        scale: [
+                            { value: 1.3, duration: 500 },      // Grow to 130%
+                            { value: 1.3, duration: 400 },      // Hold at 130%
+                            { value: 1, duration: 500 }         // Shrink back to normal
+                        ],
+                        opacity: [
+                            { value: 0.7, duration: 500 },      // Fade out slightly
+                            { value: 0.7, duration: 400 },      // Hold faded
+                            { value: 1, duration: 500 }         // Fade back in
+                        ],
+                        easing: 'easeInOutQuad',
+                        offset: index * 700 // Start 700ms after the previous circle
+                    });
+                }
+            });
+
+            return timeline;
+        }
+
+        // Start the pulsing sequence after a short delay
+        setTimeout(() => {
+            createPulseSequence();
+        }, 500);
+
+        // Animate the ellipse stroke color through the gradient
+        const ellipsePath = document.getElementById('ellipse-path');
+        if (ellipsePath) {
+            // Define the three gradient colors: cyan blue, green, dark blue
+            const ellipseColors = [
+                '#55BBEA',  // 0% - Cyan Blue
+                '#1B6A39',  // 50% - Green
+                '#284179'   // 100% - Dark Blue
+            ];
+
+            let currentColorIndex = 0;
+
+            function animateEllipseColor() {
+                const nextColorIndex = (currentColorIndex + 1) % ellipseColors.length;
+                const currentColor = ellipseColors[currentColorIndex];
+                const nextColor = ellipseColors[nextColorIndex];
+
+                // Parse current color
+                const colorObj = {
+                    r: parseInt(currentColor.slice(1, 3), 16),
+                    g: parseInt(currentColor.slice(3, 5), 16),
+                    b: parseInt(currentColor.slice(5, 7), 16)
+                };
+
+                anime({
+                    targets: colorObj,
+                    r: parseInt(nextColor.slice(1, 3), 16),
+                    g: parseInt(nextColor.slice(3, 5), 16),
+                    b: parseInt(nextColor.slice(5, 7), 16),
+                    duration: 3000,
+                    easing: 'easeInOutSine',
+                    update: function() {
+                        const r = Math.round(colorObj.r);
+                        const g = Math.round(colorObj.g);
+                        const b = Math.round(colorObj.b);
+                        ellipsePath.setAttribute('stroke', `rgb(${r}, ${g}, ${b})`);
+                    },
+                    complete: function() {
+                        currentColorIndex = nextColorIndex;
+                        animateEllipseColor();
+                    }
+                });
+            }
+
+            animateEllipseColor();
+        }
+    </script>
+</body>
+
+</html>

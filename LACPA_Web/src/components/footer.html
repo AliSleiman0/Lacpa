@@ -1,6 +1,12 @@
 <!-- Footer Section -->
-<footer class="text-white py-12 px-2 md:px-4 relative"
-    style="background-image: url('../assets/background_footer.png'); background-size: cover;">
+<footer class="text-white py-12 px-2 md:px-4 relative overflow-hidden"
+    style="
+      background-image: 
+        linear-gradient(to top, rgba(22, 22, 22, 0.6), rgba(32, 32, 32, 1)),
+        url('../assets/background_footer.png');
+      background-size: cover;
+      background-position: center;
+    ">
     <!-- Blur overlay -->
     <div class="absolute inset-0 bg-black/20 backdrop-blur-lg"></div>
     <div class="container mx-auto relative z-10">
@@ -18,7 +24,7 @@
                 </div>
             </div>
             <!-- Center Column: Logo (Show only on lg+ screens) -->
-            <div class="hidden md:flex flex-col items-center justify-center">
+            <div class="hidden lg:flex flex-col items-center justify-center">
                 <img src="../assets/logo_background.png" alt="LACPA Logo" class="h-16 mb-4" />
                 <div class="text-center">
                     <h3 class="text-lg font-semibold">The Lebanese Association</h3>
