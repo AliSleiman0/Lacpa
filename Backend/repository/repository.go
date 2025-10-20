@@ -45,12 +45,14 @@ type Repository interface {
 	CouncilRepository
 	EventRepository
 	MembersRepository
+	ApplicationRepository
 }
 type MongoRepositoryManager struct {
 	MainRepository
 	CouncilRepository
 	EventRepository
 	MembersRepository
+	ApplicationRepository
 	// Future repositories will be added here as embedded interfaces
 	// ItemRepository
 	// UserRepository
@@ -58,10 +60,11 @@ type MongoRepositoryManager struct {
 
 func NewMongoRepository(db *mongo.Database) Repository {
 	return &MongoRepositoryManager{
-		MainRepository:    NewMainRepository(db),
-		CouncilRepository: NewCouncilRepository(db),
-		EventRepository:   NewEventRepository(db),
-		MembersRepository: NewMembersRepository(db),
+		MainRepository:        NewMainRepository(db),
+		CouncilRepository:     NewCouncilRepository(db),
+		EventRepository:       NewEventRepository(db),
+		MembersRepository:     NewMembersRepository(db),
+		ApplicationRepository: NewApplicationRepository(db),
 		// Future repositories will be initialized here:
 		// OrderRepository: NewOrderRepository(db),
 	}
