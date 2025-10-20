@@ -1,0 +1,354 @@
+<style>
+    /* Card styles matching individuals.html */
+    .card-bg {
+        background: linear-gradient(180deg, rgba(45, 55, 72, 1) 0%, rgba(15, 23, 42, 1) 100%);
+    }
+
+    .glass {
+        backdrop-filter: blur(6px);
+    }
+
+    .card-content {
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .card-content.fade-out {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    .card-content.fade-in {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .nav-arrow {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .nav-arrow:hover {
+        transform: scale(1.1);
+        background-color: rgba(56, 189, 248, 0.2);
+    }
+
+    .nav-arrow:active {
+        transform: scale(0.95);
+    }
+
+    /* Council section styles */
+    .council-section {
+        margin-bottom: 2rem;
+    }
+
+    .council-header {
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .council-header:hover {
+        background-color: rgba(56, 189, 248, 0.1);
+    }
+
+    .council-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease-out;
+    }
+
+    .council-content.expanded {
+        max-height: 5000px;
+        transition: max-height 0.8s ease-in;
+    }
+
+    .expand-arrow {
+        transition: transform 0.3s ease;
+    }
+
+    .expand-arrow.rotated {
+        transform: rotate(180deg);
+    }
+
+    /* President card special styling */
+    .president-card {
+        grid-column: span 1;
+        margin: 0 auto;
+        max-width: 280px;
+    }
+
+    @media (min-width: 768px) {
+        .president-card {
+            grid-column: 1 / -1;
+        }
+    }
+</style>
+
+<div class="bg-[rgba(32, 32, 32, 1)] text-slate-200 mx-auto px-4 pt-20 pb-12">
+    <div class="max-w-[1200px] mx-auto">
+        
+        <!-- Page Title -->
+        <div class="mb-8 text-center">
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Board Members</h1>
+            <p class="text-slate-400">Current and Previous Council Members</p>
+        </div>
+
+        {{range .Councils}}
+        {{$council := .Council}}
+        {{$composition := .Composition}}
+        <!-- Council Section -->
+        <div class="council-section">
+            <!-- Council Header (Collapsible) -->
+            <div class="council-header rounded-lg border border-slate-700 bg-slate-800/30 p-4 mb-4 flex justify-between items-center"
+                 onclick="toggleCouncil('{{.ID}}')">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-bold text-white">
+                        {{.Title}}
+                    </h2>
+                    <p class="text-sm text-slate-400 mt-1">
+                        From {{.StartDate}} Till {{.EndDate}}
+                    </p>
+                </div>
+                <div class="expand-arrow text-sky-400 text-2xl" id="arrow-{{.ID}}">
+                    ▼
+                </div>
+            </div>
+
+            <!-- Council Content (Initially collapsed except current) -->
+            <div class="council-content {{if .IsCurrent}}expanded{{end}}" id="content-{{.ID}}">
+                
+                {{if .President}}
+                <!-- President Card (Centered, Special) -->
+                <div class="mb-8">
+                    <h3 class="text-center text-lg font-semibold text-sky-400 mb-4">President</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+                        <article class="member-card president-card relative rounded-xl overflow-hidden shadow-lg border border-slate-800 p-4 card-bg glass" data-state="0">
+                            <!-- Badge -->
+                            <div class="absolute top-3 right-3 flex gap-2 items-center">
+                                <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-white text-sm">
+                                    👑
+                                </div>
+                            </div>
+
+                            <!-- State 0: Basic Info -->
+                            <div class="card-content card-state-0 fade-in">
+                                <div class="flex flex-col items-center gap-3">
+                                    <div class="shadow-xl w-20 h-20 rounded-full shadow-amber-500/50">
+                                        <img src="{{if .President.Photo}}{{.President.Photo}}{{else}}../assets/girl.png{{end}}" 
+                                             alt="{{.President.Name}}" 
+                                             class="w-20 h-20 rounded-full object-cover ring-4 ring-amber-500/50" />
+                                    </div>
+
+                                    <div class="flex-1 text-center w-full">
+                                        <h3 class="text-xl font-bold mb-2 text-amber-400">{{.President.Name}}</h3>
+                                        <p class="text-base text-sky-300 font-medium mb-3">President</p>
+                                    </div>
+                                </div>
+
+                                <!-- Navigation: Share & Forward -->
+                                <div class="flex justify-between items-center mt-3">
+                                    <button class="share-btn p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-amber-500 transition-colors" aria-label="Share">
+                                        <i class="fas fa-share-alt text-amber-400 text-sm"></i>
+                                    </button>
+                                    {{if .President.Biography}}
+                                    <button class="nav-arrow nav-forward p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-sky-500" aria-label="Next">
+                                        <i class="fas fa-arrow-right text-sky-400 text-sm"></i>
+                                    </button>
+                                    {{end}}
+                                </div>
+                            </div>
+
+                            <!-- Share Overlay State -->
+                            <div class="share-overlay absolute inset-0 p-4 opacity-0 z-20" style="pointer-events: none; background: linear-gradient(135deg, rgba(217, 119, 6, 0.95) 0%, rgba(17, 24, 39, 0.95) 100%);">
+                                <button class="close-share absolute top-2 right-2 p-1.5 rounded-full bg-slate-800/50 border border-slate-700 hover:border-red-500 transition-colors" aria-label="Close">
+                                    <i class="fas fa-times text-red-400 text-xs"></i>
+                                </button>
+
+                                <div class="flex flex-col items-center justify-center h-full gap-2">
+                                    <div class="bg-white p-2 rounded-xl shadow-xl">
+                                        <div class="w-20 h-20 flex items-center justify-center">
+                                            <svg class="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                                <rect x="0" y="0" width="20" height="20" fill="#000" />
+                                                <rect x="80" y="0" width="20" height="20" fill="#000" />
+                                                <rect x="0" y="80" width="20" height="20" fill="#000" />
+                                                <rect x="25" y="25" width="50" height="50" fill="#000" />
+                                                <rect x="35" y="35" width="30" height="30" fill="#fff" />
+                                            </svg>
+                                        </div>
+                                    </div>
+
+                                    <h3 class="text-base font-bold text-white mb-0.5">{{.President.Name}}</h3>
+                                    <p class="text-amber-300 text-xs mb-1">President</p>
+
+                                    <button class="px-4 py-1.5 rounded-full border border-amber-400/50 bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-medium transition-all duration-200 text-xs">
+                                        <i class="fas fa-link mr-1.5 text-xs"></i>
+                                        Share Link
+                                    </button>
+                                </div>
+                            </div>
+
+                            {{if .President.Biography}}
+                            <!-- State 1: Biography -->
+                            <div class="card-content card-state-1 absolute inset-0 p-4 opacity-0" style="pointer-events: none;">
+                                <div class="flex flex-col h-full">
+                                    <div class="flex items-center justify-center mb-3">
+                                        <i class="fas fa-align-left text-amber-400 text-xl"></i>
+                                    </div>
+
+                                    <div class="flex-1 overflow-y-auto">
+                                        <p class="text-slate-300 text-xs leading-relaxed text-center">
+                                            {{.President.Biography}}
+                                        </p>
+                                    </div>
+
+                                    <div class="flex justify-start mt-3">
+                                        <button class="nav-arrow nav-back p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-sky-500" aria-label="Previous">
+                                            <i class="fas fa-arrow-left text-sky-400 text-sm"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            {{end}}
+
+                            <!-- Empty State 2 for consistency -->
+                            <div class="card-content card-state-2 absolute inset-0 p-4 opacity-0" style="pointer-events: none;"></div>
+                        </article>
+                    </div>
+                </div>
+                {{end}}
+
+                {{if .OtherMembers}}
+                <!-- Other Board Members -->
+                <div class="mb-6">
+                    <h3 class="text-center text-lg font-semibold text-slate-400 mb-4">Board Members</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
+                        {{range .OtherMembers}}
+                        <article class="member-card relative rounded-xl overflow-hidden shadow-lg border border-slate-800 p-4 card-bg glass" data-state="0">
+                            <!-- Badge -->
+                            <div class="absolute top-3 right-3 flex gap-2 items-center">
+                                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">
+                                    📋
+                                </div>
+                            </div>
+
+                            <!-- State 0: Basic Info -->
+                            <div class="card-content card-state-0 fade-in">
+                                <div class="flex flex-col items-center gap-3">
+                                    <div class="shadow-xl w-16 h-16 rounded-full shadow-white">
+                                        <img src="{{if .Photo}}{{.Photo}}{{else}}../assets/girl.png{{end}}" 
+                                             alt="{{.Name}}" 
+                                             class="w-16 h-16 rounded-full object-cover ring-4 ring-slate-800" />
+                                    </div>
+
+                                    <div class="flex-1 text-center w-full">
+                                        <h3 class="text-base font-semibold mb-2">{{.Name}}</h3>
+                                        <p class="text-xs text-sky-400 mb-3">{{.Position}}</p>
+                                    </div>
+                                </div>
+
+                                <!-- Navigation: Share & Forward -->
+                                <div class="flex justify-between items-center mt-3">
+                                    <button class="share-btn p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-emerald-500 transition-colors" aria-label="Share">
+                                        <i class="fas fa-share-alt text-emerald-400 text-sm"></i>
+                                    </button>
+                                    {{if .Biography}}
+                                    <button class="nav-arrow nav-forward p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-sky-500" aria-label="Next">
+                                        <i class="fas fa-arrow-right text-sky-400 text-sm"></i>
+                                    </button>
+                                    {{end}}
+                                </div>
+                            </div>
+
+                            <!-- Share Overlay State -->
+                            <div class="share-overlay absolute inset-0 p-4 opacity-0 z-20" style="pointer-events: none; background: linear-gradient(135deg, rgba(30, 58, 138, 0.95) 0%, rgba(17, 24, 39, 0.95) 100%);">
+                                <button class="close-share absolute top-2 right-2 p-1.5 rounded-full bg-slate-800/50 border border-slate-700 hover:border-red-500 transition-colors" aria-label="Close">
+                                    <i class="fas fa-times text-red-400 text-xs"></i>
+                                </button>
+
+                                <div class="flex flex-col items-center justify-center h-full gap-2">
+                                    <div class="bg-white p-2 rounded-xl shadow-xl">
+                                        <div class="w-16 h-16 flex items-center justify-center">
+                                            <svg class="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                                <rect x="0" y="0" width="20" height="20" fill="#000" />
+                                                <rect x="80" y="0" width="20" height="20" fill="#000" />
+                                                <rect x="0" y="80" width="20" height="20" fill="#000" />
+                                                <rect x="25" y="25" width="50" height="50" fill="#000" />
+                                                <rect x="35" y="35" width="30" height="30" fill="#fff" />
+                                            </svg>
+                                        </div>
+                                    </div>
+
+                                    <h3 class="text-sm font-bold text-white mb-0.5">{{.Name}}</h3>
+                                    <p class="text-sky-300 text-xs mb-1">{{.Position}}</p>
+
+                                    <button class="px-3 py-1 rounded-full border border-sky-400/50 bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 font-medium transition-all duration-200 text-xs">
+                                        <i class="fas fa-link mr-1 text-xs"></i>
+                                        Share Link
+                                    </button>
+                                </div>
+                            </div>
+
+                            {{if .Biography}}
+                            <!-- State 1: Biography -->
+                            <div class="card-content card-state-1 absolute inset-0 p-4 opacity-0" style="pointer-events: none;">
+                                <div class="flex flex-col h-full">
+                                    <div class="flex items-center justify-center mb-3">
+                                        <i class="fas fa-align-left text-sky-400 text-xl"></i>
+                                    </div>
+
+                                    <div class="flex-1 overflow-y-auto">
+                                        <p class="text-slate-300 text-xs leading-relaxed text-center">
+                                            {{.Biography}}
+                                        </p>
+                                    </div>
+
+                                    <div class="flex justify-start mt-3">
+                                        <button class="nav-arrow nav-back p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-sky-500" aria-label="Previous">
+                                            <i class="fas fa-arrow-left text-sky-400 text-sm"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            {{end}}
+
+                            <!-- Empty State 2 for consistency -->
+                            <div class="card-content card-state-2 absolute inset-0 p-4 opacity-0" style="pointer-events: none;"></div>
+                        </article>
+                        {{end}}
+                    </div>
+                </div>
+                {{end}}
+
+            </div>
+        </div>
+        {{end}}
+
+    </div>
+</div>
+
+<script>
+// Toggle council section expansion
+function toggleCouncil(councilId) {
+    const content = document.getElementById('content-' + councilId);
+    const arrow = document.getElementById('arrow-' + councilId);
+    
+    if (content.classList.contains('expanded')) {
+        content.classList.remove('expanded');
+        arrow.classList.remove('rotated');
+    } else {
+        content.classList.add('expanded');
+        arrow.classList.add('rotated');
+    }
+}
+
+// Initialize - expand current council by default
+document.addEventListener('DOMContentLoaded', function() {
+    const currentCouncils = document.querySelectorAll('.council-content.expanded');
+    currentCouncils.forEach(content => {
+        const id = content.id.replace('content-', '');
+        const arrow = document.getElementById('arrow-' + id);
+        if (arrow) {
+            arrow.classList.add('rotated');
+        }
+    });
+});
+</script>

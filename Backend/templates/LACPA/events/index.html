@@ -1,0 +1,355 @@
+<style>
+    /* Event card styling */
+    .event-card {
+        background: linear-gradient(180deg, rgba(45, 55, 72, 1) 0%, rgba(15, 23, 42, 1) 100%);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .event-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 25px rgba(56, 189, 248, 0.3);
+    }
+
+    .event-image {
+        height: 180px;
+        object-fit: cover;
+    }
+
+    /* Tab styling */
+    .tab-button {
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .tab-button.active {
+        color: #38bdf8;
+    }
+
+    .tab-button.active::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: #38bdf8;
+    }
+
+    .tab-button:hover {
+        color: #38bdf8;
+    }
+
+    /* Filter styling */
+    .filter-icon {
+        transition: transform 0.3s ease;
+    }
+
+    .filter-icon:hover {
+        transform: scale(1.1);
+    }
+</style>
+
+<div class="bg-[rgba(32, 32, 32, 1)] text-slate-200 min-h-screen px-4 py-8 ">
+    <div class="max-w-[1400px] mx-auto pt-12">
+        <!-- Header Section -->
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-white">Events And News</h1>
+            
+            <!-- Calendar Icon -->
+            <button class="p-3 rounded-lg bg-slate-800/50 border border-slate-700 hover:border-sky-500 transition-colors filter-icon">
+                <i class="far fa-calendar text-sky-400 text-xl"></i>
+            </button>
+        </div>
+
+        <!-- Category Tabs -->
+        <nav class="flex flex-wrap gap-4 md:gap-8 mb-8 border-b border-slate-700 pb-4">
+            <button class="tab-button active text-sm md:text-base font-medium px-2 py-2" data-category="all">
+                All
+            </button>
+            <button class="tab-button text-sm md:text-base text-slate-400 px-2 py-2" data-category="congress">
+                Congress
+            </button>
+            <button class="tab-button text-sm md:text-base text-slate-400 px-2 py-2" data-category="workshops">
+                Workshops
+            </button>
+            <button class="tab-button text-sm md:text-base text-slate-400 px-2 py-2" data-category="professional_events">
+                Professional Events
+            </button>
+            <button class="tab-button text-sm md:text-base text-slate-400 px-2 py-2" data-category="social_events">
+                Social Events
+            </button>
+            <button class="tab-button text-sm md:text-base text-slate-400 px-2 py-2" data-category="other_announcements">
+                Other Announcements
+            </button>
+        </nav>
+
+        <!-- Events Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {{if .Events}}
+                <!-- Congress Events -->
+                {{range .Events.Congress}}
+                <article class="event-card rounded-xl overflow-hidden shadow-lg border border-slate-800" data-category="congress">
+                    <div class="relative">
+                        {{if .ImageURL}}
+                        <img src="{{.ImageURL}}" alt="{{.Title}}" class="w-full event-image">
+                        {{else}}
+                        <div class="w-full event-image bg-gradient-to-br from-blue-900 to-slate-800 flex items-center justify-center">
+                            <i class="fas fa-users text-6xl text-sky-400 opacity-50"></i>
+                        </div>
+                        {{end}}
+                    </div>
+                    
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold mb-2 text-white line-clamp-2">{{.Title}}</h3>
+                        <p class="text-sm text-slate-400 mb-3 line-clamp-3">{{.Description}}</p>
+                        
+                        <div class="space-y-2 text-xs text-slate-300">
+                            <div class="flex items-center gap-2">
+                                <i class="far fa-calendar text-sky-400"></i>
+                                <span>From: {{.StartDate.Format "02/01/2006"}} - To: {{.EndDate.Format "02/01/2006"}}</span>
+                            </div>
+                            {{if gt .CPEHours 0}}
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-clock text-emerald-400"></i>
+                                <span>CPE Hours: {{.CPEHours}}</span>
+                            </div>
+                            {{end}}
+                        </div>
+                    </div>
+                </article>
+                {{end}}
+
+                <!-- Workshops -->
+                {{range .Events.Workshops}}
+                <article class="event-card rounded-xl overflow-hidden shadow-lg border border-slate-800" data-category="workshops">
+                    <div class="relative">
+                        {{if .ImageURL}}
+                        <img src="{{.ImageURL}}" alt="{{.Title}}" class="w-full event-image">
+                        {{else}}
+                        <div class="w-full event-image bg-gradient-to-br from-purple-900 to-slate-800 flex items-center justify-center">
+                            <i class="fas fa-chalkboard-teacher text-6xl text-purple-400 opacity-50"></i>
+                        </div>
+                        {{end}}
+                    </div>
+                    
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold mb-2 text-white line-clamp-2">{{.Title}}</h3>
+                        <p class="text-sm text-slate-400 mb-3 line-clamp-3">{{.Description}}</p>
+                        
+                        <div class="space-y-2 text-xs text-slate-300">
+                            <div class="flex items-center gap-2">
+                                <i class="far fa-calendar text-sky-400"></i>
+                                <span>From: {{.StartDate.Format "02/01/2006"}} - To: {{.EndDate.Format "02/01/2006"}}</span>
+                            </div>
+                            {{if gt .CPEHours 0}}
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-clock text-emerald-400"></i>
+                                <span>CPE Hours: {{.CPEHours}}</span>
+                            </div>
+                            {{end}}
+                        </div>
+                    </div>
+                </article>
+                {{end}}
+
+                <!-- Professional Events -->
+                {{range .Events.ProfessionalEvents}}
+                <article class="event-card rounded-xl overflow-hidden shadow-lg border border-slate-800" data-category="professional_events">
+                    <div class="relative">
+                        {{if .ImageURL}}
+                        <img src="{{.ImageURL}}" alt="{{.Title}}" class="w-full event-image">
+                        {{else}}
+                        <div class="w-full event-image bg-gradient-to-br from-emerald-900 to-slate-800 flex items-center justify-center">
+                            <i class="fas fa-briefcase text-6xl text-emerald-400 opacity-50"></i>
+                        </div>
+                        {{end}}
+                    </div>
+                    
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold mb-2 text-white line-clamp-2">{{.Title}}</h3>
+                        <p class="text-sm text-slate-400 mb-3 line-clamp-3">{{.Description}}</p>
+                        
+                        <div class="space-y-2 text-xs text-slate-300">
+                            <div class="flex items-center gap-2">
+                                <i class="far fa-calendar text-sky-400"></i>
+                                <span>From: {{.StartDate.Format "02/01/2006"}} - To: {{.EndDate.Format "02/01/2006"}}</span>
+                            </div>
+                            {{if gt .CPEHours 0}}
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-clock text-emerald-400"></i>
+                                <span>CPE Hours: {{.CPEHours}}</span>
+                            </div>
+                            {{end}}
+                        </div>
+                    </div>
+                </article>
+                {{end}}
+
+                <!-- Social Events -->
+                {{range .Events.SocialEvents}}
+                <article class="event-card rounded-xl overflow-hidden shadow-lg border border-slate-800" data-category="social_events">
+                    <div class="relative">
+                        {{if .ImageURL}}
+                        <img src="{{.ImageURL}}" alt="{{.Title}}" class="w-full event-image">
+                        {{else}}
+                        <div class="w-full event-image bg-gradient-to-br from-pink-900 to-slate-800 flex items-center justify-center">
+                            <i class="fas fa-glass-cheers text-6xl text-pink-400 opacity-50"></i>
+                        </div>
+                        {{end}}
+                    </div>
+                    
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold mb-2 text-white line-clamp-2">{{.Title}}</h3>
+                        <p class="text-sm text-slate-400 mb-3 line-clamp-3">{{.Description}}</p>
+                        
+                        <div class="space-y-2 text-xs text-slate-300">
+                            <div class="flex items-center gap-2">
+                                <i class="far fa-calendar text-sky-400"></i>
+                                <span>From: {{.StartDate.Format "02/01/2006"}} - To: {{.EndDate.Format "02/01/2006"}}</span>
+                            </div>
+                            {{if gt .CPEHours 0}}
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-clock text-emerald-400"></i>
+                                <span>CPE Hours: {{.CPEHours}}</span>
+                            </div>
+                            {{end}}
+                        </div>
+                    </div>
+                </article>
+                {{end}}
+
+                <!-- Other Announcements -->
+                {{range .Events.OtherAnnouncements}}
+                <article class="event-card rounded-xl overflow-hidden shadow-lg border border-slate-800" data-category="other_announcements">
+                    <div class="relative">
+                        {{if .ImageURL}}
+                        <img src="{{.ImageURL}}" alt="{{.Title}}" class="w-full event-image">
+                        {{else}}
+                        <div class="w-full event-image bg-gradient-to-br from-orange-900 to-slate-800 flex items-center justify-center">
+                            <i class="fas fa-bullhorn text-6xl text-orange-400 opacity-50"></i>
+                        </div>
+                        {{end}}
+                    </div>
+                    
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold mb-2 text-white line-clamp-2">{{.Title}}</h3>
+                        <p class="text-sm text-slate-400 mb-3 line-clamp-3">{{.Description}}</p>
+                        
+                        <div class="space-y-2 text-xs text-slate-300">
+                            <div class="flex items-center gap-2">
+                                <i class="far fa-calendar text-sky-400"></i>
+                                <span>From: {{.StartDate.Format "02/01/2006"}} - To: {{.EndDate.Format "02/01/2006"}}</span>
+                            </div>
+                            {{if gt .CPEHours 0}}
+                            <div class="flex items-center gap-2">
+                                <i class="fas fa-clock text-emerald-400"></i>
+                                <span>CPE Hours: {{.CPEHours}}</span>
+                            </div>
+                            {{end}}
+                        </div>
+                    </div>
+                </article>
+                {{end}}
+            {{else}}
+                <!-- No Events -->
+                <div class="col-span-full text-center py-16">
+                    <i class="fas fa-calendar-times text-6xl text-slate-600 mb-4"></i>
+                    <p class="text-xl text-slate-400">No events available at the moment.</p>
+                </div>
+            {{end}}
+        </div>
+
+        <!-- Pagination Controls -->
+        {{if .Events}}
+        {{if gt .TotalPages 1}}
+        <div class="mt-12 flex items-center justify-center gap-2">
+            <!-- Previous Button -->
+            <button 
+                class="px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700 hover:border-sky-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                hx-get="http://localhost:3000/events?page={{if gt .CurrentPage 1}}{{sub .CurrentPage 1}}{{else}}1{{end}}"
+                hx-trigger="click"
+                hx-swap="innerHTML"
+                hx-target="#main-div"
+                {{if eq .CurrentPage 1}}disabled{{end}}
+            >
+                <i class="fas fa-chevron-left text-sky-400"></i>
+            </button>
+
+            <!-- Page Numbers -->
+            <div class="flex gap-2">
+                {{$currentPage := .CurrentPage}}
+                {{$totalPages := .TotalPages}}
+                
+                <!-- First page -->
+                {{if gt $currentPage 3}}
+                <button 
+                    class="px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700 hover:border-sky-500 transition-colors"
+                    hx-get="http://localhost:3000/events?page=1"
+                    hx-trigger="click"
+                    hx-swap="innerHTML"
+                    hx-target="#main-div"
+                >
+                    1
+                </button>
+                {{if gt $currentPage 4}}
+                <span class="px-2 py-2 text-slate-500">...</span>
+                {{end}}
+                {{end}}
+
+                <!-- Pages around current -->
+                {{range $i := iterate $totalPages}}
+                    {{$page := add $i 1}}
+                    {{if and (ge $page (sub $currentPage 2)) (le $page (add $currentPage 2))}}
+                    <button 
+                        class="px-4 py-2 rounded-lg {{if eq $page $currentPage}}bg-sky-500 border-sky-500 text-white{{else}}bg-slate-800/50 border-slate-700 hover:border-sky-500{{end}} border transition-colors" 
+                        hx-get="http://localhost:3000/events?page={{$page}}"
+                        hx-trigger="click"
+                        hx-swap="innerHTML"
+                        hx-target="#main-div"
+                        {{if eq $page $currentPage}}disabled{{end}}
+                    >
+                        {{$page}}
+                    </button>
+                    {{end}}
+                {{end}}
+
+                <!-- Last page -->
+                {{if lt $currentPage (sub $totalPages 2)}}
+                {{if lt $currentPage (sub $totalPages 3)}}
+                <span class="px-2 py-2 text-slate-500">...</span>
+                {{end}}
+                <button 
+                    class="px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700 hover:border-sky-500 transition-colors"
+                    hx-get="http://localhost:3000/events?page={{$totalPages}}"
+                    hx-trigger="click"
+                    hx-swap="innerHTML"
+                    hx-target="#main-div"
+                >
+                    {{$totalPages}}
+                </button>
+                {{end}}
+            </div>
+
+            <!-- Next Button -->
+            <button 
+                class="px-4 py-2 rounded-lg bg-slate-800/50 border border-slate-700 hover:border-sky-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                hx-get="http://localhost:3000/events?page={{if lt .CurrentPage .TotalPages}}{{add .CurrentPage 1}}{{else}}{{.TotalPages}}{{end}}"
+                hx-trigger="click"
+                hx-swap="innerHTML"
+                hx-target="#main-div"
+                {{if eq .CurrentPage .TotalPages}}disabled{{end}}
+            >
+                <i class="fas fa-chevron-right text-sky-400"></i>
+            </button>
+        </div>
+
+        <!-- Pagination Info -->
+        <div class="mt-4 text-center text-sm text-slate-400">
+            Showing page {{.CurrentPage}} of {{.TotalPages}} ({{.TotalCount}} total events)
+        </div>
+        {{end}}
+        {{end}}
+    </div>
+</div>
+
+<!-- Tab filtering and pagination scripts will be in app.js -->

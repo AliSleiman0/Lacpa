@@ -1,0 +1,340 @@
+<style>
+    .requirement-card {
+        background: linear-gradient(135deg, #667eea 0%, #4299e1 100%);
+        border-radius: 24px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        min-height: 260px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .requirement-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 0.95) 0%, rgba(66, 153, 225, 0.95) 100%);
+        opacity: 1;
+        transition: opacity 0.4s ease;
+    }
+
+    .requirement-card:hover {
+        transform: translateY(-10px) scale(1.03);
+        box-shadow: 0 25px 50px rgba(102, 126, 234, 0.5);
+    }
+
+    .requirement-card:hover::before {
+        opacity: 0.9;
+        background: linear-gradient(135deg, rgba(102, 126, 234, 1) 0%, rgba(66, 153, 225, 1) 100%);
+    }
+
+    .card-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .tab-button {
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .tab-button.active {
+        background: linear-gradient(135deg, rgba(56, 189, 248, 0.2) 0%, rgba(14, 165, 233, 0.2) 100%);
+        border-color: rgb(56, 189, 248);
+    }
+
+    .tab-button.active::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, rgb(56, 189, 248) 0%, rgb(14, 165, 233) 100%);
+        border-radius: 2px 2px 0 0;
+    }
+
+    .tab-content {
+        display: none;
+    }
+
+    .tab-content.active {
+        display: block;
+        animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .icon-circle {
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 24px;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 3px solid rgba(255, 255, 255, 0.35);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .requirement-card:hover .icon-circle {
+        background: rgba(255, 255, 255, 0.35);
+        transform: scale(1.2) rotate(8deg);
+        border-color: rgba(255, 255, 255, 0.6);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .cta-button {
+        background: linear-gradient(135deg, rgb(56, 189, 248) 0%, rgb(14, 165, 233) 100%);
+        transition: all 0.3s ease;
+    }
+
+    .cta-button:hover {
+        background: linear-gradient(135deg, rgb(14, 165, 233) 0%, rgb(56, 189, 248) 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(56, 189, 248, 0.4);
+    }
+
+    .requirement-text {
+        color: rgba(255, 255, 255, 0.98);
+        text-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        line-height: 1.7;
+        font-size: 15px;
+        font-weight: 500;
+    }
+
+    .requirement-title {
+        color: white;
+        font-weight: 700;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Grid layout for responsive cards */
+    @media (max-width: 768px) {
+        .requirement-card {
+            min-height: 240px;
+        }
+    }
+
+    @media (min-width: 769px) and (max-width: 1024px) {
+        .requirement-card {
+            min-height: 250px;
+        }
+    }
+</style>
+
+<div class="bg-[rgba(32, 32, 32, 1)] text-slate-200 mx-auto px-4 pt-20 pb-12">
+    <div class="max-w-[1400px] mx-auto">
+        
+        <!-- Page Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+                Apply for <span class="text-sky-400">LACPA Membership</span>
+            </h1>
+            <p class="text-lg text-slate-400 max-w-3xl mx-auto">
+                Join the Lebanese Association of Certified Public Accountants and advance your professional career
+            </p>
+        </div>
+
+        <!-- Tabs for Individual vs Firm -->
+        <div class="flex justify-center mb-12">
+            <div class="inline-flex rounded-lg border-2 border-slate-700 bg-slate-800/50 p-1">
+                <button onclick="switchTab('individual')" 
+                        id="individual-tab"
+                        class="tab-button active px-8 py-3 rounded-lg font-semibold text-white transition-all">
+                    <i class="fas fa-user mr-2"></i>
+                    Individual Membership
+                </button>
+                <button onclick="switchTab('firm')" 
+                        id="firm-tab"
+                        class="tab-button px-8 py-3 rounded-lg font-semibold text-slate-400 transition-all">
+                    <i class="fas fa-building mr-2"></i>
+                    Firm Membership
+                </button>
+            </div>
+        </div>
+
+        <!-- Individual Membership Content -->
+        <div id="individual-content" class="tab-content active">
+            <div class="mb-12">
+                <h2 class="text-3xl font-bold text-center text-white mb-3">Individual Membership Requirements</h2>
+                <p class="text-center text-slate-400 mb-8">Please ensure you meet the following requirements before applying</p>
+                
+                {{if gt (len .IndividualRequirements) 0}}
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-[1600px] mx-auto">
+                    {{range .IndividualRequirements}}
+                    <article class="requirement-card p-6">
+                        <div class="card-content text-center flex flex-col items-center justify-center h-full">
+                            <div class="icon-circle">
+                                <i class="{{.Icon}} text-white text-3xl"></i>
+                            </div>
+                            <div class="requirement-text px-3">
+                                {{.Description}}
+                            </div>
+                        </div>
+                    </article>
+                    {{end}}
+                </div>
+                {{else}}
+                <div class="text-center py-12 text-slate-400">
+                    <i class="fas fa-info-circle text-4xl mb-4"></i>
+                    <p>No requirements available at this time</p>
+                </div>
+                {{end}}
+            </div>
+
+            <!-- Call to Action for Individual -->
+            <div class="text-center mt-12 p-8 rounded-xl border-2 border-sky-500/30 bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm">
+                <h3 class="text-2xl font-bold text-white mb-3">Ready to Apply?</h3>
+                <p class="text-slate-400 mb-6 max-w-2xl mx-auto">
+                    Submit your application and our team will review it within 5-7 business days. You'll receive email updates on your application status.
+                </p>
+                <a href="/membership/apply/individual" 
+                   hx-get="http://localhost:3000/membership/apply/individual" 
+                   hx-target="#main-div" 
+                   hx-swap="innerHTML" 
+                   hx-push-url="/membership/apply/individual"
+                   hx-trigger="click"
+                   class="cta-button inline-flex items-center gap-2 px-8 py-4 rounded-full text-white font-bold text-lg shadow-lg">
+                    <i class="fas fa-paper-plane"></i>
+                    Start Individual Application
+                </a>
+            </div>
+        </div>
+
+        <!-- Firm Membership Content -->
+        <div id="firm-content" class="tab-content">
+            <div class="mb-12">
+                <h2 class="text-3xl font-bold text-center text-white mb-3">Firm Membership Requirements</h2>
+                <p class="text-center text-slate-400 mb-8">Please ensure your firm meets the following requirements before applying</p>
+                
+                {{if gt (len .FirmRequirements) 0}}
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-[1600px] mx-auto">
+                    {{range .FirmRequirements}}
+                    <article class="requirement-card p-6">
+                        <div class="card-content text-center flex flex-col items-center justify-center h-full">
+                            <div class="icon-circle">
+                                <i class="{{.Icon}} text-white text-3xl"></i>
+                            </div>
+                            <div class="requirement-text px-3">
+                                {{.Description}}
+                            </div>
+                        </div>
+                    </article>
+                    {{end}}
+                </div>
+                {{else}}
+                <div class="text-center py-12 text-slate-400">
+                    <i class="fas fa-info-circle text-4xl mb-4"></i>
+                    <p>No requirements available at this time</p>
+                </div>
+                {{end}}
+            </div>
+
+            <!-- Call to Action for Firm -->
+            <div class="text-center mt-12 p-8 rounded-xl border-2 border-sky-500/30 bg-gradient-to-br from-slate-800/50 to-slate-900/50 backdrop-blur-sm">
+                <h3 class="text-2xl font-bold text-white mb-3">Ready to Apply?</h3>
+                <p class="text-slate-400 mb-6 max-w-2xl mx-auto">
+                    Submit your firm application and our team will review it within 7-10 business days. You'll receive email updates on your application status.
+                </p>
+                <a href="/membership/apply/firm"
+                   hx-get="http://localhost:3000/membership/apply/firm" 
+                   hx-target="#main-div" 
+                   hx-swap="innerHTML" 
+                   hx-push-url="/membership/apply/firm"
+                   hx-trigger="click"
+                   class="cta-button inline-flex items-center gap-2 px-8 py-4 rounded-full text-white font-bold text-lg shadow-lg cursor-pointer">
+                    <i class="fas fa-paper-plane"></i>
+                    Start Firm Application
+                </a>
+            </div>
+        </div>
+
+        <!-- Benefits Section -->
+        <div class="mt-16 pt-12 border-t border-slate-700">
+            <h2 class="text-3xl font-bold text-center text-white mb-8">Membership Benefits</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-sky-500/20 to-blue-500/20 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-certificate text-sky-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Professional Recognition</h3>
+                    <p class="text-sm text-slate-400">Official certification and recognition in Lebanon</p>
+                </div>
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-sky-500/20 to-blue-500/20 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-users text-sky-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Networking Opportunities</h3>
+                    <p class="text-sm text-slate-400">Connect with peers and industry leaders</p>
+                </div>
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-sky-500/20 to-blue-500/20 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-graduation-cap text-sky-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Continuing Education</h3>
+                    <p class="text-sm text-slate-400">Access to training and development programs</p>
+                </div>
+                <div class="text-center p-6">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-sky-500/20 to-blue-500/20 flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-shield-alt text-sky-400 text-2xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-white mb-2">Professional Support</h3>
+                    <p class="text-sm text-slate-400">Guidance and advocacy for your practice</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+function switchTab(tab) {
+    // Remove active class from all tabs and content
+    document.querySelectorAll('.tab-button').forEach(btn => {
+        btn.classList.remove('active');
+        btn.classList.add('text-slate-400');
+        btn.classList.remove('text-white');
+    });
+    document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+    });
+
+    // Add active class to selected tab and content
+    if (tab === 'individual') {
+        document.getElementById('individual-tab').classList.add('active');
+        document.getElementById('individual-tab').classList.remove('text-slate-400');
+        document.getElementById('individual-tab').classList.add('text-white');
+        document.getElementById('individual-content').classList.add('active');
+    } else {
+        document.getElementById('firm-tab').classList.add('active');
+        document.getElementById('firm-tab').classList.remove('text-slate-400');
+        document.getElementById('firm-tab').classList.add('text-white');
+        document.getElementById('firm-content').classList.add('active');
+    }
+}
+
+// Re-initialize after HTMX swaps
+document.body.addEventListener('htmx:afterSwap', function() {
+    // Reset to individual tab by default
+    switchTab('individual');
+});
+</script>

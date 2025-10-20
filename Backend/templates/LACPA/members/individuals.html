@@ -1,0 +1,323 @@
+<style>
+    /* small helpers to mimic glowing avatar ring and card backdrop */
+    .card-bg {
+        background: linear-gradient(180deg, rgba(45, 55, 72, 1) 0%, rgba(15, 23, 42, 1) 100%);
+    }
+
+    .glass {
+        backdrop-filter: blur(6px);
+    }
+
+    /* Card state transitions */
+    .card-content {
+        transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .card-content.fade-out {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    .card-content.fade-in {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    /* Navigation arrows styling */
+    .nav-arrow {
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .nav-arrow:hover {
+        transform: scale(1.1);
+        background-color: rgba(56, 189, 248, 0.2);
+    }
+
+    .nav-arrow:active {
+        transform: scale(0.95);
+    }
+</style>
+
+<div class="bg-[rgba(32, 32, 32, 1)] text-slate-200 mx-auto px-4 pt-20">
+
+    <div class="max-w-[1200px] mx-auto">
+
+        <!-- Tabs and Filters -->
+        <div class="mb-5 space-y-4">
+            <!-- Tabs -->
+            <nav class="flex gap-4 items-center">
+                <button class="px-1 text-slate-200 font-medium text-sm md:text-base border-b-2 border-sky-500">Individual</button>
+                <button class="px-1 text-slate-400 text-sm md:text-base hover:text-slate-200 transition-colors"
+                        hx-get="http://localhost:3000/membership/firms"
+                        hx-trigger="click"
+                        hx-swap="innerHTML"
+                        hx-target="#main-div"
+                        hx-push-url="/membership/firms">Firms</button>
+            </nav>
+
+            <!-- Filter pills -->
+            <div class="flex flex-wrap gap-2 md:gap-3 justify-center md:justify-end">
+                <button class="px-2 md:px-4 py-2 rounded-2xl border {{if eq .MemberType "all"}}border-sky-500/40{{else}}border-slate-700{{end}} bg-transparent text-xs md:text-sm"
+                        hx-get="http://localhost:3000/membership?type=all"
+                        hx-trigger="click"
+                        hx-swap="innerHTML"
+                        hx-target="#main-div">
+                    <span class="block">All Members</span>
+                    <span class="text-xs {{if eq .MemberType "all"}}text-sky-400{{else}}text-slate-400{{end}}">{{.TotalCount}} Members</span>
+                </button>
+                <button class="px-2 md:px-4 py-2 rounded-2xl border {{if eq .MemberType "Apprentices"}}border-sky-500/40{{else}}border-slate-700{{end}} text-xs md:text-sm"
+                        hx-get="http://localhost:3000/membership?type=Apprentices"
+                        hx-trigger="click"
+                        hx-swap="innerHTML"
+                        hx-target="#main-div">
+                    <span class="block">Apprentices</span>
+                    <span class="text-xs {{if eq .MemberType "Apprentices"}}text-sky-400{{else}}text-slate-400{{end}}">- Members</span>
+                </button>
+                <button class="px-2 md:px-4 py-2 rounded-2xl border {{if eq .MemberType "Practicing"}}border-sky-500/40{{else}}border-slate-700{{end}} text-xs md:text-sm"
+                        hx-get="http://localhost:3000/membership?type=Practicing"
+                        hx-trigger="click"
+                        hx-swap="innerHTML"
+                        hx-target="#main-div">
+                    <span class="block">Practicing</span>
+                    <span class="text-xs {{if eq .MemberType "Practicing"}}text-sky-400{{else}}text-slate-400{{end}}">- Members</span>
+                </button>
+                <button class="px-2 md:px-4 py-2 rounded-2xl border {{if eq .MemberType "Non-Practicing"}}border-sky-500/40{{else}}border-slate-700{{end}} text-xs md:text-sm"
+                        hx-get="http://localhost:3000/membership?type=Non-Practicing"
+                        hx-trigger="click"
+                        hx-swap="innerHTML"
+                        hx-target="#main-div">
+                    <span class="block">Non-Practicing</span>
+                    <span class="text-xs {{if eq .MemberType "Non-Practicing"}}text-sky-400{{else}}text-slate-400{{end}}">- Members</span>
+                </button>
+                <button class="px-2 md:px-4 py-2 rounded-2xl border {{if eq .MemberType "Retired"}}border-sky-500/40{{else}}border-slate-700{{end}} text-xs md:text-sm"
+                        hx-get="http://localhost:3000/membership?type=Retired"
+                        hx-trigger="click"
+                        hx-swap="innerHTML"
+                        hx-target="#main-div">
+                    <span class="block">Retired</span>
+                    <span class="text-xs {{if eq .MemberType "Retired"}}text-sky-400{{else}}text-slate-400{{end}}">- Members</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Grid of cards -->
+        <main>
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 mx-auto mb-8">
+                {{range .Members}}
+                <!-- Member Card -->
+                <article class="member-card relative rounded-xl overflow-hidden shadow-lg border border-slate-800 p-4 card-bg glass" data-state="0">
+                    <!-- Badge -->
+                    <div class="absolute top-3 right-3 flex gap-2 items-center">
+                        <div class="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white text-sm">
+                            🎓
+                        </div>
+                    </div>
+
+                    <!-- State 0: Basic Info -->
+                    <div class="card-content card-state-0 fade-in">
+                        <div class="flex flex-col items-center gap-3">
+                            <div class="shadow-xl w-16 h-16 rounded-full shadow-white">
+                                <img src="../assets/girl.png" alt="avatar" class="w-16 h-16 rounded-full object-cover ring-4 ring-slate-800" />
+                            </div>
+
+                            <div class="flex-1 text-center w-full">
+                                <h3 class="text-lg font-semibold mb-2">{{.FirstName}} {{.LastName}}</h3>
+                                <p class="text-sm text-slate-400 mb-3">{{.MemberType}}</p>
+                                <div class="flex flex-nowrap justify-between items-center mb-3">
+                                    <span class="text-slate-400 text-xs font-medium">LACPA ID</span>
+                                    <span class="text-white text-xs font-medium">{{.LacpaID}}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Navigation: Share & Forward -->
+                        <div class="flex justify-between items-center mt-3">
+                            <button class="share-btn p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-emerald-500 transition-colors" aria-label="Share">
+                                <i class="fas fa-share-alt text-emerald-400 text-sm"></i>
+                            </button>
+                            <button class="nav-arrow nav-forward p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-sky-500" aria-label="Next">
+                                <i class="fas fa-arrow-right text-sky-400 text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Share Overlay State -->
+                    <div class="share-overlay absolute inset-0 p-4 opacity-0 z-20" style="pointer-events: none; background: linear-gradient(135deg, rgba(30, 58, 138, 0.95) 0%, rgba(17, 24, 39, 0.95) 100%);">
+                        <button class="close-share absolute top-2 right-2 p-1.5 rounded-full bg-slate-800/50 border border-slate-700 hover:border-red-500 transition-colors" aria-label="Close">
+                            <i class="fas fa-times text-red-400 text-xs"></i>
+                        </button>
+
+                        <div class="flex flex-col items-center justify-center h-full gap-2">
+                            <div class="bg-white p-2 rounded-xl shadow-xl">
+                                <div class="w-20 h-20 flex items-center justify-center">
+                                    <svg class="w-full h-full" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                        <rect x="0" y="0" width="20" height="20" fill="#000" />
+                                        <rect x="80" y="0" width="20" height="20" fill="#000" />
+                                        <rect x="0" y="80" width="20" height="20" fill="#000" />
+                                        <rect x="25" y="25" width="50" height="50" fill="#000" />
+                                        <rect x="35" y="35" width="30" height="30" fill="#fff" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <h3 class="text-base font-bold text-white mb-0.5">{{.FirstName}} {{.LastName}}</h3>
+                            <p class="text-sky-300 text-xs mb-1">{{.MemberType}}</p>
+                            <div class="flex items-center gap-1.5 mb-2">
+                                <span class="text-slate-300 text-xs">LACPA ID</span>
+                                <span class="text-white text-xs font-bold">{{.LacpaID}}</span>
+                            </div>
+
+                            <button class="px-4 py-1.5 rounded-full border border-sky-400/50 bg-sky-500/20 hover:bg-sky-500/30 text-sky-300 font-medium transition-all duration-200 text-xs">
+                                <i class="fas fa-link mr-1.5 text-xs"></i>
+                                Share Link
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- State 1: Contact Info -->
+                    <div class="card-content card-state-1 absolute inset-0 p-4 opacity-0" style="pointer-events: none;">
+                        <div class="flex flex-col h-full">
+                            <h3 class="text-center text-lg font-semibold mb-1">{{.FirstName}} {{.LastName}}</h3>
+
+                            <div class="flex-1 space-y-2 overflow-y-auto text-sm">
+                                {{if .ShowPhone}}
+                                {{if .Phone}}
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-phone text-sky-400 w-4"></i>
+                                    <span class="text-slate-300 text-xs">{{.Phone}}</span>
+                                </div>
+                                {{end}}
+                                {{end}}
+
+                                {{if .ShowEmail}}
+                                {{if .Email}}
+                                <div class="flex items-center gap-2">
+                                    <i class="fas fa-envelope text-sky-400 w-4"></i>
+                                    <span class="text-slate-300 text-xs truncate">{{.Email}}</span>
+                                </div>
+                                {{end}}
+                                {{end}}
+
+                                {{if .ShowAddress}}
+                                {{if .City}}
+                                <div class="flex items-start gap-2">
+                                    <i class="fas fa-map-marker-alt text-sky-400 w-4 mt-0.5"></i>
+                                    <span class="text-slate-300 text-xs">{{.City}}{{if .District}}, {{.District}}{{end}}</span>
+                                </div>
+                                {{end}}
+                                {{end}}
+
+                                {{if .LinkedInURL}}
+                                <div class="flex items-center gap-2">
+                                    <i class="fab fa-linkedin text-sky-400 w-4"></i>
+                                    <a href="{{.LinkedInURL}}" target="_blank" class="text-sky-300 text-xs truncate underline">LinkedIn</a>
+                                </div>
+                                {{end}}
+                            </div>
+
+                            <div class="flex justify-between mt-3">
+                                <button class="nav-arrow nav-back p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-sky-500" aria-label="Previous">
+                                    <i class="fas fa-arrow-left text-sky-400 text-sm"></i>
+                                </button>
+                                <button class="nav-arrow nav-forward p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-sky-500" aria-label="Next">
+                                    <i class="fas fa-arrow-right text-sky-400 text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- State 2: Biography/Description -->
+                    <div class="card-content card-state-2 absolute inset-0 p-4 opacity-0" style="pointer-events: none;">
+                        <div class="flex flex-col h-full">
+                            <div class="flex items-center justify-center mb-3">
+                                <i class="fas fa-align-left text-sky-400 text-xl"></i>
+                            </div>
+
+                            <div class="flex-1 overflow-y-auto">
+                                <p class="text-slate-300 text-xs leading-relaxed text-center">
+                                    {{if .Biography}}{{.Biography}}{{else}}No biography available.{{end}}
+                                </p>
+                            </div>
+
+                            <div class="flex justify-start mt-3">
+                                <button class="nav-arrow nav-back p-2 rounded-full bg-slate-800/50 border border-slate-700 hover:border-sky-500" aria-label="Previous">
+                                    <i class="fas fa-arrow-left text-sky-400 text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+                {{else}}
+                <div class="col-span-full text-center py-12 text-slate-400">
+                    <i class="fas fa-users text-4xl mb-4"></i>
+                    <p>No members found</p>
+                </div>
+                {{end}}
+            </div>
+
+            <!-- Pagination Controls -->
+            {{if gt .TotalPages 1}}
+            <div class="flex justify-center items-center gap-4 my-8">
+                <!-- Previous Button -->
+                {{if gt .CurrentPage 1}}
+                <button class="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white transition-colors"
+                        hx-get="http://localhost:3000/membership?page={{sub .CurrentPage 1}}&pageSize={{.PageSize}}{{if ne .MemberType "all"}}&type={{.MemberType}}{{end}}"
+                        hx-trigger="click"
+                        hx-swap="innerHTML"
+                        hx-target="#main-div">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                {{else}}
+                <button class="px-4 py-2 rounded-lg bg-slate-800 text-slate-500 cursor-not-allowed" disabled>
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                {{end}}
+
+                <!-- Page Numbers -->
+                <div class="flex gap-2">
+                    {{range $i := iterate .TotalPages}}
+                    {{$pageNum := add $i 1}}
+                    {{if eq $pageNum $.CurrentPage}}
+                    <button class="w-10 h-10 rounded-lg bg-sky-600 text-white font-medium">
+                        {{$pageNum}}
+                    </button>
+                    {{else}}
+                    <button class="w-10 h-10 rounded-lg bg-slate-700 hover:bg-slate-600 text-white transition-colors"
+                            hx-get="http://localhost:3000/membership?page={{$pageNum}}&pageSize={{$.PageSize}}{{if ne $.MemberType "all"}}&type={{$.MemberType}}{{end}}"
+                            hx-trigger="click"
+                            hx-swap="innerHTML"
+                            hx-target="#main-div">
+                        {{$pageNum}}
+                    </button>
+                    {{end}}
+                    {{end}}
+                </div>
+
+                <!-- Next Button -->
+                {{if lt .CurrentPage .TotalPages}}
+                <button class="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white transition-colors"
+                        hx-get="http://localhost:3000/membership?page={{add .CurrentPage 1}}&pageSize={{.PageSize}}{{if ne .MemberType "all"}}&type={{.MemberType}}{{end}}"
+                        hx-trigger="click"
+                        hx-swap="innerHTML"
+                        hx-target="#main-div">
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+                {{else}}
+                <button class="px-4 py-2 rounded-lg bg-slate-800 text-slate-500 cursor-not-allowed" disabled>
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+                {{end}}
+            </div>
+
+            <!-- Page Info -->
+            <div class="text-center text-slate-400 text-sm mb-8">
+                Showing page {{.CurrentPage}} of {{.TotalPages}} ({{.TotalCount}} total members)
+            </div>
+            {{end}}
+        </main>
+
+    </div>
+</div>
+
+<!-- Script removed - member card navigation is now in app.js -->

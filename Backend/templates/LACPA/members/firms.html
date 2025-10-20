@@ -1,0 +1,266 @@
+<style>
+    .firm-card-bg {
+        background: linear-gradient(180deg, rgba(45, 55, 72, 1) 0%, rgba(15, 23, 42, 1) 100%);
+    }
+
+    .glass {
+        backdrop-filter: blur(6px);
+    }
+
+    .firm-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .firm-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+</style>
+
+<div class="bg-[rgba(32, 32, 32, 1)] text-slate-200 mx-auto px-4 pt-20">
+
+    <div class="max-w-[1200px] mx-auto">
+
+        <!-- Tabs and Filters -->
+        <div class="mb-5 space-y-4">
+            <!-- Tabs -->
+            <nav class="flex gap-4 items-center">
+                <button class="px-1 text-slate-400 text-sm md:text-base hover:text-slate-200 transition-colors"
+                        hx-get="http://localhost:3000/membership"
+                        hx-trigger="click"
+                        hx-swap="innerHTML"
+                        hx-target="#main-div"
+                        hx-push-url="/membership">Individual</button>
+                <button class="px-1 text-slate-200 font-medium text-sm md:text-base border-b-2 border-sky-500">Firms</button>
+            </nav>
+
+            <!-- Filter pills for Firms -->
+            <div class="flex flex-wrap gap-2 md:gap-3 justify-center md:justify-end">
+                <button class="px-2 md:px-4 py-2 rounded-2xl border border-slate-700 bg-transparent text-xs md:text-sm"
+                        hx-get="http://localhost:3000/membership/firms?size=all"
+                        hx-trigger="click"
+                        hx-swap="innerHTML"
+                        hx-target="#main-div">
+                    <span class="block">All Firms</span>
+                    <span class="text-xs text-slate-400">{{.TotalCount}} Firms</span>
+                </button>
+                <button class="px-2 md:px-4 py-2 rounded-2xl border border-slate-700 text-xs md:text-sm"
+                        hx-get="http://localhost:3000/membership/firms?size=Big 4"
+                        hx-trigger="click"
+                        hx-swap="innerHTML"
+                        hx-target="#main-div">
+                    <span class="block">Big 4</span>
+                    <span class="text-xs text-slate-400">4 Firms</span>
+                </button>
+                <button class="px-2 md:px-4 py-2 rounded-2xl border border-slate-700 text-xs md:text-sm"
+                        hx-get="http://localhost:3000/membership/firms?size=Large"
+                        hx-trigger="click"
+                        hx-swap="innerHTML"
+                        hx-target="#main-div">
+                    <span class="block">Large</span>
+                    <span class="text-xs text-slate-400">- Firms</span>
+                </button>
+                <button class="px-2 md:px-4 py-2 rounded-2xl border border-slate-700 text-xs md:text-sm"
+                        hx-get="http://localhost:3000/membership/firms?size=Medium"
+                        hx-trigger="click"
+                        hx-swap="innerHTML"
+                        hx-target="#main-div">
+                    <span class="block">Medium</span>
+                    <span class="text-xs text-slate-400">- Firms</span>
+                </button>
+                <button class="px-2 md:px-4 py-2 rounded-2xl border border-slate-700 text-xs md:text-sm"
+                        hx-get="http://localhost:3000/membership/firms?size=Small"
+                        hx-trigger="click"
+                        hx-swap="innerHTML"
+                        hx-target="#main-div">
+                    <span class="block">Small</span>
+                    <span class="text-xs text-slate-400">- Firms</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Grid of firm cards -->
+        <main>
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6 mx-auto mb-8">
+                {{range .Firms}}
+                <article class="firm-card relative rounded-xl overflow-hidden shadow-lg border border-slate-800 p-6 firm-card-bg glass">
+                    <!-- Badge -->
+                    <div class="absolute top-3 right-3">
+                        <div class="w-10 h-10 rounded-full bg-{{.BadgeColor}} flex items-center justify-center text-white text-lg">
+                            {{.BadgeEmoji}}
+                        </div>
+                    </div>
+
+                    <!-- Firm Logo -->
+                    <div class="flex justify-center mb-4 mt-2">
+                        {{if .LogoURL}}
+                        <div class="w-32 h-24 bg-white rounded-lg p-2 flex items-center justify-center">
+                            <img src="{{.LogoURL}}" alt="{{.FirmName}} logo" class="max-w-full max-h-full object-contain">
+                        </div>
+                        {{else}}
+                        <div class="w-24 h-24 bg-slate-700 rounded-lg flex items-center justify-center">
+                            <span class="text-3xl">🏢</span>
+                        </div>
+                        {{end}}
+                    </div>
+
+                    <!-- Firm Name -->
+                    <h3 class="text-center font-bold text-lg mb-2 text-slate-100">
+                        {{.FirmName}}
+                    </h3>
+
+                    <!-- Firm Type -->
+                    <p class="text-center text-sm text-slate-400 mb-3">
+                        {{.FirmType}}
+                    </p>
+
+                    <!-- Firm Size Badge -->
+                
+
+                    <!-- Quick Stats -->
+                    <div class="grid grid-cols-2 gap-3 mb-4 text-xs">
+                        <div class="text-center p-2 rounded bg-slate-800/50">
+                            <div class="font-semibold text-slate-300">{{.NumberOfEmployees}}</div>
+                            <div class="text-slate-500">Employees</div>
+                        </div>
+                        <div class="text-center p-2 rounded bg-slate-800/50">
+                            <div class="font-semibold text-slate-300">{{.NumberOfCPAs}}</div>
+                            <div class="text-slate-500">CPAs</div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Info -->
+                    <div class="space-y-2 mb-4 text-sm">
+                        {{if .ShowPhone}}
+                        {{if .PrimaryPhone}}
+                        <div class="flex items-center gap-2 text-slate-400">
+                            <i class="fas fa-phone text-xs"></i>
+                            <span>{{.PrimaryPhone}}</span>
+                        </div>
+                        {{end}}
+                        {{end}}
+
+                        {{if .ShowEmail}}
+                        {{if .PrimaryEmail}}
+                        <div class="flex items-center gap-2 text-slate-400">
+                            <i class="fas fa-envelope text-xs"></i>
+                            <span class="truncate">{{.PrimaryEmail}}</span>
+                        </div>
+                        {{end}}
+                        {{end}}
+
+                        {{if .ShowWebsite}}
+                        {{if .Website}}
+                        <div class="flex items-center gap-2 text-slate-400">
+                            <i class="fas fa-globe text-xs"></i>
+                            <a href="{{.Website}}" target="_blank" class="truncate hover:text-sky-400 transition-colors">
+                                {{.Website}}
+                            </a>
+                        </div>
+                        {{end}}
+                        {{end}}
+                    </div>
+
+                    <!-- Location -->
+                    {{if .ShowAddress}}
+                    {{if .City}}
+                    <div class="flex items-center gap-2 text-slate-400 text-sm mb-4">
+                        <i class="fas fa-map-marker-alt text-xs"></i>
+                        <span>{{.City}}, {{.Country}}</span>
+                    </div>
+                    {{end}}
+                    {{end}}
+
+                    <!-- Services -->
+                    {{if .ServicesOffered}}
+                    <div class="mb-4">
+                        <div class="text-xs text-slate-500 mb-2">Services:</div>
+                        <div class="flex flex-wrap gap-1">
+                            {{range $index, $service := .ServicesOffered}}
+                            {{if lt $index 3}}
+                            <span class="px-2 py-1 rounded-full text-xs bg-slate-700/50 text-slate-300">
+                                {{$service}}
+                            </span>
+                            {{end}}
+                            {{end}}
+                        </div>
+                    </div>
+                    {{end}}
+
+                    <!-- View Profile Button -->
+                    <button class="w-full py-2 px-4 rounded-lg bg-sky-600 hover:bg-sky-500 text-white text-sm font-medium transition-colors">
+                        View Profile
+                    </button>
+                </article>
+                {{else}}
+                <div class="col-span-full text-center py-12 text-slate-400">
+                    <i class="fas fa-building text-4xl mb-4"></i>
+                    <p>No firms found</p>
+                </div>
+                {{end}}
+            </div>
+
+            <!-- Pagination Controls -->
+            {{if gt .TotalPages 1}}
+            <div class="flex justify-center items-center gap-4 my-8">
+                <!-- Previous Button -->
+                {{if gt .CurrentPage 1}}
+                <button class="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white transition-colors"
+                        hx-get="http://localhost:3000/membership/firms?page={{sub .CurrentPage 1}}&pageSize={{.PageSize}}{{if ne .FirmSize "all"}}&size={{.FirmSize}}{{end}}{{if ne .FirmType "all"}}&type={{.FirmType}}{{end}}"
+                        hx-trigger="click"
+                        hx-swap="innerHTML"
+                        hx-target="#main-div">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                {{else}}
+                <button class="px-4 py-2 rounded-lg bg-slate-800 text-slate-500 cursor-not-allowed" disabled>
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                {{end}}
+
+                <!-- Page Numbers -->
+                <div class="flex gap-2">
+                    {{range $i := iterate .TotalPages}}
+                    {{$pageNum := add $i 1}}
+                    {{if eq $pageNum $.CurrentPage}}
+                    <button class="w-10 h-10 rounded-lg bg-sky-600 text-white font-medium">
+                        {{$pageNum}}
+                    </button>
+                    {{else}}
+                    <button class="w-10 h-10 rounded-lg bg-slate-700 hover:bg-slate-600 text-white transition-colors"
+                            hx-get="http://localhost:3000/membership/firms?page={{$pageNum}}&pageSize={{$.PageSize}}{{if ne $.FirmSize "all"}}&size={{$.FirmSize}}{{end}}{{if ne $.FirmType "all"}}&type={{$.FirmType}}{{end}}"
+                            hx-trigger="click"
+                            hx-swap="innerHTML"
+                            hx-target="#main-div">
+                        {{$pageNum}}
+                    </button>
+                    {{end}}
+                    {{end}}
+                </div>
+
+                <!-- Next Button -->
+                {{if lt .CurrentPage .TotalPages}}
+                <button class="px-4 py-2 rounded-lg bg-slate-700 hover:bg-slate-600 text-white transition-colors"
+                        hx-get="http://localhost:3000/membership/firms?page={{add .CurrentPage 1}}&pageSize={{.PageSize}}{{if ne .FirmSize "all"}}&size={{.FirmSize}}{{end}}{{if ne .FirmType "all"}}&type={{.FirmType}}{{end}}"
+                        hx-trigger="click"
+                        hx-swap="innerHTML"
+                        hx-target="#main-div">
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+                {{else}}
+                <button class="px-4 py-2 rounded-lg bg-slate-800 text-slate-500 cursor-not-allowed" disabled>
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+                {{end}}
+            </div>
+
+            <!-- Page Info -->
+            <div class="text-center text-slate-400 text-sm mb-8">
+                Showing page {{.CurrentPage}} of {{.TotalPages}} ({{.TotalCount}} total firms)
+            </div>
+            {{end}}
+        </main>
+
+    </div>
+
+</div>

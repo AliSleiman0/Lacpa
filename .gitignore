@@ -31,8 +31,7 @@ go.work.sum
 # .idea/
 # .vscode/
 
-# Binary
-lacpa
+
 
 # Air hot reload
 tmp/
