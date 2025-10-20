@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
+	"github.com/AliSleiman0/Lacpa/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"github.com/AliSleiman0/Lacpa/models"
 )
 
 type AuthRepository struct {

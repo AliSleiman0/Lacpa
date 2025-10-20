@@ -102,7 +102,7 @@ func main() {
 
 	// Setup all API routes (includes health check and all endpoints)
 	routes.SetupRoutes(app, repo)
-	
+
 	// Setup authentication routes
 	authHandler := handler.NewAuthHandler(authRepo)
 	routes.SetupAuthRoutes(app, authHandler)

@@ -1,9 +1,9 @@
 package routes
 
 import (
-	"github.com/gofiber/fiber/v2"
 	"github.com/AliSleiman0/Lacpa/handler"
 	"github.com/AliSleiman0/Lacpa/middleware"
+	"github.com/gofiber/fiber/v2"
 )
 
 // SetupAuthRoutes sets up all authentication routes

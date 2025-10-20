@@ -3,8 +3,8 @@ package middleware
 import (
 	"strings"
 
-	"github.com/gofiber/fiber/v2"
 	"github.com/AliSleiman0/Lacpa/utils"
+	"github.com/gofiber/fiber/v2"
 )
 
 // AuthMiddleware validates JWT token from Authorization header

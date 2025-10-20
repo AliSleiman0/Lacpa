@@ -5,12 +5,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/gofiber/fiber/v2"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 	"github.com/AliSleiman0/Lacpa/models"
 	"github.com/AliSleiman0/Lacpa/repository"
 	"github.com/AliSleiman0/Lacpa/utils"
+	"github.com/gofiber/fiber/v2"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type AuthHandler struct {
