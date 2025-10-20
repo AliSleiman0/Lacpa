@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/AliSleiman0/Lacpa/config"
+	"github.com/AliSleiman0/Lacpa/handler"
 	"github.com/AliSleiman0/Lacpa/repository"
 	"github.com/AliSleiman0/Lacpa/routes"
 	"github.com/gofiber/fiber/v2"
@@ -36,9 +37,10 @@ func main() {
 		}
 	}()
 
-	// Initialize repository
+	// Initialize repositories
 	database := mongoClient.Database(getEnv("MONGO_DATABASE", "lacpa"))
 	repo := repository.NewMongoRepository(database)
+	authRepo := repository.NewAuthRepository(database)
 
 	// Initialize HTML template engine
 	// Templates will be loaded from "./templates" directory
@@ -100,6 +102,10 @@ func main() {
 
 	// Setup all API routes (includes health check and all endpoints)
 	routes.SetupRoutes(app, repo)
+	
+	// Setup authentication routes
+	authHandler := handler.NewAuthHandler(authRepo)
+	routes.SetupAuthRoutes(app, authHandler)
 
 	// Start server
 	port := getEnv("PORT", "3000")

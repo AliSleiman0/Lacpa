@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"fmt"
+	"reflect"
 	"regexp"
 	"strconv"
 	"strings"
@@ -356,4 +358,125 @@ func Paginate(page, pageSize, totalItems int) (offset, limit int, meta Paginatio
 	}
 
 	return offset, limit, meta
+}
+
+// ValidateStruct validates a struct based on its validate tags
+// This is a simple implementation that handles basic validation tags
+func ValidateStruct(s interface{}) error {
+	ve := NewValidationErrors()
+	v := reflect.ValueOf(s)
+	t := reflect.TypeOf(s)
+
+	// Handle pointer types
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+		t = t.Elem()
+	}
+
+	// Iterate through struct fields
+	for i := 0; i < v.NumField(); i++ {
+		field := t.Field(i)
+		value := v.Field(i)
+		tag := field.Tag.Get("validate")
+
+		if tag == "" {
+			continue
+		}
+
+		fieldName := field.Tag.Get("json")
+		if fieldName == "" {
+			fieldName = strings.ToLower(field.Name)
+		}
+
+		// Remove any options like omitempty
+		if commaIdx := strings.Index(fieldName, ","); commaIdx != -1 {
+			fieldName = fieldName[:commaIdx]
+		}
+
+		// Parse validation rules
+		rules := strings.Split(tag, ",")
+		for _, rule := range rules {
+			// Handle "required" rule
+			if rule == "required" {
+				if isEmptyValue(value) {
+					ve.AddError(fieldName, "This field is required", "")
+				}
+				continue
+			}
+
+			// Handle "email" rule
+			if rule == "email" {
+				if value.Kind() == reflect.String {
+					emailStr := value.String()
+					if emailStr != "" {
+						ValidateEmail(ve, fieldName, emailStr)
+					}
+				}
+				continue
+			}
+
+			// Handle "min=X" rule
+			if strings.HasPrefix(rule, "min=") {
+				minStr := strings.TrimPrefix(rule, "min=")
+				if min, err := strconv.Atoi(minStr); err == nil {
+					if value.Kind() == reflect.String {
+						ValidateMinLength(ve, fieldName, value.String(), min)
+					}
+				}
+				continue
+			}
+
+			// Handle "max=X" rule
+			if strings.HasPrefix(rule, "max=") {
+				maxStr := strings.TrimPrefix(rule, "max=")
+				if max, err := strconv.Atoi(maxStr); err == nil {
+					if value.Kind() == reflect.String {
+						ValidateMaxLength(ve, fieldName, value.String(), max)
+					}
+				}
+				continue
+			}
+
+			// Handle "len=X" rule (exact length)
+			if strings.HasPrefix(rule, "len=") {
+				lenStr := strings.TrimPrefix(rule, "len=")
+				if exactLen, err := strconv.Atoi(lenStr); err == nil {
+					if value.Kind() == reflect.String {
+						strValue := value.String()
+						if len(strValue) != exactLen {
+							ve.AddError(fieldName, fmt.Sprintf("Must be exactly %d characters", exactLen), strValue)
+						}
+					}
+				}
+				continue
+			}
+		}
+	}
+
+	if ve.HasErrors() {
+		return ve
+	}
+
+	return nil
+}
+
+// isEmptyValue checks if a reflect.Value is considered empty
+func isEmptyValue(v reflect.Value) bool {
+	switch v.Kind() {
+	case reflect.String:
+		return strings.TrimSpace(v.String()) == ""
+	case reflect.Bool:
+		return !v.Bool()
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return v.Int() == 0
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		return v.Uint() == 0
+	case reflect.Float32, reflect.Float64:
+		return v.Float() == 0
+	case reflect.Interface, reflect.Ptr:
+		return v.IsNil()
+	case reflect.Slice, reflect.Map, reflect.Array:
+		return v.Len() == 0
+	}
+	return false
 }
