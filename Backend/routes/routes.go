@@ -61,6 +61,11 @@ func SetupRoutes(app *fiber.App, repo repository.Repository) {
 	// Application routes - Membership applications
 	SetupApplicationRoutes(app, repo) // Configures /membership/apply-now and /api/applications/* routes
 
+	// OTP routes - Email OTP verification
+	otpHandler := handler.NewOTPHandler()
+	api.Post("/otp/send", otpHandler.SendOTP)     // Send OTP to email
+	api.Post("/otp/verify", otpHandler.VerifyOTP) // Verify OTP code
+
 	// Future route groups can be added here:
 	// SetupItemRoutes(api, itemHandler)       // Would configure /api/items/* routes
 	// SetupOrderRoutes(api, orderHandler)     // Would configure /api/orders/* routes

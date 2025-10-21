@@ -174,6 +174,21 @@ func ValidateEmail(ve *ValidationErrors, field, email string) bool {
 	return true
 }
 
+// IsValidEmail checks if an email is valid (simpler version without ValidationErrors)
+//
+// PARAMETERS:
+//   - email: Email value to validate
+//
+// RETURNS:
+//   - bool: true if valid, false if invalid
+func IsValidEmail(email string) bool {
+	if email == "" {
+		return false
+	}
+	emailRegex := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
+	return emailRegex.MatchString(email)
+}
+
 // ValidateMinLength validates minimum string length
 //
 // PARAMETERS:

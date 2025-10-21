@@ -105,9 +105,15 @@ func (h *AuthHandler) Signup(c *fiber.Ctx) error {
 		})
 	}
 
-	// TODO: Send OTP via email
-	// For now, we'll log it (in production, integrate with email service)
-	fmt.Printf("OTP for %s: %s\n", user.Email, otp)
+	// Send OTP via email with beautiful HTML template (use the SAME OTP that's stored in DB)
+	_, err = utils.SendOTPEmailWithCode(user.Email, user.FullName, otp)
+	if err != nil {
+		// Log error but don't fail registration - user is created and OTP is stored in DB
+		fmt.Printf("Warning: Failed to send OTP email to %s: %v\n", user.Email, err)
+		fmt.Printf("OTP for %s (email failed): %s\n", user.Email, otp)
+	} else {
+		fmt.Printf("✅ OTP email sent successfully to %s\n", user.Email)
+	}
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
 		"success": true,
@@ -265,8 +271,14 @@ func (h *AuthHandler) ForgotPassword(c *fiber.Ctx) error {
 		})
 	}
 
-	// TODO: Send OTP via email
-	fmt.Printf("Password Reset OTP for %s: %s\n", user.Email, otp)
+	// Send password reset OTP via email with beautiful HTML template (use the SAME OTP that's stored in DB)
+	_, err = utils.SendOTPEmailWithCode(user.Email, user.FullName, otp)
+	if err != nil {
+		fmt.Printf("Warning: Failed to send password reset OTP to %s: %v\n", user.Email, err)
+		fmt.Printf("Password Reset OTP for %s (email failed): %s\n", user.Email, otp)
+	} else {
+		fmt.Printf("✅ Password reset OTP email sent successfully to %s\n", user.Email)
+	}
 
 	return c.JSON(fiber.Map{
 		"success": true,
@@ -417,8 +429,14 @@ func (h *AuthHandler) ResendOTP(c *fiber.Ctx) error {
 		})
 	}
 
-	// TODO: Send OTP via email
-	fmt.Printf("Resend OTP for %s: %s\n", user.Email, otp)
+	// Resend OTP via email with beautiful HTML template (use the SAME OTP that's stored in DB)
+	_, err = utils.SendOTPEmailWithCode(user.Email, user.FullName, otp)
+	if err != nil {
+		fmt.Printf("Warning: Failed to resend OTP to %s: %v\n", user.Email, err)
+		fmt.Printf("Resend OTP for %s (email failed): %s\n", user.Email, otp)
+	} else {
+		fmt.Printf("✅ OTP resent successfully to %s\n", user.Email)
+	}
 
 	return c.JSON(fiber.Map{
 		"success": true,
