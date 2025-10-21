@@ -349,16 +349,19 @@
                 const data = await response.json();
 
                 if (response.ok) {
+                    // Store email in sessionStorage for OTP verification
+                    sessionStorage.setItem('verificationEmail', email);
+                    
                     // Show success message
                     const successMsg = document.getElementById('successMessage');
-                    successMsg.textContent = 'Account created successfully! Redirecting to login...';
+                    successMsg.textContent = 'Account created successfully! Redirecting to verify your email...';
                     successMsg.classList.remove('hidden');
                     document.getElementById('messageContainer').classList.remove('hidden');
 
-                    // Redirect to login after 2 seconds
+                    // Redirect to verify-account page after 1.5 seconds
                     setTimeout(() => {
-                        window.location.href = '/login';
-                    }, 2000);
+                        window.location.href = '/verify-account';
+                    }, 1500);
                 } else {
                     // Show error message
                     const errorMsg = document.getElementById('errorMessage');

@@ -25,10 +25,19 @@ func NewAuthHandler(authRepo *repository.AuthRepository) *AuthHandler {
 
 // Signup handles user registration
 func (h *AuthHandler) Signup(c *fiber.Ctx) error {
+	// Check Content-Type
+	contentType := c.Get("Content-Type")
+	if contentType != "application/json" && !strings.Contains(contentType, "application/json") {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   "Content-Type must be application/json",
+			"success": false,
+		})
+	}
+
 	var req models.SignupRequest
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error":   "Invalid request body",
+			"error":   "Invalid request body. Please check your JSON format.",
 			"success": false,
 		})
 	}
@@ -112,10 +121,19 @@ func (h *AuthHandler) Signup(c *fiber.Ctx) error {
 
 // Login handles user authentication
 func (h *AuthHandler) Login(c *fiber.Ctx) error {
+	// Check Content-Type
+	contentType := c.Get("Content-Type")
+	if contentType != "application/json" && !strings.Contains(contentType, "application/json") {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   "Content-Type must be application/json",
+			"success": false,
+		})
+	}
+
 	var req models.LoginRequest
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error":   "Invalid request body",
+			"error":   "Invalid request body. Please check your JSON format.",
 			"success": false,
 		})
 	}
@@ -194,10 +212,19 @@ func (h *AuthHandler) Login(c *fiber.Ctx) error {
 
 // ForgotPassword initiates password reset process
 func (h *AuthHandler) ForgotPassword(c *fiber.Ctx) error {
+	// Check Content-Type
+	contentType := c.Get("Content-Type")
+	if contentType != "application/json" && !strings.Contains(contentType, "application/json") {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   "Content-Type must be application/json",
+			"success": false,
+		})
+	}
+
 	var req models.ForgotPasswordRequest
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error":   "Invalid request body",
+			"error":   "Invalid request body. Please check your JSON format.",
 			"success": false,
 		})
 	}
@@ -249,10 +276,19 @@ func (h *AuthHandler) ForgotPassword(c *fiber.Ctx) error {
 
 // VerifyOTP verifies the OTP and generates reset token
 func (h *AuthHandler) VerifyOTP(c *fiber.Ctx) error {
+	// Check Content-Type
+	contentType := c.Get("Content-Type")
+	if contentType != "application/json" && !strings.Contains(contentType, "application/json") {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error":   "Content-Type must be application/json",
+			"success": false,
+		})
+	}
+
 	var req models.VerifyOTPRequest
 	if err := c.BodyParser(&req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error":   "Invalid request body",
+			"error":   "Invalid request body. Please check your JSON format.",
 			"success": false,
 		})
 	}
