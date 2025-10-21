@@ -124,7 +124,7 @@ async function seedIndividuals() {
         await individualsCollection.deleteMany({});
 
         // Generate members
-        const numberOfMembers = 50; // Generate 50 members for testing pagination
+        const numberOfMembers = 12; // Generate 12 members for testing pagination (3 pages with 4 per page)
         const members = [];
         
         for (let i = 0; i < numberOfMembers; i++) {
