@@ -107,6 +107,13 @@ func main() {
 	authHandler := handler.NewAuthHandler(authRepo)
 	routes.SetupAuthRoutes(app, authHandler)
 
+	// Setup admin routes
+	adminHandler := handler.NewAdminHandler(authRepo)
+	routes.SetupAdminRoutes(app, adminHandler)
+
+	// Setup authentication page routes (HTML pages for login, signup, etc.)
+	routes.SetupAuthPageRoutes(app)
+
 	// Start server
 	port := getEnv("PORT", "3000")
 	log.Printf("Server starting on port %s", port)

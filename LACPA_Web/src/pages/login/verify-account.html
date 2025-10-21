@@ -145,9 +145,16 @@
                 <h1 class="text-2xl font-bold text-white">Verify Your Account</h1>
             </div>
             <p class="text-gray-400 text-sm leading-relaxed">
-                Enter The 6-Digit Code We Sent To Your Email To Verify<br>
-                Your Account.
+                Enter The 6-Digit Code We Sent To<br>
+                <span id="emailDisplay" class="text-cyan-400 font-medium"></span>
             </p>
+            <div class="mt-3 p-3 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+                <p class="text-blue-400 text-xs leading-relaxed">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    <strong>Development Mode:</strong> Check your server console for the OTP code. 
+                    Email service integration is pending.
+                </p>
+            </div>
         </div>
 
         <!-- OTP Input -->
@@ -303,8 +310,18 @@
             e.preventDefault();
 
             const otp = getOTPValue();
+            const email = sessionStorage.getItem('verificationEmail');
             const btnText = document.getElementById('btnText');
             const btnSpinner = document.getElementById('btnSpinner');
+
+            // Check if email exists in session
+            if (!email) {
+                const errorMsg = document.getElementById('errorMessage');
+                errorMsg.textContent = 'Session expired. Please start the process again.';
+                errorMsg.classList.remove('hidden');
+                document.getElementById('messageContainer').classList.remove('hidden');
+                return;
+            }
 
             // Hide previous messages
             document.getElementById('errorMessage').classList.add('hidden');
@@ -316,13 +333,13 @@
             btnSpinner.classList.remove('hidden');
 
             try {
-                // TODO: Replace with actual API endpoint
                 const response = await fetch('/api/auth/verify-otp', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
+                        email: email,
                         otp: otp
                     })
                 });
@@ -336,10 +353,20 @@
                     successMsg.classList.remove('hidden');
                     document.getElementById('messageContainer').classList.remove('hidden');
 
-                    // Redirect after 1.5 seconds
-                    setTimeout(() => {
-                        window.location.href = '/login';
-                    }, 1500);
+                    // If reset_token exists, store it for password reset
+                    if (data.reset_token) {
+                        sessionStorage.setItem('resetToken', data.reset_token);
+                        // Redirect to reset password page
+                        setTimeout(() => {
+                            window.location.href = '/reset-password';
+                        }, 1500);
+                    } else {
+                        // Account verification (signup flow) - clear session and go to login
+                        sessionStorage.removeItem('verificationEmail');
+                        setTimeout(() => {
+                            window.location.href = '/login';
+                        }, 1500);
+                    }
                 } else {
                     // Show error message
                     const errorMsg = document.getElementById('errorMessage');
@@ -370,20 +397,32 @@
         async function resendCode() {
             if (resendBtn.disabled) return;
 
+            const email = sessionStorage.getItem('verificationEmail');
             const btnText = resendBtn.querySelector('.text-cyan-400');
             const originalText = btnText.textContent;
+            
+            // Check if email exists in session
+            if (!email) {
+                const errorMsg = document.getElementById('errorMessage');
+                errorMsg.textContent = 'Session expired. Please start the process again.';
+                errorMsg.classList.remove('hidden');
+                document.getElementById('messageContainer').classList.remove('hidden');
+                return;
+            }
             
             // Disable button
             resendBtn.disabled = true;
             btnText.textContent = 'Sending...';
 
             try {
-                // TODO: Replace with actual API endpoint
                 const response = await fetch('/api/auth/resend-otp', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                    }
+                    },
+                    body: JSON.stringify({
+                        email: email
+                    })
                 });
 
                 const data = await response.json();
@@ -437,9 +476,29 @@
             }, 1000);
         }
 
-        // Auto-focus first input on load
+        // Display email and check if session exists
         window.addEventListener('load', () => {
-            otpInputs[0].focus();
+            const email = sessionStorage.getItem('verificationEmail');
+            const emailDisplay = document.getElementById('emailDisplay');
+            
+            if (email) {
+                // Display email (mask it for privacy)
+                const maskedEmail = email.replace(/(.{2})(.*)(@.*)/, (match, start, middle, end) => {
+                    return start + '*'.repeat(Math.min(middle.length, 4)) + end;
+                });
+                emailDisplay.textContent = maskedEmail;
+                otpInputs[0].focus();
+            } else {
+                // No email in session - redirect to forgot password
+                const errorMsg = document.getElementById('errorMessage');
+                errorMsg.textContent = 'No verification session found. Please start the process again.';
+                errorMsg.classList.remove('hidden');
+                document.getElementById('messageContainer').classList.remove('hidden');
+                
+                setTimeout(() => {
+                    window.location.href = '/forgot-password';
+                }, 3000);
+            }
         });
     </script>
 </body>
