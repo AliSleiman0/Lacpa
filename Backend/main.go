@@ -8,7 +8,9 @@ import (
 
 	"github.com/AliSleiman0/Lacpa/config"
 	"github.com/AliSleiman0/Lacpa/handler"
+	adminHandler "github.com/AliSleiman0/Lacpa/handler/admin"
 	"github.com/AliSleiman0/Lacpa/repository"
+	adminRepo "github.com/AliSleiman0/Lacpa/repository/admin"
 	"github.com/AliSleiman0/Lacpa/routes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -100,6 +102,23 @@ func main() {
 		MaxAge:        0,
 	})
 
+	// Serve CMS static files
+	// JS and assets from CMS root
+	app.Static("/admin/js", "../CMS/js")
+	app.Static("/admin/assets", "../CMS/assets")
+
+	// HTML files from CMS/src (served at /admin/src)
+	app.Static("/admin/src", "../CMS/src", fiber.Static{
+		CacheDuration: 0,
+		MaxAge:        0,
+		Browse:        false,
+	})
+
+	// Redirect /admin to /admin/src/index.html
+	app.Get("/admin", func(c *fiber.Ctx) error {
+		return c.Redirect("/admin/src/index.html")
+	})
+
 	// Setup all API routes (includes health check and all endpoints)
 	routes.SetupRoutes(app, repo)
 
@@ -108,8 +127,10 @@ func main() {
 	routes.SetupAuthRoutes(app, authHandler)
 
 	// Setup admin routes
-	adminHandler := handler.NewAdminHandler(authRepo)
-	routes.SetupAdminRoutes(app, adminHandler)
+	adminUserHandler := handler.NewAdminHandler(authRepo)
+	heroSlideRepo := adminRepo.NewHeroSlideRepository(database)
+	heroSlideHandler := adminHandler.NewAdminHeroSlideHandler(heroSlideRepo)
+	routes.SetupAdminRoutes(app, adminUserHandler, heroSlideHandler)
 
 	// Setup authentication page routes (HTML pages for login, signup, etc.)
 	routes.SetupAuthPageRoutes(app)

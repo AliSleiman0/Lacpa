@@ -1,0 +1,144 @@
+<!-- Section Content -->
+<div class="space-y-8">
+    
+    <!-- Section's Image Toggle -->
+    <div class="flex items-center justify-between">
+        <h3 class="text-lg font-semibold text-white">Section's Image</h3>
+        <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" class="sr-only peer toggle-checkbox" {{if .ImageActive}}checked{{end}}>
+            <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:bg-blue-600 transition-all">
+                <div class="toggle-label absolute top-0.5 left-0.5 bg-white w-5 h-5 rounded-full transition-transform"></div>
+            </div>
+        </label>
+    </div>
+
+    <!-- Image Upload Section -->
+    <div class="grid grid-cols-2 gap-6">
+        <!-- Upload Area -->
+        <div>
+            <label class="block text-sm font-medium text-gray-300 mb-3">Upload Image</label>
+            <div class="upload-area rounded-xl p-8 text-center cursor-pointer">
+                <div class="flex flex-col items-center justify-center">
+                    <i class="fas fa-cloud-upload-alt text-gray-500 text-5xl mb-4"></i>
+                    <p class="text-gray-400 mb-2">Drag & Drop</p>
+                    <p class="text-gray-500 text-sm mb-4">Or</p>
+                    <button class="px-6 py-2 bg-[#2a2a2a] hover:bg-[#3a3a3a] text-white rounded-lg transition-colors">
+                        Upload
+                    </button>
+                </div>
+                <input type="file" class="hidden" accept="image/*">
+            </div>
+        </div>
+
+        <!-- Current Image -->
+        <div>
+            <label class="block text-sm font-medium text-gray-300 mb-3">Current Image</label>
+            <div class="relative rounded-xl overflow-hidden bg-gray-800 aspect-video">
+                {{if .ImgSrc}}
+                <img 
+                    src="/assets/main-page/hero/{{.ImgSrc}}" 
+                    alt="Current section image" 
+                    class="w-full h-full object-cover"
+                >
+                {{else}}
+                <img 
+                    src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&h=600&fit=crop" 
+                    alt="Current section image" 
+                    class="w-full h-full object-cover"
+                >
+                {{end}}
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section's Button Toggle -->
+    <div class="flex items-center justify-between pt-4">
+        <h3 class="text-lg font-semibold text-white">Section's Button</h3>
+        <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" class="sr-only peer toggle-checkbox" {{if .ButtonActive}}checked{{end}}>
+            <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:bg-blue-600 transition-all">
+                <div class="toggle-label absolute top-0.5 left-0.5 bg-white w-5 h-5 rounded-full transition-transform"></div>
+            </div>
+        </label>
+    </div>
+
+    <!-- Button Settings -->
+    <div class="grid grid-cols-2 gap-6">
+        <!-- Button Title -->
+        <div>
+            <label class="block text-sm font-medium text-gray-300 mb-3">Button Title</label>
+            <input 
+                type="text" 
+                value="{{.ButtonTitle}}"
+                placeholder="Enter Title" 
+                class="w-full px-4 py-3 bg-[#2a2a2a] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+            >
+        </div>
+
+        <!-- Button Link -->
+        <div>
+            <label class="block text-sm font-medium text-gray-300 mb-3">Button Link</label>
+            <input 
+                type="text" 
+                value="{{.ButtonLink}}"
+                placeholder="Enter URL or path" 
+                class="w-full px-4 py-3 bg-[#2a2a2a] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+            >
+        </div>
+    </div>
+
+    <!-- Section's Title Toggle -->
+    <div class="flex items-center justify-between pt-4">
+        <h3 class="text-lg font-semibold text-white">Section's Title</h3>
+        <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" class="sr-only peer toggle-checkbox" {{if .TitleActive}}checked{{end}}>
+            <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:bg-blue-600 transition-all">
+                <div class="toggle-label absolute top-0.5 left-0.5 bg-white w-5 h-5 rounded-full transition-transform"></div>
+            </div>
+        </label>
+    </div>
+
+    <!-- Title Input -->
+    <div>
+        <label class="block text-sm font-medium text-gray-300 mb-3">Title</label>
+        <input 
+            type="text" 
+            value="{{.Title}}"
+            placeholder="Enter Title" 
+            class="w-full px-4 py-3 bg-[#2a2a2a] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+        >
+    </div>
+
+    <!-- Section's Description Toggle -->
+    <div class="flex items-center justify-between pt-4">
+        <h3 class="text-lg font-semibold text-white">Section's Description</h3>
+        <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" class="sr-only peer toggle-checkbox" {{if .DescriptionActive}}checked{{end}}>
+            <div class="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:bg-blue-600 transition-all">
+                <div class="toggle-label absolute top-0.5 left-0.5 bg-white w-5 h-5 rounded-full transition-transform"></div>
+            </div>
+        </label>
+    </div>
+
+    <!-- Description Textarea -->
+    <div>
+        <label class="block text-sm font-medium text-gray-300 mb-3">Description</label>
+        <textarea 
+            rows="6" 
+            placeholder="Enter Description" 
+            class="w-full px-4 py-3 bg-[#2a2a2a] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all resize-none"
+        >{{.Description}}</textarea>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex items-center justify-end gap-4 pt-6 border-t border-gray-800">
+        <button class="px-6 py-2.5 bg-[#2a2a2a] hover:bg-[#3a3a3a] text-white rounded-lg transition-colors font-medium">
+            Cancel
+        </button>
+        <button class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium flex items-center gap-2">
+            <i class="fas fa-check"></i>
+            Save Changes
+        </button>
+    </div>
+</div>

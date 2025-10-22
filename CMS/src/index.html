@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/hx-reveal@latest"></script>
+
+<!-- External CSS Libraries -->
+<!-- Flag Icons CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.3.2/css/flag-icons.min.css">
+
+<!-- FontAwesome CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<!-- Splide CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256‑p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+<!-- Custom CSS -->
+<link rel="stylesheet" href="./index.css">
+
+<!-- JavaScript Libraries -->
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- HTMX -->
+<script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js"></script>
+
+<!-- Splide JavaScript -->
+<script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+
+<!-- Anime.js -->
+<script src="https://cdn.jsdelivr.net/npm/animejs@4.2.2/lib/anime.iife.min.js"></script>
+
+    <title>CMS - Home Page - Header</title>
+</head>
+<body class="bg-[#0f0f0f] text-white min-h-screen">
+    <!-- Header Component -->
+    <div hx-get="./components/header.html" hx-trigger="load" hx-swap="outerHTML"></div>
+
+    <!-- Sidebar Component -->
+    <div hx-get="./components/sidebar.html" hx-trigger="load" hx-swap="outerHTML"></div>
+
+    <!-- Main Content Area -->
+    <main class="ml-64 mt-16 p-8">
+        <div class="max-w-7xl mx-auto">
+            <!-- Page Title -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-white mb-2">CMS - Home Page - Header</h1>
+                <p class="text-gray-400">Manage your home page header content and sections</p>
+            </div>
+
+            <!-- Main Content Card -->
+            <div class="bg-[#1a1a1a] rounded-xl border border-gray-800 p-6">
+                <!-- Hero Section Tabs -->
+                <div class="mb-6">
+                    <div class="flex items-center gap-2 border-b border-gray-800">
+                        <button 
+                            class="section-tab px-6 py-3 text-sm font-medium text-white border-b-2 border-blue-500 -mb-px"
+                            data-section="hero">
+                            Hero Section
+                        </button>
+                        <button 
+                            hx-get="./pages/home/our-members/content.html" 
+                            hx-target="#section-content" 
+                            hx-swap="innerHTML"
+                            class="section-tab px-6 py-3 text-sm font-medium text-gray-400 hover:text-white transition-colors"
+                            data-section="members">
+                            Our Members
+                        </button>
+                        <button 
+                            hx-get="./pages/home/publications/content.html" 
+                            hx-target="#section-content" 
+                            hx-swap="innerHTML"
+                            class="section-tab px-6 py-3 text-sm font-medium text-gray-400 hover:text-white transition-colors"
+                            data-section="publications">
+                            Publications
+                        </button>
+                        <button 
+                            hx-get="./pages/home/governance/content.html" 
+                            hx-target="#section-content" 
+                            hx-swap="innerHTML"
+                            class="section-tab px-6 py-3 text-sm font-medium text-gray-400 hover:text-white transition-colors"
+                            data-section="governance">
+                            Governance & Professional Framework
+                        </button>
+                        
+                        <!-- Add Section Button -->
+                        <button class="ml-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                            Add Section
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Slide Tabs (only visible for Hero Section) -->
+                <div id="slide-tabs" class="mb-6" style="display: none;">
+                    <div 
+                        id="slide-tabs-wrapper" 
+                        class="flex items-center gap-4 border-b border-gray-800"
+                        hx-get="http://localhost:3000/api/admin/slides/tabs"
+                        hx-trigger="load"
+                        hx-swap="innerHTML">
+                        <!-- Slide tabs will be dynamically populated from database via HTMX -->
+                        <div class="text-gray-400 py-2">
+                            <i class="fas fa-spinner fa-spin mr-2"></i>
+                            Loading slides...
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section Content Container -->
+                <div 
+                    id="section-content"
+                    hx-get="http://localhost:3000/api/admin/slides/first/render"
+                    hx-trigger="load delay:500ms"
+                    hx-swap="innerHTML">
+                    <!-- Content will be loaded here dynamically -->
+                    <div class="text-center text-gray-400 py-12">
+                        <i class="fas fa-spinner fa-spin text-4xl mb-4"></i>
+                        <p>Loading content...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // File upload drag and drop functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.querySelector('.upload-area');
+            const fileInput = uploadArea.querySelector('input[type="file"]');
+            
+            uploadArea.addEventListener('click', () => fileInput.click());
+            
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('drag-over');
+            });
+            
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('drag-over');
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('drag-over');
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleFileUpload(files[0]);
+                }
+            });
+            
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleFileUpload(e.target.files[0]);
+                }
+            });
+        });
+        
+        function handleFileUpload(file) {
+            if (file.type.startsWith('image/')) {
+                console.log('Uploading file:', file.name);
+                // Add your file upload logic here
+            } else {
+                alert('Please upload an image file');
+            }
+        }
+    </script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <!-- Custom JavaScript for HTMX response handling -->
+    <script src="../js/app.js"></script>
+</body>
+</html>
