@@ -182,7 +182,7 @@ function renderSlideTabs() {
         slideTab.textContent = `Slide ${index + 1}`;
         
         // Add HTMX attributes for dynamic loading
-        slideTab.setAttribute('hx-get', `http://localhost:3000/api/admin/slides/${slide.id}/render`);
+        slideTab.setAttribute('hx-get', `/api/admin/slides/${slide.id}/render`);
         slideTab.setAttribute('hx-target', '#section-content');
         slideTab.setAttribute('hx-swap', 'innerHTML');
         
