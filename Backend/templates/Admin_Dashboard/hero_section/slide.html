@@ -1,10 +1,10 @@
 <!-- Section Content -->
-<div class="space-y-8">
+<div class="space-y-6 sm:space-y-8">
 
     <!-- Section's Image Toggle -->
-    <div class="flex items-center justify-between">
-        <div class="flex items-center justify-start gap-4">
-            <h3 class="text-lg font-semibold text-white">Section's Image</h3>
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="flex items-center justify-start gap-3 sm:gap-4">
+            <h3 class="text-base sm:text-lg font-semibold text-white">Section's Image</h3>
             <label class="relative inline-flex items-center cursor-pointer">
                 <input type="checkbox" class="sr-only peer toggle-checkbox" 
                     data-slide-id="{{.ID.Hex}}" 
@@ -19,26 +19,26 @@
                 </div>
             </label>
         </div>
-        <!-- Delete Button (Left Side) -->
+        <!-- Delete Button -->
         <button
-            class="px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium flex items-center gap-2"
+            class="w-full sm:w-auto px-4 sm:px-6 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors font-medium flex items-center justify-center gap-2"
             onclick="deleteSlide('{{.ID.Hex}}')">
             <i class="fas fa-trash"></i>
-            Delete Slide
+            <span class="text-sm sm:text-base">Delete Slide</span>
         </button>
     </div>
 
     <!-- Image Upload Section -->
-    <div class="grid grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <!-- Upload Area -->
         <div>
             <label class="block text-sm font-medium text-gray-300 mb-3">Upload Image</label>
-            <div class="upload-area rounded-xl p-8 text-center cursor-pointer" id="upload-area-{{.ID.Hex}}">
+            <div class="upload-area rounded-xl p-6 sm:p-8 text-center cursor-pointer" id="upload-area-{{.ID.Hex}}">
                 <div class="flex flex-col items-center justify-center">
-                    <i class="fas fa-cloud-upload-alt text-gray-500 text-5xl mb-4"></i>
-                    <p class="text-gray-400 mb-2">Drag & Drop</p>
-                    <p class="text-gray-500 text-sm mb-4">Or</p>
-                    <button type="button" class="px-6 py-2 bg-[#2a2a2a] hover:bg-[#3a3a3a] text-white rounded-lg transition-colors">
+                    <i class="fas fa-cloud-upload-alt text-gray-500 text-4xl sm:text-5xl mb-3 sm:mb-4"></i>
+                    <p class="text-gray-400 mb-2 text-sm sm:text-base">Drag & Drop</p>
+                    <p class="text-gray-500 text-xs sm:text-sm mb-3 sm:mb-4">Or</p>
+                    <button type="button" class="px-5 sm:px-6 py-2 bg-[#2a2a2a] hover:bg-[#3a3a3a] text-white text-sm sm:text-base rounded-lg transition-colors">
                         Upload
                     </button>
                 </div>
@@ -65,8 +65,8 @@
                 {{else}}
                 <div class="w-full h-full flex items-center justify-center text-gray-500">
                     <div class="text-center">
-                        <i class="fas fa-image text-4xl mb-2"></i>
-                        <p class="text-sm">No image uploaded</p>
+                        <i class="fas fa-image text-3xl sm:text-4xl mb-2"></i>
+                        <p class="text-xs sm:text-sm">No image uploaded</p>
                     </div>
                 </div>
                 {{end}}
@@ -76,8 +76,8 @@
     </div>
 
     <!-- Section's Button Toggle -->
-    <div class="flex items-center justify-start gap-4 pt-4">
-        <h3 class="text-lg font-semibold text-white">Section's Button</h3>
+    <div class="flex items-center justify-start gap-3 sm:gap-4 pt-2 sm:pt-4">
+        <h3 class="text-base sm:text-lg font-semibold text-white">Section's Button</h3>
         <label class="relative inline-flex items-center cursor-pointer">
             <input type="checkbox" class="sr-only peer toggle-checkbox" 
                 data-slide-id="{{.ID.Hex}}" 
@@ -93,7 +93,7 @@
     </div>
 
     <!-- Button Settings -->
-    <div class="grid grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <!-- Button Title -->
         <div>
             <label class="block text-sm font-medium text-gray-300 mb-3">Button Title</label>
@@ -101,7 +101,7 @@
                 id="buttonTitle-{{.ID.Hex}}"
                 value="{{.ButtonTitle}}" 
                 placeholder="Enter Title"
-                class="w-full px-4 py-3 bg-[#2a2a2a] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+                class="w-full px-4 py-3 bg-[#2a2a2a] border border-gray-700 rounded-lg text-white text-sm sm:text-base placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
         </div>
 
         <!-- Button Link -->
@@ -111,13 +111,13 @@
                 id="buttonLink-{{.ID.Hex}}"
                 value="{{.ButtonLink}}" 
                 placeholder="Enter URL or path"
-                class="w-full px-4 py-3 bg-[#2a2a2a] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+                class="w-full px-4 py-3 bg-[#2a2a2a] border border-gray-700 rounded-lg text-white text-sm sm:text-base placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
         </div>
     </div>
 
     <!-- Section's Title Toggle -->
-    <div class="flex items-center justify-start gap-4 pt-4">
-        <h3 class="text-lg font-semibold text-white">Section's Title</h3>
+    <div class="flex items-center justify-start gap-3 sm:gap-4 pt-2 sm:pt-4">
+        <h3 class="text-base sm:text-lg font-semibold text-white">Section's Title</h3>
         <label class="relative inline-flex items-center cursor-pointer">
             <input type="checkbox" class="sr-only peer toggle-checkbox" 
                 data-slide-id="{{.ID.Hex}}" 
@@ -139,12 +139,12 @@
             id="title-{{.ID.Hex}}"
             value="{{.Title}}" 
             placeholder="Enter Title"
-            class="w-full px-4 py-3 bg-[#2a2a2a] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+            class="w-full px-4 py-3 bg-[#2a2a2a] border border-gray-700 rounded-lg text-white text-sm sm:text-base placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
     </div>
 
     <!-- Section's Description Toggle -->
-    <div class="flex items-center justify-start gap-4 pt-4">
-        <h3 class="text-lg font-semibold text-white">Section's Description</h3>
+    <div class="flex items-center justify-start gap-3 sm:gap-4 pt-2 sm:pt-4">
+        <h3 class="text-base sm:text-lg font-semibold text-white">Section's Description</h3>
         <label class="relative inline-flex items-center cursor-pointer">
             <input type="checkbox" class="sr-only peer toggle-checkbox" 
                 data-slide-id="{{.ID.Hex}}" 
@@ -165,23 +165,24 @@
         <textarea rows="6" 
             id="description-{{.ID.Hex}}"
             placeholder="Enter Description"
-            class="w-full px-4 py-3 bg-[#2a2a2a] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all resize-none">{{.Description}}</textarea>
+            class="w-full px-4 py-3 bg-[#2a2a2a] border border-gray-700 rounded-lg text-white text-sm sm:text-base placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all resize-none">{{.Description}}</textarea>
     </div>
 
     <!-- Action Buttons -->
-    <div class="flex items-center justify-between gap-4 pt-6 border-t border-gray-800">
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 pt-4 sm:pt-6 border-t border-gray-800">
+        <!-- Empty space on mobile, fills on desktop -->
+        <div class="hidden sm:block"></div>
 
-
-        <!-- Cancel & Save Buttons (Right Side) -->
-        <div class="flex items-center gap-4">
+        <!-- Cancel & Save Buttons -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
             <button
                 onclick="cancelSlideChanges('{{.ID.Hex}}')"
-                class="px-6 py-2.5 bg-[#2a2a2a] hover:bg-[#3a3a3a] text-white rounded-lg transition-colors font-medium">
+                class="px-5 sm:px-6 py-2.5 bg-[#2a2a2a] hover:bg-[#3a3a3a] text-white rounded-lg transition-colors font-medium text-sm sm:text-base">
                 Cancel
             </button>
             <button
                 onclick="saveSlideChanges('{{.ID.Hex}}')"
-                class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium flex items-center gap-2">
+                class="px-5 sm:px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium flex items-center justify-center gap-2 text-sm sm:text-base">
                 <i class="fas fa-check"></i>
                 Save Changes
             </button>

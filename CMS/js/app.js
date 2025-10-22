@@ -4,6 +4,50 @@
  * Theme: Dark mode (#1f1f1f background, #ffffff text)
  */
 
+// Initialize mobile sidebar functionality
+function initializeMobileSidebar() {
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileSidebar = document.getElementById('mobile-sidebar');
+    const mobileOverlay = document.getElementById('mobile-sidebar-overlay');
+    
+    if (!mobileMenuBtn || !mobileSidebar || !mobileOverlay) {
+        console.log('Mobile sidebar elements not found');
+        return;
+    }
+    
+    console.log('Initializing mobile sidebar...');
+    
+    function toggleMobileSidebar() {
+        mobileSidebar.classList.toggle('-translate-x-full');
+        mobileOverlay.classList.toggle('hidden');
+        document.body.classList.toggle('overflow-hidden'); // Prevent background scroll
+    }
+    
+    // Mobile menu button click
+    mobileMenuBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log('Mobile menu button clicked');
+        toggleMobileSidebar();
+    });
+    
+    // Overlay click to close
+    mobileOverlay.addEventListener('click', function(e) {
+        e.preventDefault();
+        console.log('Mobile overlay clicked');
+        toggleMobileSidebar();
+    });
+    
+    // Close mobile sidebar when clicking a link
+    const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+    mobileNavLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            console.log('Mobile nav link clicked');
+            toggleMobileSidebar();
+        });
+    });
+}
+
 // Initialize sidebar functionality after HTMX swap
 function initializeSidebar() {
     const sidebar = document.getElementById('sidebar');
@@ -53,10 +97,10 @@ function initializeSidebar() {
             el.style.overflow = 'hidden';
         });
         
-        // Adjust main content margin
+        // Adjust main content margin (only on large screens)
         if (mainContent) {
-            mainContent.classList.remove('ml-64');
-            mainContent.classList.add('ml-20');
+            mainContent.classList.remove('lg:ml-64');
+            mainContent.classList.add('lg:ml-20');
         }
     }
     
@@ -75,10 +119,10 @@ function initializeSidebar() {
             el.style.overflow = 'visible';
         });
         
-        // Adjust main content margin
+        // Adjust main content margin (only on large screens)
         if (mainContent) {
-            mainContent.classList.remove('ml-20');
-            mainContent.classList.add('ml-64');
+            mainContent.classList.remove('lg:ml-20');
+            mainContent.classList.add('lg:ml-64');
         }
     }
     
@@ -106,10 +150,19 @@ function initializeSidebar() {
 // Listen for HTMX after swap event
 document.addEventListener('htmx:afterSwap', function(event) {
     console.log('HTMX afterSwap event triggered');
-    // Check if the swapped element is the sidebar
-    if (event.detail.target.querySelector('#sidebar') || event.detail.target.id === 'sidebar') {
+    
+    // Check if the swapped element is the sidebar (desktop or mobile)
+    if (event.detail.target.querySelector('#sidebar') || event.detail.target.id === 'sidebar' ||
+        event.detail.target.querySelector('#mobile-sidebar') || event.detail.target.id === 'mobile-sidebar') {
         console.log('Sidebar detected in swap');
         setTimeout(initializeSidebar, 50);
+        setTimeout(initializeMobileSidebar, 50);
+    }
+    
+    // Check if header was swapped (contains mobile menu button)
+    if (event.detail.target.querySelector('#mobile-menu-btn') || event.detail.target.id === 'mobile-menu-btn') {
+        console.log('Header detected in swap');
+        setTimeout(initializeMobileSidebar, 50);
     }
     
     // Check if slide content was swapped
@@ -130,7 +183,10 @@ document.addEventListener('htmx:afterSwap', function(event) {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, waiting for sidebar...');
     // Wait a bit for HTMX to load components
-    setTimeout(initializeSidebar, 200);
+    setTimeout(function() {
+        initializeSidebar();
+        initializeMobileSidebar();
+    }, 200);
     
     // Initialize tab switching
     initializeTabSwitching();

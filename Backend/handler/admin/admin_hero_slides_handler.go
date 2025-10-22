@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"html/template"
-	
+
 	"os"
 	"path/filepath"
 	"strings"
@@ -75,11 +75,9 @@ func (h *AdminHeroSlideHandler) GetSlideTabs(c *fiber.Ctx) error {
 
 	// Add the "Add Slide" button
 	html += `
-		<button id="add-slide-btn" class="ml-auto px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center gap-2">
-			<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-			</svg>
-			Add Slide
+		<button id="add-slide-btn" class="ml-auto px-3 sm:px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-2">
+			<i class="fa fa-plus"></i>
+			<span class="hidden sm:inline">Add Slide</span>
 		</button>`
 
 	c.Set("Content-Type", "text/html; charset=utf-8")

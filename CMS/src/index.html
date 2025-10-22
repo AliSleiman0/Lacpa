@@ -49,19 +49,16 @@
     <div hx-get="./components/sidebar.html" hx-trigger="load" hx-swap="outerHTML"></div>
 
     <!-- Main Content Area -->
-    <main class="ml-64 mt-16 p-8">
-        <div class="max-w-7xl mx-auto">
-            <!-- Page Title -->
-            <div class="mb-8">
-                <h1 class="text-3xl font-bold text-white mb-2">CMS - Home Page - Header</h1>
-                <p class="text-gray-400">Manage your home page header content and sections</p>
-            </div>
+    <main class="p-4 sm:p-6 lg:p-8 transition-all duration-300 mt-20">
+        <div class="max-w-8xl mx-auto">
+            
 
             <!-- Main Content Card -->
-            <div class="bg-[#1a1a1a] rounded-xl border border-gray-800 p-6">
+            <div class="bg-[#1a1a1a] rounded-xl border border-gray-800 p-4 sm:p-6">
                 <!-- Hero Section Tabs -->
-                <div class="mb-6">
-                    <div class="flex items-center gap-2 border-b border-gray-800">
+                <div class="mb-4 sm:mb-6 w-full">
+                    <!-- Desktop Tabs -->
+                    <div class="hidden lg:flex items-center gap-2 border-b border-gray-800">
                         <button 
                             class="section-tab px-6 py-3 text-sm font-medium text-white border-b-2 border-blue-500 -mb-px"
                             data-section="hero">
@@ -100,13 +97,30 @@
                             Add Section
                         </button>
                     </div>
+
+                    <!-- Mobile/Tablet Dropdown -->
+                    <div class="lg:hidden space-y-3">
+                        <div class="grid grid-cols-4 sm:grid-cols-2 gap-3 sm:gap-4">
+                            <select id="mobile-section-select" class="col-span-3 px-4 py-3 bg-[#2a2a2a] border border-gray-700 rounded-lg text-white text-sm font-medium focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all">
+                                <option value="hero" selected>Hero Section</option>
+                                <option value="members">Our Members</option>
+                                <option value="publications">Publications</option>
+                                <option value="governance">Governance & Professional Framework</option>
+                            </select>
+                            <button class="col-span-1 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors flex items-center justify-center gap-2 shrink-0">
+                               <i class="fa fa-plus"></i>
+                                <span class="hidden sm:inline">Add</span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Slide Tabs (only visible for Hero Section) -->
-                <div id="slide-tabs" class="mb-6" style="display: none;">
+                <div id="slide-tabs" class="mb-4 sm:mb-6" style="display: none;">
+                    <!-- Desktop: Horizontal tabs -->
                     <div 
                         id="slide-tabs-wrapper" 
-                        class="flex items-center gap-4 border-b border-gray-800"
+                        class=" flex items-center gap-4 border-b border-gray-800 overflow-x-auto pb-px scrollbar-thin"
                         hx-get="/api/admin/slides/tabs"
                         hx-trigger="load"
                         hx-swap="innerHTML">
@@ -116,6 +130,7 @@
                             Loading slides...
                         </div>
                     </div>
+
                 </div>
 
                 <!-- Section Content Container -->
@@ -127,7 +142,7 @@
                     <!-- Content will be loaded here dynamically -->
                     <div class="text-center text-gray-400 py-12">
                         <i class="fas fa-spinner fa-spin text-4xl mb-4"></i>
-                        <p>Loading content...</p>
+                        <p class="text-sm sm:text-base">Loading content...</p>
                     </div>
                 </div>
             </div>
@@ -135,9 +150,49 @@
     </main>
 
     <script>
+        // Mobile section dropdown handler
+        document.addEventListener('DOMContentLoaded', function() {
+            const mobileSelect = document.getElementById('mobile-section-select');
+            
+            if (mobileSelect) {
+                mobileSelect.addEventListener('change', function(e) {
+                    const section = e.target.value;
+                    const sectionContent = document.getElementById('section-content');
+                    const slideTabs = document.getElementById('slide-tabs');
+                    
+                    // Update active section
+                    document.querySelectorAll('.section-tab').forEach(tab => {
+                        if (tab.dataset.section === section) {
+                            tab.classList.add('border-b-2', 'border-blue-500', 'text-white', '-mb-px');
+                            tab.classList.remove('text-gray-400');
+                        } else {
+                            tab.classList.remove('border-b-2', 'border-blue-500', 'text-white', '-mb-px');
+                            tab.classList.add('text-gray-400');
+                        }
+                    });
+                    
+                    // Show/hide slide tabs based on section
+                    if (section === 'hero') {
+                        slideTabs.style.display = 'block';
+                        htmx.ajax('GET', '/api/admin/slides/first/render', {target: '#section-content'});
+                    } else {
+                        slideTabs.style.display = 'none';
+                        const contentUrls = {
+                            'members': './pages/home/our-members/content.html',
+                            'publications': './pages/home/publications/content.html',
+                            'governance': './pages/home/governance/content.html'
+                        };
+                        htmx.ajax('GET', contentUrls[section], {target: '#section-content'});
+                    }
+                });
+            }
+        });
+
         // File upload drag and drop functionality
         document.addEventListener('DOMContentLoaded', function() {
             const uploadArea = document.querySelector('.upload-area');
+            if (!uploadArea) return;
+            
             const fileInput = uploadArea.querySelector('input[type="file"]');
             
             uploadArea.addEventListener('click', () => fileInput.click());

@@ -1,6 +1,6 @@
 <!-- CMS Admin Sidebar Navigation Component -->
-<aside id="sidebar" class="fixed left-0 top-16 bottom-0 w-64 bg-[#1a1a1a] border-r border-gray-800 z-30 transition-all duration-300">
-    <!-- Toggle Button -->
+<aside id="sidebar" class="hidden lg:block fixed left-0 top-16 bottom-0 w-64 bg-[#1a1a1a] border-r border-gray-800 z-30 transition-all duration-300">
+    <!-- Toggle Button (Desktop Only) -->
     <button id="sidebar-toggle" class="absolute -right-3 top-6 w-6 h-6 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-lg transition-all duration-300 z-50">
         <svg class="w-4 h-4 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -33,5 +33,37 @@
         </div>
 
        
+    </nav>
+</aside>
+
+<!-- Mobile Sidebar Overlay -->
+<div id="mobile-sidebar-overlay" class="lg:hidden fixed inset-0 bg-black/50 z-40 hidden"></div>
+
+<!-- Mobile Sidebar -->
+<aside id="mobile-sidebar" class="lg:hidden fixed left-0 top-16 bottom-0 w-64 bg-[#1a1a1a] border-r border-gray-800 z-50 transform -translate-x-full transition-transform duration-300">
+    <nav class="p-4 space-y-2 h-full overflow-y-auto">
+        <!-- CMS Section -->
+        <div class="mb-2">
+            <a href="/admin/index.html" 
+               class="flex items-center gap-3 px-4 py-3 rounded-lg bg-blue-600 text-white shadow-lg transition-all group mobile-nav-link"
+               data-page="cms">
+                <div class="w-8 h-8 flex items-center justify-center shrink-0">
+                    <i class="fa fa-bars"></i>
+                </div>
+                <span class="font-medium">CMS</span>
+            </a>
+        </div>
+
+        <!-- Home Page Section -->
+        <div class="mb-2">
+            <a href="/admin/pages/home.html" 
+               class="flex items-center gap-3 px-4 py-3 rounded-lg text-gray-400 hover:bg-[#2a2a2a] hover:text-white transition-all group mobile-nav-link"
+               data-page="home">
+                <div class="w-8 h-8 flex items-center justify-center shrink-0">
+                  <i class="fa fa-home"></i>
+                </div>
+                <span class="font-medium">Home Page</span>
+            </a>
+        </div>
     </nav>
 </aside>
