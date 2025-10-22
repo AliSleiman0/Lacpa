@@ -66,7 +66,7 @@ func (h *AdminHeroSlideHandler) GetSlideTabs(c *fiber.Ctx) error {
 
 		html += `<button 
 			class="slide-tab px-4 py-2 text-sm font-medium hover:text-white transition-colors ` + activeClass + `"
-			hx-get="http://localhost:3000/api/admin/slides/` + slide.ID.Hex() + `/render"
+			hx-get="/api/admin/slides/` + slide.ID.Hex() + `/render"
 			hx-target="#section-content"
 			hx-swap="innerHTML">
 			Slide ` + fmt.Sprintf("%d", i+1) + `
