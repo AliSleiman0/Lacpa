@@ -28,4 +28,5 @@ func SetupAdminRoutes(app *fiber.App, adminUserHandler *handler.AdminHandler, he
 	admin.Post("/slides", heroSlideHandler.CreateSlide)
 	admin.Patch("/slides/:id", heroSlideHandler.UpdateSlide)
 	admin.Delete("/slides/:id", heroSlideHandler.DeleteSlide)
+	admin.Post("/slides/:id/upload-image", heroSlideHandler.UploadSlideImage) // Upload image
 }

@@ -4,12 +4,17 @@ import (
 	"context"
 	"fmt"
 	"html/template"
+	
+	"os"
+	"path/filepath"
+	"strings"
 	"time"
 
 	adminModel "github.com/AliSleiman0/Lacpa/models/admin"
 	adminRepo "github.com/AliSleiman0/Lacpa/repository/admin"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 type AdminHeroSlideHandler struct {
@@ -206,20 +211,20 @@ func (h *AdminHeroSlideHandler) UpdateSlide(c *fiber.Ctx) error {
 	}
 
 	// Update only provided fields
-	if req.Title != "" {
-		existingSlide.Title = req.Title
+	if req.Title != nil {
+		existingSlide.Title = *req.Title
 	}
-	if req.Description != "" {
-		existingSlide.Description = req.Description
+	if req.Description != nil {
+		existingSlide.Description = *req.Description
 	}
-	if req.ImgSrc != "" {
-		existingSlide.ImgSrc = req.ImgSrc
+	if req.ImgSrc != nil {
+		existingSlide.ImgSrc = *req.ImgSrc
 	}
-	if req.ButtonTitle != "" {
-		existingSlide.ButtonTitle = req.ButtonTitle
+	if req.ButtonTitle != nil {
+		existingSlide.ButtonTitle = *req.ButtonTitle
 	}
-	if req.ButtonLink != "" {
-		existingSlide.ButtonLink = req.ButtonLink
+	if req.ButtonLink != nil {
+		existingSlide.ButtonLink = *req.ButtonLink
 	}
 	if req.IsActive != nil {
 		existingSlide.IsActive = *req.IsActive
@@ -263,4 +268,91 @@ func (h *AdminHeroSlideHandler) DeleteSlide(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusNoContent).Send(nil)
+}
+
+// UploadSlideImage handles POST /api/admin/slides/:id/upload-image
+func (h *AdminHeroSlideHandler) UploadSlideImage(c *fiber.Ctx) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	// Get slide ID from params
+	slideID := c.Params("id")
+
+	// Check if slide exists
+	slide, err := h.repo.GetSlideByID(ctx, slideID)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "Slide not found",
+		})
+	}
+
+	// Get uploaded file
+	file, err := c.FormFile("image")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "No image file provided",
+		})
+	}
+
+	// Validate file type
+	contentType := file.Header.Get("Content-Type")
+	if !strings.HasPrefix(contentType, "image/") {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "File must be an image",
+		})
+	}
+
+	// Validate file size (max 10MB)
+	if file.Size > 10*1024*1024 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "File size must be less than 10MB",
+		})
+	}
+
+	// Generate unique filename
+	ext := filepath.Ext(file.Filename)
+	newFilename := fmt.Sprintf("%s%s", uuid.New().String(), ext)
+
+	// Define upload path (relative to project root)
+	uploadDir := "../LACPA_Web/assets/main-page/hero"
+	uploadPath := filepath.Join(uploadDir, newFilename)
+
+	// Create directory if it doesn't exist
+	if err := os.MkdirAll(uploadDir, 0755); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to create upload directory",
+		})
+	}
+
+	// Save file
+	if err := c.SaveFile(file, uploadPath); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to save image",
+		})
+	}
+
+	// Delete old image if it exists
+	if slide.ImgSrc != "" {
+		oldImagePath := filepath.Join(uploadDir, slide.ImgSrc)
+		if _, err := os.Stat(oldImagePath); err == nil {
+			// File exists, delete it
+			os.Remove(oldImagePath)
+		}
+	}
+
+	// Update slide with new image filename
+	slide.ImgSrc = newFilename
+	if err := h.repo.UpdateSlide(ctx, slideID, slide); err != nil {
+		// If update fails, try to delete the uploaded file
+		os.Remove(uploadPath)
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to update slide with new image",
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"success":  true,
+		"filename": newFilename,
+		"url":      fmt.Sprintf("/assets/main-page/hero/%s", newFilename),
+	})
 }
