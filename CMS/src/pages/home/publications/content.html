@@ -1,0 +1,64 @@
+<!-- Publications Content -->
+<div class="space-y-8">
+    <div class="bg-[#2a2a2a] rounded-lg p-8 text-center">
+        <svg class="w-16 h-16 text-blue-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+        <h3 class="text-2xl font-bold text-white mb-2">Publications Section</h3>
+        <p class="text-gray-400 mb-6">Manage your publications and resources</p>
+    </div>
+
+    <!-- Section Title -->
+    <div>
+        <label class="block text-sm font-medium text-gray-300 mb-3">Section Title</label>
+        <input 
+            type="text" 
+            placeholder="Enter Section Title" 
+            value="Latest Publications"
+            class="w-full px-4 py-3 bg-[#2a2a2a] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+        >
+    </div>
+
+    <!-- Section Description -->
+    <div>
+        <label class="block text-sm font-medium text-gray-300 mb-3">Section Description</label>
+        <textarea 
+            rows="4" 
+            placeholder="Enter Section Description" 
+            class="w-full px-4 py-3 bg-[#2a2a2a] border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all resize-none"
+        >Explore our latest publications and resources</textarea>
+    </div>
+
+    <!-- Display Options -->
+    <div class="grid grid-cols-2 gap-6">
+        <div>
+            <label class="block text-sm font-medium text-gray-300 mb-3">Publications to Display</label>
+            <input 
+                type="number" 
+                value="8"
+                class="w-full px-4 py-3 bg-[#2a2a2a] border border-gray-700 rounded-lg text-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all"
+            >
+        </div>
+        <div>
+            <label class="block text-sm font-medium text-gray-300 mb-3">Sort By</label>
+            <select class="w-full px-4 py-3 bg-[#2a2a2a] border border-gray-700 rounded-lg text-white appearance-none focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all cursor-pointer">
+                <option>Latest First</option>
+                <option>Oldest First</option>
+                <option>Most Popular</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex items-center justify-end gap-4 pt-6 border-t border-gray-800">
+        <button class="px-6 py-2.5 bg-[#2a2a2a] hover:bg-[#3a3a3a] text-white rounded-lg transition-colors font-medium">
+            Cancel
+        </button>
+        <button class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-medium flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            Save Changes
+        </button>
+    </div>
+</div>

@@ -93,7 +93,7 @@ func SendOTPEmailWithCode(recipientEmail, recipientName, otp string) (*OTPEmail,
 			"\r\n" +
 			htmlBody + "\r\n",
 	)
-	
+
 	// Send email
 	smtpAddr := config.SMTPHost + ":" + config.SMTPPort
 	err := smtp.SendMail(smtpAddr, auth, config.SenderEmail, []string{recipientEmail}, message)

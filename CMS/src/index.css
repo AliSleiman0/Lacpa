@@ -1,0 +1,94 @@
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #3a3a3a;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #4a4a4a;
+}
+
+/* Hide scrollbars but keep functionality */
+* {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+}
+
+*::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+/* Custom toggle switch */
+.toggle-checkbox:checked {
+    background-color: #3b82f6;
+}
+
+.toggle-checkbox:checked + .toggle-label {
+    transform: translateX(100%);
+}
+
+/* Image upload area */
+.upload-area {
+    border: 2px dashed #4a5568;
+    transition: all 0.3s ease;
+}
+
+.upload-area:hover {
+    border-color: #3b82f6;
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+.upload-area.drag-over {
+    border-color: #3b82f6;
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+/* Sidebar text transitions */
+.sidebar-text {
+    transition: opacity 0.3s ease, width 0.3s ease;
+    white-space: nowrap;
+}
+
+/* Sidebar collapsed state - center icons */
+#sidebar.w-20 nav a {
+    justify-content: center !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    gap: 0 !important;
+}
+
+#sidebar.w-20 nav a > div:first-child {
+    margin: 0 auto;
+}
+
+#sidebar.w-20 nav .mb-6 {
+    margin-bottom: 0.5rem;
+}
+
+#sidebar.w-20 .border-t {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+#sidebar.w-20 h3 {
+    display: none;
+}
+
+#sidebar.w-20 nav {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+/* Main content transition */
+main {
+    transition: margin-left 0.3s ease;
+}
