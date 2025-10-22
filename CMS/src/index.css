@@ -28,12 +28,12 @@
 }
 
 /* Custom toggle switch */
-.toggle-checkbox:checked {
-    background-color: #3b82f6;
+.toggle-checkbox:checked ~ div .toggle-label {
+    transform: translateX(1.25rem); /* 20px / 4 = 5 = 1.25rem (width - padding) */
 }
 
-.toggle-checkbox:checked + .toggle-label {
-    transform: translateX(100%);
+.peer:checked ~ div .toggle-label {
+    transform: translateX(1.25rem);
 }
 
 /* Image upload area */

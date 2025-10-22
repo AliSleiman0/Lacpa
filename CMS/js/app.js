@@ -1,3 +1,9 @@
+/**
+ * CMS Admin Dashboard JavaScript
+ * Uses SweetAlert2 for all notifications, confirmations, and alerts
+ * Theme: Dark mode (#1f1f1f background, #ffffff text)
+ */
+
 // Initialize sidebar functionality after HTMX swap
 function initializeSidebar() {
     const sidebar = document.getElementById('sidebar');
@@ -114,6 +120,9 @@ document.addEventListener('htmx:afterSwap', function(event) {
         if (triggerElement && triggerElement.classList.contains('slide-tab')) {
             setActiveSlideTab(triggerElement);
         }
+
+        // Initialize drag-and-drop for upload areas
+        initializeUploadArea();
     }
 });
 
@@ -210,13 +219,15 @@ function renderSlideTabs() {
 }
 
 function setActiveSlideTab(activeTab) {
+    // Remove active state from all tabs
     document.querySelectorAll('.slide-tab').forEach(tab => {
-        tab.classList.remove('text-white', 'border-blue-500');
+        tab.classList.remove('text-white', 'border-b-2', 'border-blue-500');
         tab.classList.add('text-gray-500');
     });
     
+    // Add active state to clicked tab
     activeTab.classList.remove('text-gray-500');
-    activeTab.classList.add('text-white', 'border-blue-500');
+    activeTab.classList.add('text-white', 'border-b-2', 'border-blue-500');
 }
 
 async function loadSlideContent(slideId) {
@@ -271,14 +282,488 @@ async function createNewSlide() {
         }
         
         const newSlide = await response.json();
-        allSlides.push(newSlide);
-        renderSlideTabs();
-        loadSlideContent(newSlide.id);
-        showNotification(`Slide ${allSlides.length} added successfully!`, 'success');
+        
+        // Reload tabs from server via HTMX instead of manually updating
+        const slideTabsWrapper = document.getElementById('slide-tabs-wrapper');
+        if (slideTabsWrapper && typeof htmx !== 'undefined') {
+            // Trigger HTMX to reload the tabs
+            htmx.ajax('GET', 'http://localhost:3000/api/admin/slides/tabs', {
+                target: '#slide-tabs-wrapper',
+                swap: 'innerHTML'
+            }).then(() => {
+                // After tabs are reloaded, load the new slide content
+                setTimeout(() => {
+                    const newSlideTab = slideTabsWrapper.querySelector(`.slide-tab[hx-get*="${newSlide.id}"]`);
+                    if (newSlideTab) {
+                        htmx.trigger(newSlideTab, 'click');
+                    }
+                }, 100);
+            });
+        }
+        
+        showNotification(`New slide added successfully!`, 'success');
     } catch (error) {
         console.error('Error creating slide:', error);
         showNotification('Error creating slide', 'error');
     }
+}
+
+async function deleteSlide(slideId) {
+    // Confirm deletion with SweetAlert2
+    const result = await Swal.fire({
+        title: 'Delete Slide?',
+        text: 'This action cannot be undone!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#dc2626',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'Cancel',
+        background: '#1f1f1f',
+        color: '#ffffff',
+        customClass: {
+            popup: 'border border-gray-700'
+        }
+    });
+
+    if (!result.isConfirmed) {
+        return;
+    }
+
+    // Show loading state
+    Swal.fire({
+        title: 'Deleting...',
+        text: 'Please wait',
+        icon: 'info',
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        background: '#1f1f1f',
+        color: '#ffffff',
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    try {
+        const response = await fetch(`http://localhost:3000/api/admin/slides/${slideId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
+
+        if (!response.ok) {
+            console.error('Failed to delete slide');
+            Swal.fire({
+                title: 'Error!',
+                text: 'Failed to delete slide',
+                icon: 'error',
+                confirmButtonColor: '#3b82f6',
+                background: '#1f1f1f',
+                color: '#ffffff'
+            });
+            return;
+        }
+
+        // Reload tabs from server via HTMX
+        const slideTabsWrapper = document.getElementById('slide-tabs-wrapper');
+        if (slideTabsWrapper && typeof htmx !== 'undefined') {
+            htmx.ajax('GET', 'http://localhost:3000/api/admin/slides/tabs', {
+                target: '#slide-tabs-wrapper',
+                swap: 'innerHTML'
+            }).then(() => {
+                // After tabs are reloaded, load the first slide if available
+                setTimeout(() => {
+                    const firstTab = slideTabsWrapper.querySelector('.slide-tab');
+                    if (firstTab) {
+                        htmx.trigger(firstTab, 'click');
+                    } else {
+                        // No slides left, clear the content area
+                        document.getElementById('section-content').innerHTML = '<div class="text-center text-gray-400 py-12">No slides available. Click "Add Slide" to create one.</div>';
+                    }
+                }, 100);
+            });
+        }
+
+        Swal.fire({
+            title: 'Deleted!',
+            text: 'Slide deleted successfully',
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false,
+            background: '#1f1f1f',
+            color: '#ffffff'
+        });
+    } catch (error) {
+        console.error('Error deleting slide:', error);
+        Swal.fire({
+            title: 'Error!',
+            text: 'Error deleting slide',
+            icon: 'error',
+            confirmButtonColor: '#3b82f6',
+            background: '#1f1f1f',
+            color: '#ffffff'
+        });
+    }
+}
+
+async function toggleSlideField(checkbox) {
+    const slideId = checkbox.dataset.slideId;
+    const field = checkbox.dataset.field;
+    const isChecked = checkbox.checked;
+
+    // Show loading toast
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 1500,
+        background: '#1f1f1f',
+        color: '#ffffff'
+    });
+
+    Toast.fire({
+        icon: 'info',
+        title: 'Updating...'
+    });
+
+    try {
+        const response = await fetch(`http://localhost:3000/api/admin/slides/${slideId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            },
+            body: JSON.stringify({
+                [field]: isChecked
+            })
+        });
+
+        if (!response.ok) {
+            console.error('Failed to update toggle');
+            // Revert checkbox state
+            checkbox.checked = !isChecked;
+            
+            Swal.fire({
+                title: 'Error!',
+                text: `Failed to update ${field.replace('Active', '')}`,
+                icon: 'error',
+                confirmButtonColor: '#3b82f6',
+                background: '#1f1f1f',
+                color: '#ffffff',
+                timer: 2000
+            });
+            return;
+        }
+
+        // Success feedback
+        Toast.fire({
+            icon: 'success',
+            title: `${field.replace('Active', '')} ${isChecked ? 'enabled' : 'disabled'}`
+        });
+
+    } catch (error) {
+        console.error('Error updating toggle:', error);
+        // Revert checkbox state
+        checkbox.checked = !isChecked;
+        
+        Swal.fire({
+            title: 'Error!',
+            text: 'Network error occurred',
+            icon: 'error',
+            confirmButtonColor: '#3b82f6',
+            background: '#1f1f1f',
+            color: '#ffffff',
+            timer: 2000
+        });
+    }
+}
+
+async function saveSlideChanges(slideId) {
+    // Get form values
+    const buttonTitle = document.getElementById(`buttonTitle-${slideId}`)?.value || '';
+    const buttonLink = document.getElementById(`buttonLink-${slideId}`)?.value || '';
+    const title = document.getElementById(`title-${slideId}`)?.value || '';
+    const description = document.getElementById(`description-${slideId}`)?.value || '';
+
+    // Validate required fields
+    if (!title.trim()) {
+        Swal.fire({
+            title: 'Validation Error',
+            text: 'Title is required',
+            icon: 'warning',
+            confirmButtonColor: '#3b82f6',
+            background: '#1f1f1f',
+            color: '#ffffff'
+        });
+        return;
+    }
+
+    // Show loading state
+    Swal.fire({
+        title: 'Saving Changes...',
+        text: 'Please wait',
+        icon: 'info',
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        background: '#1f1f1f',
+        color: '#ffffff',
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    try {
+        const response = await fetch(`http://localhost:3000/api/admin/slides/${slideId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            },
+            body: JSON.stringify({
+                title: title,
+                description: description,
+                buttonTitle: buttonTitle,
+                buttonLink: buttonLink
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to save changes');
+        }
+
+        const updatedSlide = await response.json();
+
+        // Success feedback
+        Swal.fire({
+            title: 'Saved!',
+            text: 'Changes saved successfully',
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false,
+            background: '#1f1f1f',
+            color: '#ffffff'
+        });
+
+    } catch (error) {
+        console.error('Error saving changes:', error);
+        Swal.fire({
+            title: 'Error!',
+            text: 'Failed to save changes. Please try again.',
+            icon: 'error',
+            confirmButtonColor: '#3b82f6',
+            background: '#1f1f1f',
+            color: '#ffffff'
+        });
+    }
+}
+
+async function cancelSlideChanges(slideId) {
+    // Confirm cancel action
+    const result = await Swal.fire({
+        title: 'Discard Changes?',
+        text: 'Any unsaved changes will be lost',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#6b7280',
+        cancelButtonColor: '#3b82f6',
+        confirmButtonText: 'Yes, discard',
+        cancelButtonText: 'Keep editing',
+        background: '#1f1f1f',
+        color: '#ffffff'
+    });
+
+    if (!result.isConfirmed) {
+        return;
+    }
+
+    // Reload the slide from server to reset form
+    try {
+        const slideContent = document.getElementById('section-content');
+        if (slideContent && typeof htmx !== 'undefined') {
+            htmx.ajax('GET', `http://localhost:3000/api/admin/slides/${slideId}/render`, {
+                target: '#section-content',
+                swap: 'innerHTML'
+            });
+
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 2000,
+                background: '#6b7280',
+                color: '#ffffff'
+            });
+
+            Toast.fire({
+                icon: 'info',
+                title: 'Changes discarded'
+            });
+        }
+    } catch (error) {
+        console.error('Error reloading slide:', error);
+    }
+}
+
+async function handleSlideImageUpload(input) {
+    const slideId = input.dataset.slideId;
+    const file = input.files[0];
+
+    if (!file) {
+        return;
+    }
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+        Swal.fire({
+            title: 'Invalid File',
+            text: 'Please upload an image file',
+            icon: 'error',
+            confirmButtonColor: '#3b82f6',
+            background: '#1f1f1f',
+            color: '#ffffff'
+        });
+        input.value = ''; // Clear input
+        return;
+    }
+
+    // Validate file size (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+        Swal.fire({
+            title: 'File Too Large',
+            text: 'Image size must be less than 10MB',
+            icon: 'error',
+            confirmButtonColor: '#3b82f6',
+            background: '#1f1f1f',
+            color: '#ffffff'
+        });
+        input.value = ''; // Clear input
+        return;
+    }
+
+    // Show loading state
+    Swal.fire({
+        title: 'Uploading Image...',
+        text: 'Please wait',
+        icon: 'info',
+        allowOutsideClick: false,
+        showConfirmButton: false,
+        background: '#1f1f1f',
+        color: '#ffffff',
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    try {
+        // Create FormData
+        const formData = new FormData();
+        formData.append('image', file);
+
+        // Upload image
+        const response = await fetch(`http://localhost:3000/api/admin/slides/${slideId}/upload-image`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            },
+            body: formData
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to upload image');
+        }
+
+        const result = await response.json();
+
+        // Update the current image preview
+        const currentImageContainer = document.getElementById(`current-image-${slideId}`);
+        if (currentImageContainer) {
+            currentImageContainer.innerHTML = `
+                <img 
+                    src="${result.url}?t=${Date.now()}" 
+                    alt="Current section image" 
+                    class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+            `;
+        }
+
+        // Success feedback
+        Swal.fire({
+            title: 'Success!',
+            text: 'Image uploaded successfully',
+            icon: 'success',
+            timer: 2000,
+            showConfirmButton: false,
+            background: '#1f1f1f',
+            color: '#ffffff'
+        });
+
+        // Clear input
+        input.value = '';
+
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        Swal.fire({
+            title: 'Upload Failed',
+            text: error.message || 'Failed to upload image. Please try again.',
+            icon: 'error',
+            confirmButtonColor: '#3b82f6',
+            background: '#1f1f1f',
+            color: '#ffffff'
+        });
+        // Clear input
+        input.value = '';
+    }
+}
+
+function initializeUploadArea() {
+    // Find all upload areas in the current slide
+    const uploadAreas = document.querySelectorAll('[id^="upload-area-"]');
+    
+    uploadAreas.forEach(uploadArea => {
+        const slideId = uploadArea.id.replace('upload-area-', '');
+        const fileInput = document.getElementById(`file-input-${slideId}`);
+        
+        if (!fileInput) return;
+
+        // Click to upload
+        uploadArea.addEventListener('click', (e) => {
+            // Prevent triggering when clicking the button
+            if (!e.target.closest('button')) {
+                fileInput.click();
+            }
+        });
+
+        // Drag over
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('drag-over');
+        });
+
+        // Drag leave
+        uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+        });
+
+        // Drop
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+            
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                // Set the file to the input and trigger the change event
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(files[0]);
+                fileInput.files = dataTransfer.files;
+                
+                // Trigger the upload
+                handleSlideImageUpload(fileInput);
+            }
+        });
+    });
 }
 
 function initializeTabSwitching() {
@@ -290,13 +775,13 @@ function initializeTabSwitching() {
         if (sectionTab) {
             // Remove active state from all section tabs
             document.querySelectorAll('.section-tab').forEach(tab => {
-                tab.classList.remove('text-white', 'border-blue-500');
+                tab.classList.remove('text-white', 'border-b-2', 'border-blue-500', '-mb-px');
                 tab.classList.add('text-gray-400');
             });
             
             // Add active state to clicked tab
             sectionTab.classList.remove('text-gray-400');
-            sectionTab.classList.add('text-white', 'border-blue-500');
+            sectionTab.classList.add('text-white', 'border-b-2', 'border-blue-500', '-mb-px');
             
             // Show/hide slide tabs based on section
             if (sectionTab.dataset.section === 'hero') {
@@ -313,28 +798,35 @@ function initializeTabSwitching() {
         if (addSlideBtn) {
             createNewSlide();
         }
+
+        // Handle slide tab clicks - update active state immediately
+        const slideTab = e.target.closest('.slide-tab');
+        if (slideTab) {
+            console.log('Slide tab clicked:', slideTab);
+            setActiveSlideTab(slideTab);
+        }
     });
 }
 
 function showNotification(message, type = 'success') {
-    const bgColor = type === 'success' ? 'bg-green-600' : 'bg-red-600';
-    const notification = document.createElement('div');
-    notification.className = `fixed top-20 right-4 ${bgColor} text-white px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300`;
-    notification.innerHTML = `
-        <div class="flex items-center gap-3">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="${type === 'success' ? 'M5 13l4 4L19 7' : 'M6 18L18 6M6 6l12 12'}" />
-            </svg>
-            <span>${message}</span>
-        </div>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.style.opacity = '0';
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        background: type === 'success' ? '#059669' : '#dc2626',
+        color: '#ffffff',
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer);
+            toast.addEventListener('mouseleave', Swal.resumeTimer);
+        }
+    });
+
+    Toast.fire({
+        icon: type,
+        title: message
+    });
 }
 
 

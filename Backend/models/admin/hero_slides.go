@@ -40,15 +40,15 @@ type CreateSlideRequest struct {
 
 // UpdateSlideRequest represents the request body for updating a slide (all fields optional)
 type UpdateSlideRequest struct {
-	Title             string `json:"title,omitempty" form:"title"`
-	Description       string `json:"description,omitempty" form:"description"`
-	ImgSrc            string `json:"imgSrc,omitempty" form:"imgSrc"`
-	ButtonTitle       string `json:"buttonTitle,omitempty" form:"buttonTitle"`
-	ButtonLink        string `json:"buttonLink,omitempty" form:"buttonLink"`
-	IsActive          *bool  `json:"isActive,omitempty" form:"isActive"`
-	ImageActive       *bool  `json:"imageActive,omitempty" form:"imageActive"`
-	ButtonActive      *bool  `json:"buttonActive,omitempty" form:"buttonActive"`
-	TitleActive       *bool  `json:"titleActive,omitempty" form:"titleActive"`
-	DescriptionActive *bool  `json:"descriptionActive,omitempty" form:"descriptionActive"`
-	OrderIndex        *int   `json:"orderIndex,omitempty" form:"orderIndex"`
+	Title             *string `json:"title,omitempty" form:"title"`
+	Description       *string `json:"description,omitempty" form:"description"`
+	ImgSrc            *string `json:"imgSrc,omitempty" form:"imgSrc"`
+	ButtonTitle       *string `json:"buttonTitle,omitempty" form:"buttonTitle"`
+	ButtonLink        *string `json:"buttonLink,omitempty" form:"buttonLink"`
+	IsActive          *bool   `json:"isActive,omitempty" form:"isActive"`
+	ImageActive       *bool   `json:"imageActive,omitempty" form:"imageActive"`
+	ButtonActive      *bool   `json:"buttonActive,omitempty" form:"buttonActive"`
+	TitleActive       *bool   `json:"titleActive,omitempty" form:"titleActive"`
+	DescriptionActive *bool   `json:"descriptionActive,omitempty" form:"descriptionActive"`
+	OrderIndex        *int    `json:"orderIndex,omitempty" form:"orderIndex"`
 }
