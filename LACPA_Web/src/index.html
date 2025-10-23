@@ -69,51 +69,24 @@
                     <!-- Discover LACPA with Dropdown -->
                     <li class="nav-item">
                         <a class="nav-link px-1 lg:px-2 py-1" 
-                            hx-get="http://localhost:3000/main/discover" 
-                            hx-trigger="click"
-                            hx-swap="innerHTML" 
-                            hx-target="#main-div"
-                            hx-push-url="/discover">
+                           >
                             Discover LACPA
                             <span class="dropdown-arrow">▼</span>
                         </a>
                         <div class="dropdown-menu">
                             <a href="#" class="dropdown-link" 
-                                hx-get="http://localhost:3000/discover/president-letter" 
-                                hx-trigger="click"
-                                hx-swap="innerHTML" 
-                                hx-target="#main-div"
-                                hx-push-url="/discover/president-letter">President Letter</a>
+                                hx-get="http://localhost:3000/discover" 
+                            hx-trigger="click"
+                            hx-swap="innerHTML" 
+                            hx-target="#main-div"
+                            hx-push-url="/discover">Discover LACPA</a>
                             <a href="#" class="dropdown-link" 
                                 hx-get="http://localhost:3000/discover/board-of-directors" 
                                 hx-trigger="click"
                                 hx-swap="innerHTML" 
                                 hx-target="#main-div"
                                 hx-push-url="/discover/board-of-directors">Board of Directors</a>
-                            <a href="#" class="dropdown-link" 
-                                hx-get="http://localhost:3000/discover/vision-mission" 
-                                hx-trigger="click"
-                                hx-swap="innerHTML" 
-                                hx-target="#main-div"
-                                hx-push-url="/discover/vision-mission">Vision and Mission</a>
-                            <a href="#" class="dropdown-link" 
-                                hx-get="http://localhost:3000/discover/regulation" 
-                                hx-trigger="click"
-                                hx-swap="innerHTML" 
-                                hx-target="#main-div"
-                                hx-push-url="/discover/regulation">Regulation</a>
-                            <a href="#" class="dropdown-link" 
-                                hx-get="http://localhost:3000/discover/pension-fund" 
-                                hx-trigger="click"
-                                hx-swap="innerHTML" 
-                                hx-target="#main-div"
-                                hx-push-url="/discover/pension-fund">Pension Fund</a>
-                            <a href="#" class="dropdown-link" 
-                                hx-get="http://localhost:3000/discover/mutual-fund" 
-                                hx-trigger="click"
-                                hx-swap="innerHTML" 
-                                hx-target="#main-div"
-                                hx-push-url="/discover/mutual-fund">Mutual Fund</a>
+                           
                         </div>
                     </li>
                     
@@ -146,11 +119,11 @@
                     
                     <!-- Events & News -->
                     <li><a class="nav-link px-1 lg:px-2 py-1" 
-                            hx-get="http://localhost:3000/events" 
+                            hx-get="http://localhost:3000/news" 
                             hx-trigger="click"
                             hx-swap="innerHTML" 
                             hx-target="#main-div"
-                            hx-push-url="/events">Events &amp; News</a></li>
+                            hx-push-url="/news">Events &amp; News</a></li>
                     
                     <!-- Academy -->
                     <li><a class="nav-link px-1 lg:px-2 py-1" 

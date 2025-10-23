@@ -49,6 +49,9 @@ func SetupRoutes(app *fiber.App, repo repository.Repository) {
 	mainPageHandler := handler.NewMainPageHandler(repo)
 	SetupMainPageRoutes(api, mainPageHandler) // Configures /api/main/* routes
 
+	discoverPageHandler := handler.NewDiscoverPageHandler(repo)
+	SetupDiscoverPageRoutes(app, discoverPageHandler) // Configures /api/discover/* routes
+
 	// Council routes - API endpoints for council management
 	SetupCouncilRoutes(app, repo) // Configures /api/council/* routes
 
@@ -60,6 +63,11 @@ func SetupRoutes(app *fiber.App, repo repository.Repository) {
 
 	// Application routes - Membership applications
 	SetupApplicationRoutes(app, repo) // Configures /membership/apply-now and /api/applications/* routes
+
+	// News Details page routes - HTML page rendering
+	newsDetailsPageHandler := handler.NewNewsDetailsPageHandler(repo)
+	SetupNewsDetailsRoutes(app, newsDetailsPageHandler)
+	// Configures /membership/apply-now and /api/applications/* routes
 
 	// Future route groups can be added here:
 	// SetupItemRoutes(api, itemHandler)       // Would configure /api/items/* routes

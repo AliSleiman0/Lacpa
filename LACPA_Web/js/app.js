@@ -95,13 +95,14 @@ function loadPageFromURL() {
     // Map URL paths to API endpoints
     const routeMap = {
         '/': 'http://localhost:3000/api/main/landing/',
-        '/discover': 'http://localhost:3000/main/discover',
+        '/discover': 'http://localhost:3000/api/discover',
         '/membership': 'http://localhost:3000/membership',
         '/members/individuals': 'http://localhost:3000/membership', // Legacy support
         '/membership/apply-now': 'http://localhost:3000/membership/apply-now',
         '/membership/firms': 'http://localhost:3000/membership/firms',
         '/events': 'http://localhost:3000/events',
         '/academy': 'http://localhost:3000/main/academy',
+        '/news': 'http://localhost:3000/news',
         // Discover sub-routes
         '/discover/president-letter': 'http://localhost:3000/discover/president-letter',
         '/discover/board-of-directors': 'http://localhost:3000/discover/board-of-directors',
@@ -594,6 +595,9 @@ document.addEventListener('htmx:afterSwap', function(event) {
 document.addEventListener('htmx:afterSettle', function(event) {
     setTimeout(initializeSplideCarousels, 100);
 });
+
+
+
 
 // ========================================
 // MEMBER CARD NAVIGATION
