@@ -84,4 +84,5 @@ func SetupRoutes(app *fiber.App, repo repository.Repository) {
 		// Regular browser request - serve index.html
 		return c.SendFile("../LACPA_Web/src/index.html")
 	})
+
 }
